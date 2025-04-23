@@ -83,7 +83,9 @@ export const Carousel = ({ products }: Props) => {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="text-3xl font-bold text-white mb-2 drop-shadow-md overflow-hidden whitespace-nowrap text-ellipsis max-w-[1000px]"
+                className="
+                text-2xl sm:text-3xl font-bold text-white mb-2 drop-shadow-md
+                overflow-hidden whitespace-nowrap text-ellipsis max-w-[300px] sm:max-w-[1000px]"
               >
                 {currentProduct.name}
               </motion.h2>
