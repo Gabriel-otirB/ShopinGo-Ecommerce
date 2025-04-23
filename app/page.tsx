@@ -12,19 +12,23 @@ export default async function Home() {
 
   return (
     <div>
-      <section className="rounded bg-neutral-100 py-8 sm:py-12">
+      <section className="rounded bg-neutral-100 dark:bg-neutral-900 border-2 border-gray-300 dark:border-neutral-500 py-8 sm:py-12">
         <div className="mx-auto grid grid-cols-1 items-center justify-items-center gap-8 px-8 sm:px-16 md:grid-cols-2">
           <div className="max-w-md space-y-4">
-            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight md:text-4xl text-black dark:text-neutral-100">
               Bem vindo à ShopinGo
             </h2>
-            <p className="text-neutral-600">
+            <p className="text-neutral-600 dark:text-neutral-100">
               Os melhores produtos, os melhores preços, tudo em um só lugar!
             </p>
             <Button
               asChild
               variant="default"
-              className="inline-flex items-center justify-center rounded-full px-6 py-3 bg-black text-white"
+              className="
+              inline-flex items-center justify-center 
+              rounded-full px-6 py-3 bg-black text-white
+              hover:bg-neutral-950 transition-all duration-300
+              "
             >
               <Link
                 href="/products"

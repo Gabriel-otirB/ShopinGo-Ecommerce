@@ -24,10 +24,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" >
       <body
         className={`${geistSans.variable} ${geistMono.variable}
-      flex min-h-full flex-col bg-white
+      flex min-h-full flex-col bg-white dark:bg-neutral-800
       `}>
         <Navbar />
         <main className="flex-grow container mx-auto px-4 py-8">

@@ -44,7 +44,10 @@ export const Carousel = ({ products }: Props) => {
 
   return (
     <Card
-      className="relative w-full h-full min-h-[400px] overflow-hidden rounded-lg shadow-md border-gray-300 transition duration-300 ease-in-out py-0"
+      className="
+      relative w-full h-full min-h-[400px] overflow-hidden rounded-lg shadow-md
+      border-2 bg-neutral-100 border-gray-300 dark:border-neutral-500 dark:bg-neutral-900
+      transition duration-300 ease-in-out py-0"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
