@@ -44,7 +44,7 @@ export default async function Home() {
         </div>
       </section>
       <section className="py-8">
-        <div className='h-[400px]'>
+        <div className="h-[400px]">
           <Carousel products={products.data} />
         </div>
       </section>
