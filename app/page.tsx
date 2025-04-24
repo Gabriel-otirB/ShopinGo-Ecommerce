@@ -26,9 +26,8 @@ export default async function Home() {
               variant="default"
               className="
               inline-flex items-center justify-center 
-              rounded-full px-6 py-3 bg-black text-white
-              hover:bg-neutral-950 transition-all duration-300
-              "
+              rounded-full px-6 py-3 bg-black text-white 
+              cursor-pointer hover:bg-black dark:hover:bg-black"
             >
               <Link
                 href="/products"

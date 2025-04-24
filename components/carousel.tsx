@@ -72,7 +72,8 @@ export const Carousel = ({ products }: Props) => {
             <Image
               src={currentProduct.images?.[0] || ""}
               alt={currentProduct.name}
-              fill
+              objectFit="contain"
+              layout="fill"
               className="object-cover w-full h-full"
             />
 
@@ -96,7 +97,7 @@ export const Carousel = ({ products }: Props) => {
                   transition={{ delay: 0.3 }}
                   className="text-xl font-medium text-white drop-shadow-md"
                 >
-                  ${(price.unit_amount / 100).toFixed(2)}
+                  R${(price.unit_amount / 100).toFixed(2)}
                 </motion.p>
               )}
             </CardContent>
