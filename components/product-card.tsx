@@ -23,8 +23,9 @@ const ProductCard = ({ product }: Props) => {
             <Image
               src={product.images[0]}
               alt={product.name}
-              layout="fill"
-              objectFit="contain"
+              fill
+              sizes={"(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
+              style={{ objectFit: "contain" }}
               className="rounded-t-lg"
             />
           </div>

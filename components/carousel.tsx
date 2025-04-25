@@ -72,8 +72,8 @@ export const Carousel = ({ products }: Props) => {
             <Image
               src={currentProduct.images?.[0] || ""}
               alt={currentProduct.name}
-              objectFit="contain"
-              layout="fill"
+              style={{ objectFit: "contain" }}
+              fill
               className="object-cover w-full h-full"
             />
 
