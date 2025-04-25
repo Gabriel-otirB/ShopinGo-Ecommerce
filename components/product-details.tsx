@@ -73,8 +73,8 @@ const ProductDetail = ({ product }: Props) => {
           <Button
             variant="outline"
             className='cursor-pointer border-2 
-            bg-neutral-100 dark:bg-neutral-900
-            border-gray-300 dark:border-neutral-500'
+            bg-neutral-100 hover:bg-neutral-200/75 transition-colors duration-200
+            dark:bg-neutral-900 border-gray-300 dark:border-neutral-500'
             onClick={() => setQuantity((prev) => Math.max(prev - 1, 0))}
           >
             <MinusIcon />
@@ -83,8 +83,8 @@ const ProductDetail = ({ product }: Props) => {
           <Button
             variant="outline"
             className='cursor-pointer border-2 
-            bg-neutral-100 dark:bg-neutral-900
-            border-gray-300 dark:border-neutral-500'
+            bg-neutral-100 hover:bg-neutral-200/75 transition-colors duration-200
+            dark:bg-neutral-900 border-gray-300 dark:border-neutral-500'
             onClick={() => setQuantity((prev) => prev + 1)}
           >
             <PlusIcon />
@@ -95,7 +95,7 @@ const ProductDetail = ({ product }: Props) => {
           variant="outline"
           className="
           flex items-center gap-2 w-fit cursor-pointer border-2
-          bg-neutral-100 dark:bg-neutral-900
+        bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200/75 transition-colors duration-200
         border-gray-300 dark:border-neutral-500"
           onClick={handleShare}
         >
