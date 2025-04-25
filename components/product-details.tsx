@@ -47,7 +47,7 @@ const ProductDetail = ({ product }: Props) => {
             style={{ objectFit: 'contain' }}
             sizes="(max-width: 768px) 100vw, 50vw"
             className="rounded-lg"
-            priority
+            draggable={false}
           />
         </div>
       )}

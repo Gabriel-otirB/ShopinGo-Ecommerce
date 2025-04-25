@@ -7,6 +7,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import Link from 'next/link';
 
 interface Props {
   products: Stripe.Product[];
@@ -52,57 +53,59 @@ export const Carousel = ({ products }: Props) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative w-full h-full">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={currentProduct.id}
-            initial={{
-              x: direction === "right" ? 100 : -100,
-              opacity: 0,
-              scale: 0.95,
-            }}
-            animate={{ x: 0, opacity: 1, scale: 1 }}
-            exit={{
-              x: direction === "right" ? -100 : 100,
-              opacity: 0,
-              scale: 0.95,
-            }}
-            transition={{ duration: 0.6 }}
-            className="absolute inset-0 w-full h-full"
-          >
-            <Image
-              src={currentProduct.images?.[0] || ""}
-              alt={currentProduct.name}
-              style={{ objectFit: "contain" }}
-              fill
-              className="object-cover w-full h-full"
-            />
+        <Link href={`/products/${currentProduct.id}`}>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={currentProduct.id}
+              initial={{
+                x: direction === "right" ? 100 : -100,
+                opacity: 0,
+                scale: 0.95,
+              }}
+              animate={{ x: 0, opacity: 1, scale: 1 }}
+              exit={{
+                x: direction === "right" ? -100 : 100,
+                opacity: 0,
+                scale: 0.95,
+              }}
+              transition={{ duration: 0.6 }}
+              className="absolute inset-0 w-full h-full"
+            >
+              <Image
+                src={currentProduct.images?.[0] || ""}
+                alt={currentProduct.name}
+                style={{ objectFit: "contain" }}
+                fill
+                draggable={false}
+                className="object-cover w-full h-full"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/70 z-10" />
 
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/70 z-10" />
-
-            <CardContent className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center h-full">
-              <motion.h2
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="
-                text-2xl sm:text-3xl font-bold text-white mb-2 drop-shadow-md
-                overflow-hidden whitespace-nowrap text-ellipsis max-w-[300px] sm:max-w-[1000px]"
-              >
-                {currentProduct.name}
-              </motion.h2>
-              {price && price.unit_amount && (
-                <motion.p
+              <CardContent className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center h-full">
+                <motion.h2
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="text-xl font-medium text-white drop-shadow-md"
+                  transition={{ delay: 0.2 }}
+                  className="
+                text-2xl sm:text-3xl font-bold text-white mb-2 drop-shadow-md
+                overflow-hidden whitespace-nowrap text-ellipsis max-w-[300px] sm:max-w-[1000px]"
                 >
-                  R${(price.unit_amount / 100).toFixed(2)}
-                </motion.p>
-              )}
-            </CardContent>
-          </motion.div>
-        </AnimatePresence>
+                  {currentProduct.name}
+                </motion.h2>
+                {price && price.unit_amount && (
+                  <motion.p
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-xl font-medium text-white drop-shadow-md"
+                  >
+                    R${(price.unit_amount / 100).toFixed(2)}
+                  </motion.p>
+                )}
+              </CardContent>
+            </motion.div>
+          </AnimatePresence>
+        </Link>
 
         {/* Navigation Buttons */}
         <div className="absolute z-30 top-1/2 left-0 right-0 flex justify-between items-center px-4 transform -translate-y-1/2">

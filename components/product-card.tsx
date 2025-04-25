@@ -26,6 +26,7 @@ const ProductCard = ({ product }: Props) => {
               fill
               sizes={"(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
               style={{ objectFit: "contain" }}
+              draggable={false}
               className="rounded-t-lg"
             />
           </div>

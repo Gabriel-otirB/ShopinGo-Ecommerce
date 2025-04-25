@@ -43,6 +43,7 @@ export default async function Home() {
             className="rounded"
             width={450}
             height={450}
+            draggable={false}
           />
         </div>
       </section>
