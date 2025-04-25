@@ -37,9 +37,12 @@ const ProductDetail = ({ product }: Props) => {
 
   return (
     <div className="container mx-auto px-4 py-12 flex flex-col md:flex-row gap-10 items-start">
-      {/* Imagem */}
       {product.images?.[0] && (
-        <div className="relative w-full md:w-[50%] h-[300px] md:h-[400px] overflow-hidden rounded-lg shadow-md">
+        <div className="
+        relative w-full md:w-[50%] h-[300px] md:h-[400px]
+        overflow-hidden rounded-lg shadow-md
+        bg-neutral-100 dark:bg-neutral-900
+        border-2 border-gray-300 dark:border-neutral-500">
           <Image
             src={product.images[0]}
             alt={product.name}
@@ -52,12 +55,11 @@ const ProductDetail = ({ product }: Props) => {
         </div>
       )}
 
-      {/* Detalhes */}
       <div className="w-full md:w-[50%] flex flex-col gap-6">
         <div>
-          <h1 className="text-4xl font-bold mb-2">{product.name}</h1>
+          <h1 className="text-4xl font-bold mb-2 text-gray-800 dark:text-white">{product.name}</h1>
           {product.description && (
-            <p className="text-gray-700 text-base">{product.description}</p>
+            <p className="text-gray-700 dark:text-gray-300 text-base">{product.description}</p>
           )}
         </div>
 
@@ -67,11 +69,12 @@ const ProductDetail = ({ product }: Props) => {
           </p>
         )}
 
-        {/* Quantidade */}
         <div className="flex items-center gap-4">
           <Button
             variant="outline"
-            className='cursor-pointer'
+            className='cursor-pointer border-2 
+            bg-neutral-100 dark:bg-neutral-900
+            border-gray-300 dark:border-neutral-500'
             onClick={() => setQuantity((prev) => Math.max(prev - 1, 0))}
           >
             <MinusIcon />
@@ -79,7 +82,9 @@ const ProductDetail = ({ product }: Props) => {
           <span className="text-xl font-semibold">{quantity}</span>
           <Button
             variant="outline"
-            className='cursor-pointer'
+            className='cursor-pointer border-2 
+            bg-neutral-100 dark:bg-neutral-900
+            border-gray-300 dark:border-neutral-500'
             onClick={() => setQuantity((prev) => prev + 1)}
           >
             <PlusIcon />
@@ -88,7 +93,10 @@ const ProductDetail = ({ product }: Props) => {
 
         <Button
           variant="outline"
-          className="flex items-center gap-2 w-fit cursor-pointer"
+          className="
+          flex items-center gap-2 w-fit cursor-pointer border-2
+          bg-neutral-100 dark:bg-neutral-900
+        border-gray-300 dark:border-neutral-500"
           onClick={handleShare}
         >
           <Share2 className="h-5 w-5" />

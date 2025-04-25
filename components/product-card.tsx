@@ -15,9 +15,10 @@ const ProductCard = ({ product }: Props) => {
 
     <article key={product.name} className="cursor-default group">
       <Card className="
-    flex flex-col border-2 border-gray-300 gap-4 gap-y-0 h-[560px] 
-    dark:border-neutral-500
-  ">
+      flex flex-col gap-4 gap-y-0 h-[560px] 
+    bg-neutral-100 dark:bg-neutral-900
+      border-2 border-gray-300 dark:border-neutral-500
+      ">
         {product.images && product.images[0] && (
           <div className="relative w-full h-[300px] overflow-hidden group-hover:scale-[1.03] transition-transform duration-300">
             <Image
@@ -26,7 +27,7 @@ const ProductCard = ({ product }: Props) => {
               fill
               sizes={"(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
               style={{ objectFit: "contain" }}
-              draggable={false}
+
               className="rounded-t-lg"
             />
           </div>
