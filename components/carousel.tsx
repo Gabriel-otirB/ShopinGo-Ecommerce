@@ -80,7 +80,7 @@ export const Carousel = ({ products }: Props) => {
                   style={{ objectFit: "contain" }}
                   fill
                   draggable={false}
-                  className="w-full h-full"
+                  className="w-full h-full py-8"
                 />
               </motion.div>
             </AnimatePresence>
