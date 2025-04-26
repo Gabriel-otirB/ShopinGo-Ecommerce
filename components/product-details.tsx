@@ -3,16 +3,34 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { MinusIcon, PlusIcon, Share2 } from 'lucide-react';
-import { useState } from 'react';
 import type Stripe from 'stripe';
+import { useCartStore } from '@/store/cart-store';
 
 interface Props {
   product: Stripe.Product;
 }
 
 const ProductDetail = ({ product }: Props) => {
+  const { items, addItem, removeItem } = useCartStore();
   const price = product.default_price as Stripe.Price;
-  const [quantity, setQuantity] = useState(0);
+  const cartItem = items.find((item) => item.id === product.id); // Check if is in the cart
+  const quantity = cartItem ? cartItem.quantity : 0;
+
+  const handleAddItem = () => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: price.unit_amount as number,
+      imageUrl: product.images ? product.images[0] : null,
+      quantity: 1,
+    })
+  }
+
+  const handleRemoveItem = () => {
+    if (cartItem && cartItem.quantity > 1) {
+      removeItem(product.id);
+    }
+  }
 
   const handleShare = () => {
     if (navigator.share) {
@@ -75,7 +93,7 @@ const ProductDetail = ({ product }: Props) => {
             className='cursor-pointer border-2 
             bg-neutral-100 hover:bg-neutral-200/75 transition-colors duration-200
             dark:bg-neutral-900 border-gray-300 dark:border-neutral-500'
-            onClick={() => setQuantity((prev) => Math.max(prev - 1, 0))}
+            onClick={handleRemoveItem}
           >
             <MinusIcon />
           </Button>
@@ -85,7 +103,7 @@ const ProductDetail = ({ product }: Props) => {
             className='cursor-pointer border-2 
             bg-neutral-100 hover:bg-neutral-200/75 transition-colors duration-200
             dark:bg-neutral-900 border-gray-300 dark:border-neutral-500'
-            onClick={() => setQuantity((prev) => prev + 1)}
+            onClick={handleAddItem}
           >
             <PlusIcon />
           </Button>

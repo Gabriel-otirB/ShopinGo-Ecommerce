@@ -7,7 +7,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import Link from 'next/link';
+import Link from "next/link";
 
 interface Props {
   products: Stripe.Product[];
@@ -16,28 +16,32 @@ interface Props {
 export const Carousel = ({ products }: Props) => {
   const [current, setCurrent] = useState<number>(0);
   const [direction, setDirection] = useState<"left" | "right">("right");
-  const [isHovered, setIsHovered] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  const resetInterval = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      handleNext();
+    }, 6000);
+  };
+
   useEffect(() => {
-    if (!isHovered) {
-      intervalRef.current = setInterval(() => {
-        handleNext();
-      }, 6000);
-    }
+    resetInterval();
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isHovered]);
+  }, []);
 
   const handleNext = () => {
     setDirection("right");
     setCurrent((prev) => (prev + 1) % products.length);
+    resetInterval(); // Reset interval on click
   };
 
   const handlePrev = () => {
     setDirection("left");
     setCurrent((prev) => (prev - 1 + products.length) % products.length);
+    resetInterval(); // Reset interval on click
   };
 
   const currentProduct = products[current];
@@ -45,66 +49,88 @@ export const Carousel = ({ products }: Props) => {
 
   return (
     <Card
-      className="
-      relative w-full h-full min-h-[400px] overflow-hidden rounded-lg shadow-md
-      border-2 bg-neutral-100 border-gray-300 dark:border-neutral-500 dark:bg-neutral-900
-      transition duration-300 ease-in-out py-0"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className="relative w-full h-full min-h-[400px] overflow-hidden rounded-lg shadow-md
+        border-2 bg-neutral-100 border-gray-300 dark:border-neutral-500 dark:bg-neutral-900
+        transition duration-300 ease-in-out py-0"
     >
       <div className="relative w-full h-full">
         <Link href={`/products/${currentProduct.id}`}>
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={currentProduct.id}
-              initial={{
-                x: direction === "right" ? 100 : -100,
-                opacity: 0,
-                scale: 0.95,
-              }}
-              animate={{ x: 0, opacity: 1, scale: 1 }}
-              exit={{
-                x: direction === "right" ? -100 : 100,
-                opacity: 0,
-                scale: 0.95,
-              }}
-              transition={{ duration: 0.6 }}
-              className="absolute inset-0 w-full h-full"
-            >
-              <Image
-                src={currentProduct.images?.[0] || ""}
-                alt={currentProduct.name}
-                style={{ objectFit: "contain" }}
-                fill
-                draggable={false}
-                className="object-cover w-full h-full"
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/70 z-10" />
+          {/* Fixed Background */}
+          <div className="absolute inset-0 z-0">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={currentProduct.id}
+                initial={{
+                  x: direction === "right" ? 100 : -100,
+                  opacity: 0,
+                  scale: 0.95,
+                }}
+                animate={{ x: 0, opacity: 1, scale: 1 }}
+                exit={{
+                  x: direction === "right" ? -100 : 100,
+                  opacity: 0,
+                  scale: 0.95,
+                }}
+                transition={{ duration: 0.4 }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={currentProduct.images?.[0] || ""}
+                  alt={currentProduct.name}
+                  style={{ objectFit: "contain" }}
+                  fill
+                  draggable={false}
+                  className="w-full h-full"
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-              <CardContent className="absolute inset-0 z-20 flex flex-col items-center justify-center px-4 text-center h-full">
-                <motion.h2
+          {/* Gradient above image */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/70 z-10" />
+
+          {/* Conteúdo animado */}
+          <motion.div
+            key={currentProduct.id}
+            initial={{
+              x: direction === "right" ? 100 : -100,
+              opacity: 0,
+              scale: 0.95,
+            }}
+            animate={{ x: 0, opacity: 1, scale: 1 }}
+            exit={{
+              x: direction === "right" ? -100 : 100,
+              opacity: 0,
+              scale: 0.95,
+            }}
+            transition={{ duration: 0.6 }}
+            className="absolute inset-0 w-full h-full z-20 flex items-center justify-center"
+          >
+            <CardContent className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center h-full z-20">
+              <motion.h2
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                draggable={false}
+                className="
+                  text-2xl sm:text-3xl font-bold text-white mb-2 drop-shadow-md
+                  overflow-hidden whitespace-nowrap text-ellipsis max-w-[300px] sm:max-w-[1000px] select-none"
+              >
+                {currentProduct.name}
+              </motion.h2>
+              {price && price.unit_amount && (
+                <motion.p
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="
-                text-2xl sm:text-3xl font-bold text-white mb-2 drop-shadow-md
-                overflow-hidden whitespace-nowrap text-ellipsis max-w-[300px] sm:max-w-[1000px]"
+                  transition={{ delay: 0.4 }}
+                  draggable={false}
+                  className="text-xl font-medium text-white drop-shadow-md select-none"
                 >
-                  {currentProduct.name}
-                </motion.h2>
-                {price && price.unit_amount && (
-                  <motion.p
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-xl font-medium text-white drop-shadow-md"
-                  >
-                    R${(price.unit_amount / 100).toFixed(2)}
-                  </motion.p>
-                )}
-              </CardContent>
-            </motion.div>
-          </AnimatePresence>
+                  R${(price.unit_amount / 100).toFixed(2)}
+                </motion.p>
+              )}
+            </CardContent>
+          </motion.div>
         </Link>
 
         {/* Navigation Buttons */}
@@ -131,6 +157,7 @@ export const Carousel = ({ products }: Props) => {
               onClick={() => {
                 setDirection(idx > current ? "right" : "left");
                 setCurrent(idx);
+                resetInterval(); // Reset interval on click
               }}
               className={cn(
                 "w-3 h-3 rounded-full cursor-pointer",
