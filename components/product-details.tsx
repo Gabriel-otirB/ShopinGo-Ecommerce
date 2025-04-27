@@ -27,7 +27,7 @@ const ProductDetail = ({ product }: Props) => {
   }
 
   const handleRemoveItem = () => {
-    if (cartItem && cartItem.quantity > 1) {
+    if (cartItem && cartItem.quantity > 0) {
       removeItem(product.id);
     }
   }
