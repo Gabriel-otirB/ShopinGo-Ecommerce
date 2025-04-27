@@ -3,10 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCartStore } from "@/store/cart-store";
+import { checkoutAction } from './checkout-action';
 // import { checkoutAction } from "./checkout-action";
 
 export default function CheckoutPage() {
-  const { items, removeItem, addItem, clearCart } = useCartStore();
+  const { items, removeItem, addItem } = useCartStore();
   const total = items.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
@@ -62,14 +63,18 @@ export default function CheckoutPage() {
           </div>
         </CardContent>
       </Card>
-      <form action={() => {}} className="max-w-md mx-auto">
+      <form action={checkoutAction} className="max-w-md mx-auto">
         <input type="hidden" name="items" value={JSON.stringify(items)} />
-        <Button type="submit" variant="default" className="w-full">
+        <Button
+          type="submit"
+          variant="default"
+          className="
+          mt-2 inline-flex items-center justify-center w-full 
+          px-6 py-3 bg-black text-white 
+          cursor-pointer hover:bg-black dark:hover:bg-black
+          "
+        >
           Finalizar Compra
-        </Button>
-
-        <Button onClick={() => clearCart()} variant={"default"} className="w-full">
-          Esvaziar Carrinho
         </Button>
       </form>
     </div>
