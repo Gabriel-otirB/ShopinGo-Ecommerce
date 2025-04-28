@@ -8,9 +8,17 @@ import DailyProducts from '@/components/daily-products';
 // import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 
 export default async function Home() {
+
+  // Hero Image
+  const product = await stripe.products.retrieve("prod_SBEO6zvhsjhgn4", {
+    expand: ["default_price"],
+  });
+
+  // Carousel Images starting after specific product
   const products = await stripe.products.list({
     expand: ["data.default_price"],
     limit: 5,
+    starting_after: "prod_SD8wR8lcbXfTgV",
   });
 
   return (
@@ -43,7 +51,7 @@ export default async function Home() {
           </div>
           <Image
             alt="Hero Image"
-            src={products.data[1].images[0]}
+            src={product.images[0]}
             className="rounded"
             width={450}
             height={450}
