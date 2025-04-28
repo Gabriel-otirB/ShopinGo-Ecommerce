@@ -19,7 +19,7 @@ const Navbar = () => {
     text-lg font-medium transition-colors duration-300 pb-1 border-b-2
     ${pathname === href
       ? "text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400"
-      : "text-gray-800 dark:text-white border-transparent hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-600 dark:hover:border-blue-400"
+      : "text-gray-800 dark:text-white border-transparent hover:text-blue-600 dark:hover:text-blue-400"
     }
   `
 
