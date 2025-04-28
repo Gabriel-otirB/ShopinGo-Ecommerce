@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Carousel } from "@/components/carousel";
 import Categories from '@/components/categories';
+import DailyProducts from '@/components/daily-products';
 // import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 
 export default async function Home() {
@@ -14,6 +15,7 @@ export default async function Home() {
 
   return (
     <div>
+
       <section className="rounded bg-neutral-100 dark:bg-neutral-900 border-2 border-gray-300 dark:border-neutral-500 py-8 sm:py-12">
         <div className="mx-auto grid grid-cols-1 items-center justify-items-center gap-8 px-8 sm:px-16 md:grid-cols-2">
           <div className="max-w-md space-y-4">
@@ -49,15 +51,21 @@ export default async function Home() {
           />
         </div>
       </section>
+
       <section className="py-8">
         <div className="h-[400px]">
           <Carousel products={products.data} />
         </div>
       </section>
+
       <section className="py-8">
         <div className="w-full">
           <Categories />
         </div>
+      </section>
+
+      <section className="py-12">
+        <DailyProducts />
       </section>
 
       {/* <section className="py-12 bg-gray-50">
