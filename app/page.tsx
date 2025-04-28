@@ -3,6 +3,8 @@ import { stripe } from "@/lib/stripe";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Carousel } from "@/components/carousel";
+import Categories from '@/components/categories';
+// import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 
 export default async function Home() {
   const products = await stripe.products.list({
@@ -52,6 +54,30 @@ export default async function Home() {
           <Carousel products={products.data} />
         </div>
       </section>
+      <section className="py-8">
+        <div className="w-full">
+          <Categories />
+        </div>
+      </section>
+
+      {/* <section className="py-12 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
+
+          <Accordion type="single" collapsible className="w-full">
+            {faqItems.map((faq, index) => (
+              <AccordionItem key={index} value={`item-${index}`}>
+                <AccordionTrigger>{faq.question}</AccordionTrigger>
+                <AccordionContent>
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+
+        </div>
+      </section> */}
+
     </div>
   );
 }
