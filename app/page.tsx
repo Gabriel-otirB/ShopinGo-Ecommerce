@@ -5,7 +5,8 @@ import Link from "next/link";
 import { Carousel } from "@/components/carousel";
 import Categories from '@/components/categories';
 import DailyProducts from '@/components/daily-products';
-// import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { faqItems } from '@/lib/data';
 
 export default async function Home() {
 
@@ -76,23 +77,34 @@ export default async function Home() {
         <DailyProducts />
       </section>
 
-      {/* <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h2>
+      <section className="pt-4 pb-6 bg-neutral-100 dark:bg-neutral-900 border-t-2 border-b-2 border-gray-300 dark:border-neutral-500 rounded">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h2 className="text-3xl font-bold text-center text-black dark:text-neutral-100 mb-4">
+            Dúvidas Frequentes
+          </h2>
 
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion type="single" collapsible className="w-full space-y-3">
             {faqItems.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger>{faq.question}</AccordionTrigger>
-                <AccordionContent>
+              <AccordionItem
+                key={index}
+                value={`item-${index}`}
+                className="rounded-lg border border-gray-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm transition-all"
+              >
+                <AccordionTrigger 
+                className="
+                w-full px-5 py-3 text-left text-lg font-medium text-black
+              dark:text-white hover:bg-gray-100 dark:hover:bg-neutral-700
+                rounded-lg transition-colors cursor-pointer">
+                  {faq.question}
+                </AccordionTrigger>
+                <AccordionContent className="px-5 pb-4 pt-0 text-neutral-700 dark:text-neutral-300 text-sm">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
-
         </div>
-      </section> */}
+      </section>
 
     </div>
   );

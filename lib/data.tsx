@@ -87,3 +87,22 @@ export const offers = [
     link: "/products"
   },
 ];
+
+export const faqItems = [
+  {
+    question: "Como funciona a política de devolução?",
+    answer:
+      "Você pode devolver qualquer produto em até 7 dias após o recebimento. Basta acessar sua conta, localizar o pedido e seguir as instruções de devolução. O produto deve estar em perfeitas condições e na embalagem original.",
+  },
+  {
+    question: "Quais são as opções de pagamento disponíveis?",
+    answer:
+      "Aceitamos cartões de crédito, débito, Pix, boleto bancário e carteiras digitais como Google Pay e Apple Pay. Todos os pagamentos são processados com segurança.",
+  },
+  {
+    question: "Quanto tempo leva para o pedido chegar?",
+    answer:
+      "O prazo de entrega varia conforme sua localização e o tipo de frete escolhido. Em geral, os pedidos são entregues entre 3 a 10 dias úteis. Você pode acompanhar tudo pelo painel de pedidos.",
+  }
+];
+
