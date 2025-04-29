@@ -15,7 +15,7 @@ const ProductCard = ({ product }: Props) => {
 
     <article key={product.name} className="cursor-default group">
       <Card className="
-      flex flex-col gap-4 gap-y-0 h-[560px] 
+      flex flex-col gap-4 gap-y-0 h-[400px] 
     bg-neutral-100 dark:bg-neutral-900
       border-2 border-gray-300 dark:border-neutral-500
       ">

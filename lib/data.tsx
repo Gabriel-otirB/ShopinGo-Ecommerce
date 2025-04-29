@@ -4,41 +4,49 @@ export const categories = [
   {
     id: 1,
     name: "Roupas",
+    slug: "roupas",
     icon: <Shirt className="text-blue-500" />,
   },
   {
     id: 2,
     name: "Tecnologia",
+    slug: "tecnologia",
     icon: <MonitorSmartphone className="text-green-500" />,
   },
   {
     id: 3,
     name: "Beleza",
+    slug: "beleza",
     icon: <Sparkles className="text-pink-500" />,
   },
   {
     id: 4,
     name: "Móveis",
+    slug: "moveis",
     icon: <Sofa className="text-yellow-600" />,
   },
   {
     id: 5,
     name: "Chapéus",
+    slug: "chapeus",
     icon: <Crown className="text-purple-500" />,
   },
   {
     id: 6,
     name: "Calçados",
+    slug: "calcados",
     icon: <Footprints className="text-red-500" />,
   },
   {
     id: 7,
     name: "Perfumes",
+    slug: "perfumes",
     icon: <SprayCan className="text-indigo-500" />,
   },
   {
     id: 8,
     name: "Esportes",
+    slug: "esportes",
     icon: <Dumbbell className="text-orange-500" />,
   },
 ];
