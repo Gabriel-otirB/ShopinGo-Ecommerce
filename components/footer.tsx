@@ -7,7 +7,7 @@ import { FaInstagram, FaTiktok, FaTwitter, FaFacebookF, FaLinkedin } from 'react
 
 const Footer = () => {
   return (
-    <footer className="bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white border-t-2 border-gray-300 dark:border-neutral-700 mt-12">
+    <footer className="bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white border-t-2 border-gray-300 dark:border-neutral-500 mt-12">
       <div className="container mx-auto px-6 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
 
         <div>
@@ -70,10 +70,10 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="text-center text-sm text-neutral-600 dark:text-neutral-400 py-4 border-t border-gray-300 dark:border-neutral-700">
+      <div className="text-center text-sm text-neutral-600 dark:text-neutral-400 py-4 border-t border-gray-300 dark:border-neutral-500">
         © {new Date().getFullYear()} ShopinGo. Todos os direitos reservados.
       </div>
-      <div className="text-center text-sm text-neutral-600 dark:text-neutral-400 py-4 border-t border-gray-300 dark:border-neutral-700">
+      <div className="text-center text-sm text-neutral-600 dark:text-neutral-400 py-4 border-t border-gray-300 dark:border-neutral-500">
         <p>Desenvolvido por
           <a href="https://github.com/Gabriel-otirB"
             target="_blank"
