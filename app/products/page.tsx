@@ -7,7 +7,7 @@ export default async function ProductsPage() {
   });
 
   return (
-    <div className="pb-8">
+    <div className="pb-8 min-h-[calc(100vh-450px)]">
       <h1 className="text-3xl font-bold leading-none tracking-tight text-foreground text-center mb-8">
         Todos produtos
       </h1>

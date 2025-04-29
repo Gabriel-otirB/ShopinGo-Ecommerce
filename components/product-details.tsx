@@ -54,7 +54,7 @@ const ProductDetail = ({ product }: Props) => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12 flex flex-col md:flex-row gap-10 items-start">
+    <div className="container mx-auto px-4 py-12 flex flex-col md:flex-row gap-10 items-start min-h-[calc(100vh-450px)]">
       {product.images?.[0] && (
         <div className="
         relative w-full md:w-[50%] h-[300px] md:h-[400px]

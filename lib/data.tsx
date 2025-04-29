@@ -106,3 +106,15 @@ export const faqItems = [
   }
 ];
 
+export const paymentMethods = [
+  {
+    id: 1,
+    name: "Cartão de crédito VISA",
+    image: "/payments/visa.png",
+  },
+  {
+    id: 2,
+    name: "Cartão de crédito MASTERCARD",
+    image: "/payments/mastercard.png",
+  },
+]
