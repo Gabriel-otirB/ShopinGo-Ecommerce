@@ -39,7 +39,10 @@ const Footer = () => {
             {paymentMethods.map((payment) => (
               <div
                 key={payment.name}
-                className="w-14 h-10 p-1.5 bg-white dark:bg-neutral-800 border border-gray-300 dark:border-neutral-600 rounded-md shadow-sm flex items-center justify-center overflow-hidden"
+                className="
+                w-14 h-10 p-1.5 bg-white dark:bg-neutral-800
+                border border-gray-300 dark:border-neutral-600
+                rounded-md shadow-sm flex items-center justify-center overflow-hidden"
               >
                 <Image
                   src={payment.image}
@@ -48,6 +51,7 @@ const Footer = () => {
                   height={30}
                   className="object-contain"
                   quality={100}
+                  draggable={false}
                 />
               </div>
             ))}

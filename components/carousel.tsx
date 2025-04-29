@@ -114,7 +114,7 @@ export const Carousel = ({ products }: Props) => {
                 draggable={false}
                 className="
                   text-2xl sm:text-3xl font-bold text-white mb-2 drop-shadow-md
-                  overflow-hidden whitespace-nowrap text-ellipsis max-w-[300px] sm:max-w-[1000px] select-none"
+                  overflow-hidden whitespace-nowrap text-ellipsis max-w-[250px] sm:max-w-[1000px] select-none"
               >
                 {currentProduct.name}
               </motion.h2>
