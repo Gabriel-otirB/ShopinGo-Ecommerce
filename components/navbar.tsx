@@ -15,13 +15,18 @@ const Navbar = () => {
 
   const pathname = usePathname();
 
-  const getLinkClass = (href: string) => `
-    text-lg font-medium transition-colors duration-300 pb-1 border-b-2
-    ${pathname === href
-      ? "text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400"
-      : "text-gray-800 dark:text-white border-transparent hover:text-blue-600 dark:hover:text-blue-400"
-    }
-  `
+  // Function to check if the current path is part of the given href
+  const getLinkClass = (href: string) => {
+    // Check if the current path matches or starts with the href (only for the /products path)
+    const isActive = pathname === href || (href === "/products" && pathname.startsWith("/products"));
+    return `
+      text-lg font-medium transition-colors duration-300 pb-1 border-b-2
+      ${isActive
+        ? "text-blue-600 dark:text-blue-400 border-blue-600 dark:border-blue-400"
+        : "text-gray-800 dark:text-white border-transparent hover:text-blue-600 dark:hover:text-blue-400"
+      }
+    `;
+  }
 
   return (
     <nav className="sticky top-0 z-50 bg-neutral-100 dark:bg-neutral-950 shadow-md shadow-gray-300 dark:shadow-black/30">
@@ -44,7 +49,7 @@ const Navbar = () => {
         {/* Mobile Menu + ThemeToggle + Cart */}
         <div className="flex items-center space-x-4 md:space-x-6">
           
-          {/* ThemeToggle (ordem 1 mobile) */}
+          {/* ThemeToggle (order 1 on mobile) */}
           <div className="order-1 md:order-2">
             <ThemeToggle />
           </div>
@@ -83,7 +88,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

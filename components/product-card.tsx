@@ -60,7 +60,6 @@ const ProductCard = ({ product }: Props) => {
       </Card>
     </article>
 
-
   );
 };
 

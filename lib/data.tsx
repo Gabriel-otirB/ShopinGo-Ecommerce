@@ -1,4 +1,4 @@
-import { Shirt, MonitorSmartphone, Sparkles, Sofa, Crown, SprayCan, Dumbbell, Footprints } from "lucide-react";
+import { Shirt, MonitorSmartphone, Sparkles, Sofa, Crown, SprayCan, Dumbbell, Footprints, Backpack } from "lucide-react";
 
 export const categories = [
   {
@@ -48,6 +48,12 @@ export const categories = [
     name: "Esportes",
     slug: "esportes",
     icon: <Dumbbell className="text-orange-500" />,
+  },
+  {
+    id: 9,
+    name: "Mochilas",
+    slug: "mochilas",
+    icon: <Backpack className="text-teal-500" />,
   },
 ];
 

@@ -14,7 +14,7 @@ export default function CheckoutPage() {
   );
 
   return (
-    <div className="min-h-[calc(100vh-450px)] flex flex-col">
+    <div className="flex flex-col">
       <div className="flex-grow container mx-auto px-4 py-8">
         {items.length === 0 ? (
           <div className="text-center">

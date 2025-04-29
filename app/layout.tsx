@@ -35,7 +35,7 @@ export default function RootLayout({
         flex min-h-full flex-col bg-white dark:bg-neutral-800`}
       >
         <Navbar />
-        <main className="flex-grow container mx-auto px-4 py-8">
+        <main className="flex-grow container mx-auto px-4 py-8 min-h-[calc(100vh-450px)]">
           {children}
         </main>
         <Footer />
