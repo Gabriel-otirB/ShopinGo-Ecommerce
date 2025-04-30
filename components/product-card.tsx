@@ -10,14 +10,14 @@ interface Props {
 
 const ProductCard = ({ product }: Props) => {
   const price = product.default_price as Stripe.Price;
+  const parcelamento = price.unit_amount / 100 / 10;
 
   return (
-
     <article key={product.name} className="cursor-default group">
       <Card className="
-      flex flex-col gap-4 gap-y-0 h-[400px] 
-    bg-neutral-100 dark:bg-neutral-900
-      border-2 border-gray-300 dark:border-neutral-500
+        flex flex-col gap-4 gap-y-0 h-[400px] 
+        bg-neutral-100 dark:bg-neutral-900
+        border-2 border-gray-300 dark:border-neutral-500
       ">
         {product.images && product.images[0] && (
           <div className="relative w-full h-[300px] overflow-hidden group-hover:scale-[1.03] transition-transform duration-300">
@@ -32,34 +32,39 @@ const ProductCard = ({ product }: Props) => {
             />
           </div>
         )}
-        <CardHeader className="p-4 pb-0">
+        <CardHeader className="p-4 pt-0 pb-0 -mb-1">
           <CardTitle className="text-xl font-bold text-gray-800 dark:text-white truncate">
             {product.name}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4 flex-grow flex flex-col justify-between">
           {product.description && (
-            <p className="text-gray-600 text-sm dark:text-gray-300 line-clamp-3">
+            <p className="text-gray-600 text-sm dark:text-gray-300 line-clamp-3 mb-1">
               {product.description}
             </p>
           )}
           {price && price.unit_amount && (
-            <p className="text-lg font-semibold text-gray-900 dark:text-white">
-              R$ {(price.unit_amount / 100).toFixed(2)}
-            </p>
+            <>
+              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                R$ {(price.unit_amount / 100).toFixed(2)}
+                <span className="ml-1 font-normal text-sm text-gray-600 dark:text-gray-300">à vista no Pix</span>
+              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                ou em até 10x de R$ {parcelamento.toFixed(2)} sem juros
+              </p>
+            </>
           )}
           <Link href={`/products/${product.id}`}>
             <Button className="
-             mt-2 inline-flex items-center justify-center w-full 
-             px-6 py-3 bg-black text-white 
-             cursor-pointer hover:bg-black dark:hover:bg-black">
+              mt-2 inline-flex items-center justify-center w-full 
+              px-6 py-3 bg-black text-white 
+              cursor-pointer hover:bg-black dark:hover:bg-black">
               Ver detalhes
             </Button>
           </Link>
         </CardContent>
       </Card>
     </article>
-
   );
 };
 
