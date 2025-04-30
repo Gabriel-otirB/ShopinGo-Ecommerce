@@ -47,7 +47,6 @@ export default function ProductsLayout({ children }: { children: ReactNode }) {
       >
         <div className={`flex items-center gap-2 ${isMobile ? 'overflow-x-auto' : 'overflow-hidden'}`}>
           
-          {/* Botão Anterior (desktop apenas) */}
           {!isMobile && (
             <button
               onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
@@ -59,7 +58,6 @@ export default function ProductsLayout({ children }: { children: ReactNode }) {
             </button>
           )}
 
-          {/* Container de abas */}
           <div className={`${isMobile ? 'overflow-x-auto scrollbar-hide' : 'flex-1'} w-full`}>
             <TabsList
               className={`
@@ -67,7 +65,6 @@ export default function ProductsLayout({ children }: { children: ReactNode }) {
                 ${isMobile ? 'flex-nowrap w-max' : 'flex-wrap justify-center'}
               `}
             >
-              {/* Aba "Todos" sempre visível */}
               <TabsTrigger value="todos" asChild className="min-w-max">
                 <Link href="/products">
                   <span className="flex items-center gap-2 text-sm">Todos</span>
@@ -92,7 +89,6 @@ export default function ProductsLayout({ children }: { children: ReactNode }) {
             </TabsList>
           </div>
 
-          {/* Botão Próximo (desktop apenas) */}
           {!isMobile && (
             <button
               onClick={() => setPage((prev) => Math.min(prev + 1, totalPages - 1))}
