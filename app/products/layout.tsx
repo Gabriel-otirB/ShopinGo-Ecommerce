@@ -38,7 +38,7 @@ export default function ProductsLayout({ children }: { children: ReactNode }) {
     : categories.slice(page * itemsPerPage, (page + 1) * itemsPerPage)
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 -mt-4 pb-6">
+    <div className="max-w-screen-xl mx-auto px-4 -mt-4">
       <h1 className='text-3xl font-bold mb-4 text-center'>Produtos</h1>
 
       <Tabs

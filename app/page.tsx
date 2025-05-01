@@ -8,6 +8,9 @@ import DailyProducts from '@/components/daily-products';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { faqItems } from '@/lib/data';
 
+// ISR revalidation
+// export const revalidate = 3600;
+
 export default async function Home() {
 
   // Hero Image
@@ -19,12 +22,12 @@ export default async function Home() {
   const products = await stripe.products.list({
     expand: ["data.default_price"],
     limit: 5,
+    active: true,
     starting_after: "prod_SD8wR8lcbXfTgV",
   });
 
   return (
-    <div>
-
+    <div className="mb-6 md:mb-12">
       <section className="rounded bg-neutral-100 dark:bg-neutral-900 border-2 border-gray-300 dark:border-neutral-500 py-8 sm:py-12">
         <div className="mx-auto grid grid-cols-1 items-center justify-items-center gap-8 px-8 sm:px-16 md:grid-cols-2">
           <div className="max-w-md space-y-4">
@@ -73,7 +76,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="py-12">
+      <section className="py-12 mb-2 md:mb-8">
         <DailyProducts />
       </section>
 
@@ -90,8 +93,8 @@ export default async function Home() {
                 value={`item-${index}`}
                 className="rounded-lg border border-gray-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 shadow-sm transition-all"
               >
-                <AccordionTrigger 
-                className="
+                <AccordionTrigger
+                  className="
                 w-full px-5 py-3 text-left text-md font-medium text-black
               dark:text-white hover:bg-gray-100 dark:hover:bg-neutral-700
                 rounded-lg transition-colors cursor-pointer">
@@ -105,7 +108,6 @@ export default async function Home() {
           </Accordion>
         </div>
       </section>
-
     </div>
   );
 }

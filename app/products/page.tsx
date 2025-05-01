@@ -1,15 +1,21 @@
-import { ProductList } from "@/components/product-list";
 import { stripe } from "@/lib/stripe";
+import { ProductList } from "@/components/product-list";
 
-export default async function Category() {
-  const products = await stripe.products.list({
-    limit: 16,
-    expand: ["data.default_price"],
-  });
+// ISR revalidation
+// export const revalidate = 3600;
+
+export default async function CategoryPage() {
+  const products = await stripe.products
+    .list({
+      active: true,
+      expand: ["data.default_price"],
+    })
+    .autoPagingToArray({ limit: 1000 });
+
 
   return (
-    <div className="pb-8">
-      <ProductList products={products.data} />
+    <div>
+      <ProductList products={products} />
     </div>
   );
 }

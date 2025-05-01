@@ -8,6 +8,9 @@ interface CategoryPageProps {
   };
 }
 
+// ISR revalidation
+// export const revalidate = 3600;
+
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = params;
 
@@ -21,7 +24,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   while (hasMore) {
     // Define the correct type for the Stripe API response
     const response: Stripe.ApiList<Stripe.Product> = await stripe.products.list({
-      limit: 100, // We can use a larger limit per page
+      limit: 100,
       starting_after: startingAfter,
       expand: ["data.default_price"],
     });
@@ -47,7 +50,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   console.log("Filtered Products:", allFilteredProducts);
 
   return (
-    <div className="pb-8">
+    <div>
       <ProductList products={allFilteredProducts} />
     </div>
   );

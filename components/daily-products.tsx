@@ -55,7 +55,7 @@ const DailyProducts = () => {
                     alt={offer.title}
                     width={300}
                     height={200}
-                    className="object-contain w-full h-48"
+                    className="object-contain w-full h-48 max-h-50"
                   />
                 </div>
 

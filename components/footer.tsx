@@ -7,7 +7,7 @@ import { FaInstagram, FaTiktok, FaTwitter, FaFacebookF, FaLinkedin } from 'react
 
 const Footer = () => {
   return (
-    <footer className="bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white border-t-2 border-gray-300 dark:border-neutral-500 mt-12">
+    <footer className="bg-neutral-100 dark:bg-neutral-900 text-black dark:text-white border-t-2 border-gray-300 dark:border-neutral-500">
       <div className="container mx-auto px-6 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
 
         <div>
