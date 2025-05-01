@@ -1,8 +1,12 @@
+'use client';
+
 import Link from "next/link";
 import Stripe from "stripe";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import Image from "next/image";
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 interface Props {
   product: Stripe.Product;
@@ -11,6 +15,8 @@ interface Props {
 const ProductCard = ({ product }: Props) => {
   const price = product.default_price as Stripe.Price;
   const parcelamento = price.unit_amount / 100 / 10;
+
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   return (
     <article key={product.name} className="cursor-default group">
@@ -21,14 +27,18 @@ const ProductCard = ({ product }: Props) => {
       ">
         {product.images && product.images[0] && (
           <div className="relative w-full h-[300px] overflow-hidden group-hover:scale-[1.03] transition-transform duration-300">
+            {!isImageLoaded && (
+              <Skeleton className="absolute inset-0 w-full h-full rounded-t-lg" />
+            )}
             <Image
               src={product.images[0]}
               alt={product.name}
               fill
-              sizes={"(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               style={{ objectFit: "contain" }}
               draggable={false}
-              className="rounded-t-lg"
+              className={`rounded-t-lg transition-opacity duration-500 ${isImageLoaded ? "opacity-100" : "opacity-0"}`}
+              onLoad={() => setIsImageLoaded(true)}
             />
           </div>
         )}
@@ -55,10 +65,7 @@ const ProductCard = ({ product }: Props) => {
             </>
           )}
           <Link href={`/products/${product.id}`}>
-            <Button className="
-              mt-2 inline-flex items-center justify-center w-full 
-              px-6 py-3 bg-black text-white 
-              cursor-pointer hover:bg-black dark:hover:bg-black">
+            <Button className="mt-2 inline-flex items-center justify-center w-full px-6 py-3 bg-black text-white cursor-pointer hover:bg-black dark:hover:bg-black">
               Ver detalhes
             </Button>
           </Link>

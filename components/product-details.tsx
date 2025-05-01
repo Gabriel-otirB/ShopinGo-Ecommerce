@@ -1,10 +1,12 @@
 'use client';
 
 import Image from 'next/image';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { MinusIcon, PlusIcon, Share2 } from 'lucide-react';
 import type Stripe from 'stripe';
 import { useCartStore } from '@/store/cart-store';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface Props {
   product: Stripe.Product;
@@ -13,8 +15,10 @@ interface Props {
 const ProductDetail = ({ product }: Props) => {
   const { items, addItem, removeItem } = useCartStore();
   const price = product.default_price as Stripe.Price;
-  const cartItem = items.find((item) => item.id === product.id); // Check if is in the cart
+  const cartItem = items.find((item) => item.id === product.id);
   const quantity = cartItem ? cartItem.quantity : 0;
+
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const handleAddItem = () => {
     addItem({
@@ -23,14 +27,14 @@ const ProductDetail = ({ product }: Props) => {
       price: price.unit_amount as number,
       imageUrl: product.images ? product.images[0] : null,
       quantity: 1,
-    })
-  }
+    });
+  };
 
   const handleRemoveItem = () => {
     if (cartItem && cartItem.quantity > 0) {
       removeItem(product.id);
     }
-  }
+  };
 
   const handleShare = () => {
     if (navigator.share) {
@@ -57,18 +61,23 @@ const ProductDetail = ({ product }: Props) => {
     <div className="container mx-auto px-4 py-12 flex flex-col md:flex-row gap-10 items-start min-h-[calc(100vh-450px)]">
       {product.images?.[0] && (
         <div className="
-        relative w-full md:w-[50%] h-[300px] md:h-[400px]
-        overflow-hidden rounded-lg shadow-md
-        bg-neutral-100 dark:bg-neutral-900
-        border-2 border-gray-300 dark:border-neutral-500">
+          relative w-full md:w-[50%] h-[300px] md:h-[400px]
+          overflow-hidden rounded-lg shadow-md
+          bg-neutral-100 dark:bg-neutral-900
+          border-2 border-gray-300 dark:border-neutral-500
+        ">
+          {!isImageLoaded && (
+            <Skeleton className="absolute inset-0 w-full h-full rounded-lg" />
+          )}
           <Image
             src={product.images[0]}
             alt={product.name}
             fill
             style={{ objectFit: 'contain' }}
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="rounded-lg"
+            className={`rounded-lg transition-opacity duration-500 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
             draggable={false}
+            onLoad={() => setIsImageLoaded(true)}
           />
         </div>
       )}
@@ -111,8 +120,7 @@ const ProductDetail = ({ product }: Props) => {
 
         <Button
           variant="outline"
-          className="
-          flex items-center gap-2 w-fit cursor-pointer border-2
+          className="flex items-center gap-2 w-fit cursor-pointer border-2
         bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200/75 transition-colors duration-200
         border-gray-300 dark:border-neutral-500"
           onClick={handleShare}
