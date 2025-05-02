@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import ProductCard from "./product-card";
+import ProductCard from "../../../components/product-card";
 import { Stripe } from "stripe";
 
 interface Props {

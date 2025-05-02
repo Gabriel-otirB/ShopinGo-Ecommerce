@@ -1,5 +1,5 @@
 import { stripe } from "@/lib/stripe";
-import { ProductList } from "@/components/product-list";
+import { ProductList } from "@/app/products/components/product-list";
 
 // ISR revalidation
 // export const revalidate = 3600;
