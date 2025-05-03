@@ -126,7 +126,7 @@ const Navbar = () => {
                     </Link>
                   </div>
                 ) : (
-                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                  <div className="text-sm text-gray-500 dark:text-gray-300">
                     Não há produtos ainda.
                   </div>
                 )}

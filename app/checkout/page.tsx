@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCartStore } from "@/store/cart-store";
 import { checkoutAction } from "./checkout-action";
 import Image from "next/image";
 import { formatCurrency } from "@/lib/helper";
-
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -21,10 +21,15 @@ import {
 import Link from 'next/link';
 import ScrollTop from '@/components/scroll-top';
 import { ShoppingCart } from 'lucide-react';
+import ShippingCalculator from './shipping-calculator';
 
 export default function CheckoutPage() {
   const { items, clearItem, addItem, removeItem } = useCartStore();
+  const [selectedFreight, setSelectedFreight] = useState(null);
+
   const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const freightValue = selectedFreight?.price ?? 0;
+  const grandTotal = total + freightValue;
 
   return (
     <>
@@ -34,13 +39,13 @@ export default function CheckoutPage() {
           {items.length === 0 ? (
             <div className="text-center py-10">
               <ShoppingCart className="mx-auto mb-4 text-gray-700 dark:text-gray-200" size={48} />
-              <h1 className="text-3xl font-bold mb-4 ">Seu carrinho de compras está vazio.</h1>
-              <p className="text-lg text-gray-600 dark:text-gray-300/80 mb-6">Parece que você ainda não adicionou nenhum item. Que tal explorar nossos produtos?</p>
+              <h1 className="text-3xl font-bold mb-4">Seu carrinho de compras está vazio.</h1>
+              <p className="text-lg text-gray-600 dark:text-gray-300/80 mb-6">
+                Parece que você ainda não adicionou nenhum item. Que tal explorar nossos produtos?
+              </p>
               <Link
                 href="/products"
-                className="
-                font-medium inline-block bg-black text-white dark:bg-black hover:dark:bg-black/90
-                text-lg py-2 px-6 rounded-full hover:bg-black/90 transition-colors duration-200"
+                className="font-medium inline-block bg-black text-white text-lg py-2 px-6 rounded-full hover:bg-black/90 transition-colors duration-200"
               >
                 Comece a comprar
               </Link>
@@ -57,11 +62,7 @@ export default function CheckoutPage() {
                     {items.map((item) => (
                       <li key={item.id} className="flex flex-col gap-2 border-b pb-2">
                         <div className="flex justify-between items-center">
-                          <Link
-                            key={item.id}
-                            href={`/products/${item.id}`}
-                            className="flex items-center gap-2"
-                          >
+                          <Link href={`/products/${item.id}`} className="flex items-center gap-2">
                             <div className="flex items-center w-full">
                               <Image
                                 src={item.imageUrl || ""}
@@ -79,25 +80,24 @@ export default function CheckoutPage() {
                             {formatCurrency((item.price * item.quantity) / 100)}
                           </span>
                         </div>
+
                         <div className="flex justify-between items-center gap-2">
                           <div className="flex align-center gap-2">
-                            <Button
-                              variant="outline"
-                              disabled={item.quantity === 1}
-                              size="sm"
-                              onClick={() => removeItem(item.id)}
-                              className="cursor-pointer"
+                            <Button 
+                            variant="outline"
+                            disabled={item.quantity === 1}
+                            size="sm" 
+                            onClick={() => removeItem(item.id)}
+                            className='cursor-pointer'
                             >
                               –
                             </Button>
-
                             <span className="text-lg font-semibold">{item.quantity}</span>
-
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => addItem({ ...item, quantity: 1 })}
-                              className='cursor-pointer'
+                            <Button 
+                            variant="outline"
+                            size="sm" 
+                            onClick={() => addItem({ ...item, quantity: 1 })}
+                            className='cursor-pointer'
                             >
                               +
                             </Button>
@@ -105,9 +105,7 @@ export default function CheckoutPage() {
 
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button className="cursor-pointer" variant="destructive" size="sm">
-                                Remover
-                              </Button>
+                              <Button variant="destructive" size="sm" className='cursor-pointer'>Remover</Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
@@ -117,8 +115,8 @@ export default function CheckoutPage() {
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel className="cursor-pointer">Cancelar</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => clearItem(item.id)} className="cursor-pointer">
+                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => clearItem(item.id)}>
                                   Remover
                                 </AlertDialogAction>
                               </AlertDialogFooter>
@@ -128,17 +126,25 @@ export default function CheckoutPage() {
                       </li>
                     ))}
                   </ul>
+
+                  <ShippingCalculator onSelectFreight={setSelectedFreight} />
+
                   <div className="mt-4 pt-2 text-lg font-semibold">
-                    Total: {formatCurrency(total / 100)}
+                    Total: {formatCurrency(grandTotal / 100)}
                   </div>
                 </CardContent>
               </Card>
+
               <form action={checkoutAction} className="max-w-md mx-auto">
                 <input type="hidden" name="items" value={JSON.stringify(items)} />
+                <input type="hidden" name="freight" value={JSON.stringify(selectedFreight)} />
                 <Button
                   type="submit"
                   variant="default"
-                  className="mt-2 w-full px-6 py-3 bg-black text-white"
+                  className="
+                  mt-2 w-full px-6 py-3 bg-black hover:bg-black/90 text-white
+                dark:text-black dark:bg-white dark:hover:bg-white/90 cursor-pointer"
+                  disabled={!selectedFreight}
                 >
                   Finalizar Compra
                 </Button>

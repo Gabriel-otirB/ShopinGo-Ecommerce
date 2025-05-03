@@ -41,7 +41,7 @@ const ProductDetail = ({ product, recommendedProducts }: Props) => {
       draggable: true,
       progress: undefined,
       transition: Flip,
-      theme: "colored",
+      theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
     });
 
     return;
