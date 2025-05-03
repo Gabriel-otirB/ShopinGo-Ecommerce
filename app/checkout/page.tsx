@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import Link from 'next/link';
 import ScrollTop from '@/components/scroll-top';
+import { ShoppingCart } from 'lucide-react';
 
 export default function CheckoutPage() {
   const { items, clearItem, addItem, removeItem } = useCartStore();
@@ -31,8 +32,18 @@ export default function CheckoutPage() {
       <div className="flex flex-col">
         <div className="flex-grow container mx-auto px-4 pb-4">
           {items.length === 0 ? (
-            <div className="text-center">
-              <h1 className="text-3xl font-bold mb-4">Seu carrinho está vazio.</h1>
+            <div className="text-center py-10">
+              <ShoppingCart className="mx-auto mb-4 text-gray-700 dark:text-gray-200" size={48} />
+              <h1 className="text-3xl font-bold mb-4 ">Seu carrinho de compras está vazio.</h1>
+              <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">Parece que você ainda não adicionou nenhum item. Que tal explorar nossos produtos?</p>
+              <Link
+                href="/products"
+                className="
+                font-medium inline-block bg-black text-white dark:bg-black hover:dark:bg-black/90
+                text-lg py-2 px-6 rounded-full hover:bg-black/90 transition-colors duration-200"
+              >
+                Comece a comprar
+              </Link>
             </div>
           ) : (
             <>

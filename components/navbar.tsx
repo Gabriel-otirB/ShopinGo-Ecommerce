@@ -106,7 +106,7 @@ const Navbar = () => {
                             <span className="font-medium text-sm line-clamp-3 break-words">
                               {item.name}
                             </span>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                            <span className="text-xs text-gray-700 dark:text-gray-400">
                               Quantidade: {item.quantity}
                             </span>
                           </div>
