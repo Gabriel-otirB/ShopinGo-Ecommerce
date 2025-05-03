@@ -66,7 +66,10 @@ const ProductCard = ({ product }: Props) => {
             </>
           )}
           <Link href={`/products/${product.id}`}>
-            <Button className="mt-2 inline-flex items-center justify-center w-full px-6 py-3 bg-black text-white cursor-pointer hover:bg-black dark:hover:bg-black">
+            <Button 
+            className="
+            mt-2 inline-flex items-center justify-center w-full px-6 py-3 bg-black text-white 
+            cursor-pointer hover:bg-black/90 dark:hover:bg-black/90">
               Ver detalhes
             </Button>
           </Link>

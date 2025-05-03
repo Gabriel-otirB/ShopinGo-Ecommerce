@@ -146,15 +146,15 @@ const ProductDetail = ({ product, recommendedProducts }: Props) => {
 
           <div className="flex flex-col items-center gap-4 mt-2 mb-4 md:mb-0">
             <Button
-              className="w-full cursor-pointer bg-neutral-200 hover:bg-neutral-200 
-            text-black hover:text-black dark:bg-white dark:text-black"
+              className="w-full cursor-pointer bg-neutral-200 hover:bg-neutral-300/80 
+            text-black hover:text-black dark:bg-white hover:dark:bg-white/90 dark:text-black"
               onClick={handleAddItem}>
               <ShoppingBag /> Adicionar ao carrinho
             </Button>
 
             <Button
               className="w-full cursor-pointer dark:bg-black dark:text-white 
-            bg-black hover:bg-black text-white hover:text-white"
+            bg-black hover:bg-black/90 hover:dark:bg-black/90 text-white hover:text-white"
               onClick={handleBuyItem}>
               <ShoppingCart /> Comprar agora
             </Button>

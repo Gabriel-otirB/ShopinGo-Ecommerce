@@ -63,42 +63,42 @@ export const offers = [
     title: "Promoção de Roupas: Até 50% OFF!",
     description: "Renove seu guarda-roupa com 50% de desconto nas melhores roupas!",
     image: "/category/roupa.png",
-    link: "/products"
+    link: "/products/category/roupas"
   },
   {
     id: 2,
     title: "Desconto Especial em Tecnologia - 30% OFF!",
     description: "Aproveite 30% de desconto em smartphones e acessórios tecnológicos!",
     image: "/category/tecnologia.png",
-    link: "/products"
+    link: "/products/category/tecnologia"
   },
   {
     id: 3,
     title: "Beleza Radiante: Promoção de 40% em Cosméticos!",
     description: "Cuide-se com 40% de desconto em produtos de beleza selecionados!",
     image: "/category/beleza.png",
-    link: "/products"
+    link: "/products/category/beleza"
   },
   {
     id: 4,
     title: "Móveis com Desconto: 25% OFF em Sofás e Cadeiras!",
     description: "Renove sua casa com móveis de qualidade, com 25% de desconto!",
     image: "/category/moveis.png",
-    link: "/products"
+    link: "/products/category/moveis"
   },
   {
     id: 5,
     title: "Chapéus Estilosos: 15% OFF em Toda a Linha!",
     description: "Fique na moda com até 15% de desconto em chapéus e acessórios!",
     image: "/category/chapeu.png",
-    link: "/products"
+    link: "/products/category/chapeus"
   },
   {
     id: 6,
     title: "Desconto em Calçados: Até 40% OFF!",
     description: "Não perca a chance de comprar calçados incríveis com até 40% de desconto!",
     image: "/category/calcado.png",
-    link: "/products"
+    link: "/products/category/calcados"
   },
 ];
 

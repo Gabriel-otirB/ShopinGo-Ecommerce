@@ -39,6 +39,7 @@ const DailyProducts = () => {
           <p className="text-md text-neutral-600 dark:text-neutral-100">Aproveite as melhores promoções de hoje!</p>
         </div>
 
+        {/* Desktop */}
         <div className="lg:hidden overflow-y-auto scrollbar-hide px-1 -mx-1">
           <div className="flex gap-4 snap-x snap-mandatory w-max px-1">
             {offers.map((offer) => (
@@ -73,10 +74,9 @@ const DailyProducts = () => {
                   </div>
                   <div className="-mt-4">
                     <Link href={offer.link}>
-                      <Button
-                        className="w-full rounded-full px-6 py-3 bg-black text-white hover:bg-black dark:hover:bg-black cursor-pointer">
+                      <button className="w-full rounded-full px-6 py-3 bg-black text-white hover:bg-black/90 cursor-pointer">
                         Ver Mais
-                      </Button>
+                      </button>
                     </Link>
                   </div>
                 </div>
@@ -85,6 +85,7 @@ const DailyProducts = () => {
           </div>
         </div>
 
+        {/* Mobile */}
         <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
           {offers.map((offer) => (
             <div
@@ -118,7 +119,7 @@ const DailyProducts = () => {
                 </div>
                 <div className="mt-4">
                   <Link href={offer.link}>
-                    <Button className="w-full rounded-full px-6 py-3 bg-black text-white hover:bg-black dark:hover:bg-black">
+                    <Button className="w-full rounded-full px-6 py-3 bg-black text-white hover:bg-black/90 cursor-pointer">
                       Ver Mais
                     </Button>
                   </Link>

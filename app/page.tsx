@@ -43,7 +43,7 @@ export default async function Home() {
               className="
               inline-flex items-center justify-center 
               rounded-full px-6 py-3 bg-black text-white 
-              cursor-pointer hover:bg-black dark:hover:bg-black"
+              cursor-pointer hover:bg-black/90"
             >
               <Link
                 href="/products"
