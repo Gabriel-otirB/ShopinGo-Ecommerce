@@ -15,7 +15,7 @@ interface Props {
 
 const ProductCard = ({ product }: Props) => {
   const price = product.default_price as Stripe.Price;
-  const parcelamento = price.unit_amount / 100 / 10;
+  const parcelamento = price.unit_amount && price.unit_amount / 100 / 10;
 
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 

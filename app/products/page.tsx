@@ -12,7 +12,6 @@ export default async function CategoryPage() {
     })
     .autoPagingToArray({ limit: 1000 });
 
-
   return (
     <div>
       <ProductList products={products} />

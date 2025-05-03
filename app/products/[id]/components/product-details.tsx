@@ -8,6 +8,10 @@ import { useCartStore } from '@/store/cart-store';
 import { useState } from 'react';
 import { redirect } from 'next/navigation';
 import { Recommendations } from './recommendations';
+import { toast } from "react-toastify";
+import { Flip } from "react-toastify";
+import { formatCurrency } from '@/lib/helper';
+import ExpandableDescription from './expandable';
 
 interface Props {
   product: Stripe.Product;
@@ -26,13 +30,27 @@ const ProductDetail = ({ product, recommendedProducts }: Props) => {
       price: price.unit_amount as number,
       imageUrl: product.images ? product.images[0] : null,
       quantity: quantity,
-    })
-  }
+    });
+
+    toast.success("Produto adicionado ao carrinho", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      transition: Flip,
+      theme: "colored",
+    });
+
+    return;
+  };
 
   const handleBuyItem = () => {
     handleAddItem();
     redirect('/checkout');
-  }
+  };
 
   const handleShare = () => {
     if (navigator.share) {
@@ -57,13 +75,9 @@ const ProductDetail = ({ product, recommendedProducts }: Props) => {
 
   return (
     <article>
-      <div className="container mx-auto px-4 py-4 flex flex-col md:flex-row gap-10 items-start min-h-[calc(100vh-450px)]">
+      <div className="container mx-auto px-4 pb-2 md:py-4 flex flex-col md:flex-row gap-10 items-start min-h-[calc(100vh-450px)]">
         {product.images?.[0] && (
-          <div className="
-            relative w-full md:w-[50%] h-[300px] md:h-[450px]
-            overflow-hidden rounded-lg shadow-md
-            bg-neutral-100 dark:bg-neutral-900
-            border-2 border-gray-300 dark:border-neutral-500">
+          <div className="relative w-full md:w-[50%] h-[300px] md:h-[450px] overflow-hidden rounded-lg shadow-md bg-neutral-100 dark:bg-neutral-900 border-2 border-gray-300 dark:border-neutral-500">
             <Image
               src={product.images[0]}
               alt={product.name}
@@ -75,10 +89,7 @@ const ProductDetail = ({ product, recommendedProducts }: Props) => {
             />
             <Button
               variant="outline"
-              className="
-            absolute left-2 bottom-2 cursor-pointer border-2
-          bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200/75 transition-colors duration-200
-          border-gray-300 dark:border-neutral-500"
+              className="absolute left-2 bottom-2 cursor-pointer border-2 bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200/75 transition-colors duration-200 border-gray-300 dark:border-neutral-500"
               onClick={handleShare}
             >
               <Share2 className="h-5 w-5" />
@@ -91,62 +102,59 @@ const ProductDetail = ({ product, recommendedProducts }: Props) => {
           <div>
             <h1 className="text-4xl font-bold mb-2 text-black dark:text-white -mt-6 md:mt-0">{product.name}</h1>
             {product.description && (
-              <p className="text-gray-700 dark:text-gray-300 text-base">{product.description}</p>
+              <ExpandableDescription text={product.description} />
             )}
           </div>
 
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex items-center justify-between -mt-4 md:mt-0">
+            <div className="flex self-end">
               {price?.unit_amount && (
                 <p className="text-2xl font-semibold text-primary">
-                  R$ {(price.unit_amount / 100).toFixed(2)}
+                  {formatCurrency(price.unit_amount / 100)}
                 </p>
               )}
             </div>
-            <div className="flex items-center gap-4">
-              <span className='text-gray-700 dark:text-gray-300 text-base font-medium'>Quantidade</span>
-              <Button
-                variant="outline"
-                className='cursor-pointer border-2 
-            bg-neutral-100 hover:bg-neutral-200/75 transition-colors duration-200
-            dark:bg-neutral-900 border-gray-300 dark:border-neutral-500'
-                onClick={() => quantity > 1 && setQuantity(quantity - 1)}
-                disabled={quantity === 1}
-              >
-                <MinusIcon />
-              </Button>
-              <span className="text-xl font-semibold">{quantity}</span>
-              <Button
-                variant="outline"
-                className='cursor-pointer border-2 
-            bg-neutral-100 hover:bg-neutral-200/75 transition-colors duration-200
-            dark:bg-neutral-900 border-gray-300 dark:border-neutral-500'
-                onClick={() => setQuantity(quantity + 1)}
-              >
-                <PlusIcon />
-              </Button>
+            <div className="flex flex-col md:flex-row lg justify-center items-center md:gap-4 gap-2">
+              <span className="text-gray-700 dark:text-gray-300 text-base font-medium">Quantidade</span>
+              <div className="flex flex-row gap-2 items-center justify-center">
+                <Button
+                  variant="outline"
+                  className="cursor-pointer border-2 bg-neutral-100 hover:bg-neutral-200/75 transition-colors duration-200 dark:bg-neutral-900 border-gray-300 dark:border-neutral-500"
+                  onClick={() => quantity > 1 && setQuantity(quantity - 1)}
+                  disabled={quantity === 1}
+                >
+                  <MinusIcon />
+                </Button>
+                <span className="text-xl font-semibold">{quantity}</span>
+                <Button
+                  variant="outline"
+                  className="cursor-pointer border-2 bg-neutral-100 hover:bg-neutral-200/75 transition-colors duration-200 dark:bg-neutral-900 border-gray-300 dark:border-neutral-500"
+                  onClick={() => setQuantity(quantity + 1)}
+                >
+                  <PlusIcon />
+                </Button>
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-col items-center gap-4 mt-2">
+          <div className="flex flex-col items-center gap-4 mt-2 mb-4 md:mb-0">
             <Button className="w-full cursor-pointer" onClick={handleAddItem}><ShoppingBag /> Adicionar ao carrinho</Button>
             <Button className="w-full cursor-pointer" onClick={handleBuyItem}><ShoppingCart /> Comprar agora</Button>
           </div>
         </div>
       </div>
 
-      <div className='px-4 grid grid-cols-1 md:grid-cols-2 gap-4'>
-        <div className='p-4 rounded shadow bg-neutral-100 dark:bg-neutral-900 
-            border-2 border-gray-300 dark:border-neutral-500'>
-          <h2 className='text-xl font-semibold mb-2'>Detalhes</h2>
-          <p className='text-sm'>
+      <div className="px-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="p-4 rounded shadow bg-neutral-100 dark:bg-neutral-900 border-2 border-gray-300 dark:border-neutral-500">
+          <h2 className="text-xl font-semibold mb-2">Detalhes</h2>
+          <p className="text-sm">
             {product.description}
           </p>
         </div>
 
-        <div className='border-2 p-4 rounded shadow  border-gray-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-900'>
-          <h2 className='text-xl font-semibold mb-2'>Especificações	</h2>
-          <ul className='text-sm mb-2'>
+        <div className="border-2 p-4 rounded shadow border-gray-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-900">
+          <h2 className="text-xl font-semibold mb-2">Especificações</h2>
+          <ul className="text-sm mb-2">
             <li><strong>Marca:</strong> {product.name}</li>
             <li><strong>Categoria:</strong> {product.metadata.category}</li>
             <li><strong>Cor:</strong> {product.name}</li>

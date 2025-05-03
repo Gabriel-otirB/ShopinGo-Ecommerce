@@ -3,19 +3,29 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCartStore } from "@/store/cart-store";
-import { checkoutAction } from './checkout-action';
-// import { checkoutAction } from "./checkout-action";
+import { checkoutAction } from "./checkout-action";
+import Image from "next/image";
+import { formatCurrency } from "@/lib/helper";
+
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction
+} from "@/components/ui/alert-dialog";
 
 export default function CheckoutPage() {
-  const { items, removeItem, addItem } = useCartStore();
-  const total = items.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  const { items, clearItem, addItem, removeItem } = useCartStore();
+  const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
     <div className="flex flex-col">
-      <div className="flex-grow container mx-auto px-4 py-8">
+      <div className="flex-grow container mx-auto px-4 pb-4">
         {items.length === 0 ? (
           <div className="text-center">
             <h1 className="text-3xl font-bold mb-4">Seu carrinho está vazio.</h1>
@@ -31,34 +41,72 @@ export default function CheckoutPage() {
                 <ul className="space-y-4">
                   {items.map((item) => (
                     <li key={item.id} className="flex flex-col gap-2 border-b pb-2">
-                      <div className="flex justify-between">
-                        <span className="font-medium">{item.name}</span>
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center">
+                          <Image
+                            src={item.imageUrl || ""}
+                            alt={item.name}
+                            width={64}
+                            height={64}
+                            className="rounded object-contain w-16 h-16"
+                          />
+                          <span className="flex flex-1 font-medium">{item.name}</span>
+                        </div>
                         <span className="font-semibold">
-                          ${((item.price * item.quantity) / 100).toFixed(2)}
+                          {formatCurrency((item.price * item.quantity) / 100)}
                         </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => removeItem(item.id)}
-                        >
-                          –
-                        </Button>
-                        <span className="text-lg font-semibold">{item.quantity}</span>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => addItem({ ...item, quantity: 1 })}
-                        >
-                          +
-                        </Button>
+                      <div className="flex justify-between items-center gap-2">
+                        <div className="flex align-center gap-2">
+                          <Button
+                            variant="outline"
+                            disabled={item.quantity === 1}
+                            size="sm"
+                            onClick={() => removeItem(item.id)}
+                            className="cursor-pointer"
+                          >
+                            –
+                          </Button>
+
+                          <span className="text-lg font-semibold">{item.quantity}</span>
+
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => addItem({ ...item, quantity: 1 })}
+                            className='cursor-pointer'
+                          >
+                            +
+                          </Button>
+                        </div>
+
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button className="cursor-pointer" variant="destructive" size="sm">
+                              Remover
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Remover item</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Deseja realmente remover <strong>{item.name}</strong> do carrinho?
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel className="cursor-pointer">Cancelar</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => clearItem(item.id)} className="cursor-pointer">
+                                Remover
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </li>
                   ))}
                 </ul>
                 <div className="mt-4 pt-2 text-lg font-semibold">
-                  Total: ${(total / 100).toFixed(2)}
+                  Total: {formatCurrency(total / 100)}
                 </div>
               </CardContent>
             </Card>
@@ -75,7 +123,6 @@ export default function CheckoutPage() {
           </>
         )}
       </div>
-
     </div>
   );
 }

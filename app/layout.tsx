@@ -4,7 +4,9 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import { themeInitScript } from '@/lib/theme-script';
 import Footer from '@/components/footer';
-import Providers from './providers';
+import LoadingProvider from '../components/loading-provider';
+import "react-toastify/dist/ReactToastify.css";
+import ToastProvider from '@/components/toast-provider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,8 +38,9 @@ export default function RootLayout({
         flex min-h-full flex-col bg-white dark:bg-neutral-800`}
       >
         <Navbar />
+        <ToastProvider />
         <main className="flex-grow container mx-auto px-4 py-8 min-h-[calc(100vh-450px)]">
-          <Providers>{children}</Providers>
+          <LoadingProvider>{children}</LoadingProvider>
         </main>
         <Footer />
       </body>

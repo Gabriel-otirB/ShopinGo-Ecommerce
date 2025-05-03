@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ProgressProvider } from '@bprogress/next/app';
 
-const Providers = ({ children }: { children: React.ReactNode }) => {
+const LoadingProvider = ({ children }: { children: React.ReactNode }) => {
   const [color, setColor] = useState('#2563eb'); // light: blue-600
 
   useEffect(() => {
@@ -36,4 +36,4 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default Providers;
+export default LoadingProvider;

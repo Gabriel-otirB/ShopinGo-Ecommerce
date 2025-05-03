@@ -41,9 +41,9 @@ const Navbar = () => {
 
         {/* Desktop Links */}
         <div className="hidden md:flex space-x-6">
-          <Link href="/" className={getLinkClass("/")}>Home</Link>
+          <Link href="/" className={getLinkClass("/")}>Início</Link>
           <Link href="/products" className={getLinkClass("/products")}>Produtos</Link>
-          <Link href="/checkout" className={getLinkClass("/checkout")}>Checkout</Link>
+          <Link href="/checkout" className={getLinkClass("/checkout")}>Carrinho</Link>
         </div>
 
         {/* Mobile Menu + ThemeToggle + Cart */}
@@ -77,7 +77,7 @@ const Navbar = () => {
                   <DialogTitle>Menu de navegação</DialogTitle>
                 </VisuallyHidden>
                 <nav className="mt-8 flex flex-col space-y-4 mx-auto text-center">
-                  <Link href="/" className={getLinkClass("/")}>Home</Link>
+                  <Link href="/" className={getLinkClass("/")}>Início</Link>
                   <Link href="/products" className={getLinkClass("/products")}>Produtos</Link>
                   <Link href="/checkout" className={getLinkClass("/checkout")}>Carrinho</Link>
                 </nav>
