@@ -18,7 +18,7 @@ const Categories = () => {
         {categories.slice(0, 8).map((category) => (
           <Link
             key={category.name}
-            href={`/products`}
+            href={`/products/category/${category.slug}`}
             className="flex flex-col items-center justify-center p-4 
             bg-neutral-100 dark:bg-neutral-900 border-2 border-gray-300 dark:border-neutral-500
             rounded-lg shadow hover:shadow-md transition text-center group"

@@ -5,13 +5,13 @@ import { Button } from '@/components/ui/button';
 import { MinusIcon, PlusIcon, Share2, ShoppingBag, ShoppingCart } from 'lucide-react';
 import type Stripe from 'stripe';
 import { useCartStore } from '@/store/cart-store';
-import { useState } from 'react';
 import { redirect } from 'next/navigation';
 import { Recommendations } from './recommendations';
 import { toast } from "react-toastify";
 import { Flip } from "react-toastify";
 import { formatCurrency } from '@/lib/helper';
 import ExpandableDescription from './expandable';
+import { useState } from 'react';
 
 interface Props {
   product: Stripe.Product;
@@ -48,7 +48,14 @@ const ProductDetail = ({ product, recommendedProducts }: Props) => {
   };
 
   const handleBuyItem = () => {
-    handleAddItem();
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: price.unit_amount as number,
+      imageUrl: product.images ? product.images[0] : null,
+      quantity: quantity,
+    });
+    
     redirect('/checkout');
   };
 
@@ -138,8 +145,19 @@ const ProductDetail = ({ product, recommendedProducts }: Props) => {
           </div>
 
           <div className="flex flex-col items-center gap-4 mt-2 mb-4 md:mb-0">
-            <Button className="w-full cursor-pointer" onClick={handleAddItem}><ShoppingBag /> Adicionar ao carrinho</Button>
-            <Button className="w-full cursor-pointer" onClick={handleBuyItem}><ShoppingCart /> Comprar agora</Button>
+            <Button
+              className="w-full cursor-pointer bg-neutral-200 hover:bg-neutral-200 
+            text-black hover:text-black dark:bg-white dark:text-black"
+              onClick={handleAddItem}>
+              <ShoppingBag /> Adicionar ao carrinho
+            </Button>
+
+            <Button
+              className="w-full cursor-pointer dark:bg-black dark:text-white 
+            bg-black hover:bg-black text-white hover:text-white"
+              onClick={handleBuyItem}>
+              <ShoppingCart /> Comprar agora
+            </Button>
           </div>
         </div>
       </div>

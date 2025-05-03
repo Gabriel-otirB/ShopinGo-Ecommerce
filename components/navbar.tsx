@@ -19,11 +19,14 @@ import {
   HoverCardContent,
 } from "@/components/ui/hover-card";
 import { formatCurrency } from '@/lib/helper';
+import { useState } from 'react';
 
 const Navbar = () => {
   const { items } = useCartStore();
   const carCount = items.reduce((acc, item) => acc + item.quantity, 0);
   const pathname = usePathname();
+  const [openNavbar, setOpenNavbar] = useState(false);
+  const [openPreview, setOpenPreview] = useState(false);
 
   const getLinkClass = (href: string) => {
     const isActive =
@@ -65,9 +68,9 @@ const Navbar = () => {
             <ThemeToggle />
           </div>
 
-          {/* Cart HoverCard */}
-          <div className="relative order-2 md:order-1">
-            <HoverCard openDelay={100}>
+          {/* Cart HoverCard for Desktop */}
+          <div className="relative order-2 md:order-1 hidden md:block">
+            <HoverCard openDelay={50} open={openPreview} onOpenChange={setOpenPreview}>
               <HoverCardTrigger asChild>
                 <Link href="/checkout" aria-label="Carrinho" className="relative">
                   <ShoppingCart className="h-6 w-6 text-gray-800 dark:text-white" />
@@ -87,7 +90,11 @@ const Navbar = () => {
                         key={item.id}
                         className="flex justify-between items-center space-x-2"
                       >
-                        <div className="flex items-center gap-2 w-full">
+                        <Link
+                          href={`/products/${item.id}`}
+                          className="flex items-center gap-2 w-full"
+                          onClick={() => setOpenPreview(false)}
+                        >
                           <Image
                             src={item.imageUrl || ""}
                             alt={item.name}
@@ -103,12 +110,20 @@ const Navbar = () => {
                               Quantidade: {item.quantity}
                             </span>
                           </div>
-                        </div>
+                        </Link>
                         <span className="font-semibold text-sm whitespace-nowrap">
                           {formatCurrency((item.price * item.quantity) / 100)}
                         </span>
                       </div>
                     ))}
+
+                    <Link
+                      href="/checkout"
+                      className="mt-2 w-full text-center text-sm font-medium bg-black text-white rounded-3xl py-2"
+                      onClick={() => setOpenPreview(false)}
+                    >
+                      Ver Meu Carrinho De Compras
+                    </Link>
                   </div>
                 ) : (
                   <div className="text-sm text-gray-500 dark:text-gray-400">
@@ -116,13 +131,24 @@ const Navbar = () => {
                   </div>
                 )}
               </HoverCardContent>
-
             </HoverCard>
+          </div>
+
+          {/* Cart Link for Mobile */}
+          <div className="relative order-2 md:order-1 md:hidden">
+            <Link href="/checkout" aria-label="Carrinho" className="relative">
+              <ShoppingCart className="h-6 w-6 text-gray-800 dark:text-white" />
+              {carCount > 0 && (
+                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white">
+                  {carCount}
+                </span>
+              )}
+            </Link>
           </div>
 
           {/* Mobile Menu */}
           <div className="md:hidden order-3 md:order-none">
-            <Sheet>
+            <Sheet open={openNavbar} onOpenChange={setOpenNavbar}>
               <SheetTrigger asChild>
                 <button aria-label="Abrir menu de navegação">
                   <Menu className="w-6 h-6 text-gray-800 dark:text-white cursor-pointer" />
@@ -133,9 +159,9 @@ const Navbar = () => {
                   <DialogTitle>Menu de navegação</DialogTitle>
                 </VisuallyHidden>
                 <nav className="mt-8 flex flex-col space-y-4 mx-auto text-center">
-                  <Link href="/" className={getLinkClass("/")}>Início</Link>
-                  <Link href="/products" className={getLinkClass("/products")}>Produtos</Link>
-                  <Link href="/checkout" className={getLinkClass("/checkout")}>Carrinho</Link>
+                  <Link href="/" className={getLinkClass("/")} onClick={() => setOpenNavbar(false)}>Início</Link>
+                  <Link href="/products" className={getLinkClass("/products")} onClick={() => setOpenNavbar(false)}>Produtos</Link>
+                  <Link href="/checkout" className={getLinkClass("/checkout")} onClick={() => setOpenNavbar(false)}>Carrinho</Link>
                 </nav>
               </SheetContent>
             </Sheet>

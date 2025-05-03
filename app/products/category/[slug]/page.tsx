@@ -1,3 +1,4 @@
+import ScrollTop from '@/components/scroll-top';
 import { ProductList } from '../../components/product-list'; 
 import { stripe } from '@/lib/stripe';
 import { Stripe } from 'stripe'; // Import the Stripe namespace
@@ -47,10 +48,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     }
   }
 
-  console.log("Filtered Products:", allFilteredProducts);
-
   return (
     <div>
+      <ScrollTop />
       <ProductList products={allFilteredProducts} />
     </div>
   );

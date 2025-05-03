@@ -1,4 +1,5 @@
 import ProductDetail from '@/app/products/[id]/components/product-details';
+import ScrollTop from '@/components/scroll-top';
 import { stripe } from '@/lib/stripe';
 
 const ProductPage = async ({ params }: { params: { id: string } }) => {
@@ -23,7 +24,10 @@ const ProductPage = async ({ params }: { params: { id: string } }) => {
   const plainRecommendedProducts = JSON.parse(JSON.stringify(recommendedProducts));
 
   return (
-    <ProductDetail product={plainProduct} recommendedProducts={plainRecommendedProducts} />
+    <>
+      <ScrollTop />
+      <ProductDetail product={plainProduct} recommendedProducts={plainRecommendedProducts} />
+    </>
   )
 }
 

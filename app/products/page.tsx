@@ -1,8 +1,6 @@
 import { stripe } from "@/lib/stripe";
 import { ProductList } from "@/app/products/components/product-list";
-
-// ISR revalidation
-// export const revalidate = 3600;
+import ScrollTop from '@/components/scroll-top'; 
 
 export default async function CategoryPage() {
   const products = await stripe.products
@@ -14,6 +12,7 @@ export default async function CategoryPage() {
 
   return (
     <div>
+      <ScrollTop />
       <ProductList products={products} />
     </div>
   );

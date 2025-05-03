@@ -33,9 +33,7 @@ export const ProductList = ({ products }: Props) => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0 });
   };
-
 
   return (
     <div>
