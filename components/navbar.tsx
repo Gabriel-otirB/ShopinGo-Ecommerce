@@ -1,24 +1,34 @@
 'use client';
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Menu, ShoppingCart } from "lucide-react"
-import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
-import { DialogTitle } from "@radix-ui/react-dialog"
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
-import ThemeToggle from "./toogle-theme"
-import { useCartStore } from '@/store/cart-store'
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { Menu, ShoppingCart } from "lucide-react";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+} from "@/components/ui/sheet";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import ThemeToggle from "./toogle-theme";
+import { useCartStore } from "@/store/cart-store";
+import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from "@/components/ui/hover-card";
+import { formatCurrency } from '@/lib/helper';
 
 const Navbar = () => {
   const { items } = useCartStore();
   const carCount = items.reduce((acc, item) => acc + item.quantity, 0);
-
   const pathname = usePathname();
 
-  // Function to check if the current path is part of the given href
   const getLinkClass = (href: string) => {
-    // Check if the current path matches or starts with the href (only for the /products path)
-    const isActive = pathname === href || (href === "/products" && pathname.startsWith("/products"));
+    const isActive =
+      pathname === href ||
+      (href === "/products" && pathname.startsWith("/products"));
     return `
       text-lg font-medium transition-colors duration-300 pb-1 border-b-2
       ${isActive
@@ -26,11 +36,12 @@ const Navbar = () => {
         : "text-gray-800 dark:text-white border-transparent hover:text-blue-600 dark:hover:text-blue-400"
       }
     `;
-  }
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-neutral-100 dark:bg-neutral-950 shadow-md shadow-gray-300 dark:shadow-black/30">
       <div className="container mx-auto flex items-center justify-between px-4 py-4">
+
         {/* Logo */}
         <Link
           href="/"
@@ -48,23 +59,68 @@ const Navbar = () => {
 
         {/* Mobile Menu + ThemeToggle + Cart */}
         <div className="flex items-center space-x-4 md:space-x-6">
-          
-          {/* ThemeToggle (order 1 on mobile) */}
+
+          {/* Theme Toggle */}
           <div className="order-1 md:order-2">
             <ThemeToggle />
           </div>
 
+          {/* Cart HoverCard */}
           <div className="relative order-2 md:order-1">
-            <Link href="/checkout" aria-label="Carrinho" className="relative">
-              <ShoppingCart className="h-6 w-6 text-gray-800 dark:text-white" />
-              {carCount > 0 && (
-                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white">
-                  {carCount}
-                </span>
-              )}
-            </Link>
+            <HoverCard openDelay={100}>
+              <HoverCardTrigger asChild>
+                <Link href="/checkout" aria-label="Carrinho" className="relative">
+                  <ShoppingCart className="h-6 w-6 text-gray-800 dark:text-white" />
+                  {carCount > 0 && (
+                    <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white">
+                      {carCount}
+                    </span>
+                  )}
+                </Link>
+              </HoverCardTrigger>
+
+              <HoverCardContent className="w-80 bg-white dark:bg-neutral-900 border dark:border-neutral-800 shadow-lg rounded p-4">
+                {items.length > 0 ? (
+                  <div className="flex flex-col gap-4 max-h-64 overflow-y-auto">
+                    {items.map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex justify-between items-center space-x-2"
+                      >
+                        <div className="flex items-center gap-2 w-full">
+                          <Image
+                            src={item.imageUrl || ""}
+                            alt={item.name}
+                            width={50}
+                            height={50}
+                            className="rounded object-contain w-[50px] h-[50px]"
+                          />
+                          <div className="flex flex-col flex-1 overflow-hidden">
+                            <span className="font-medium text-sm line-clamp-3 break-words">
+                              {item.name}
+                            </span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                              Quantidade: {item.quantity}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="font-semibold text-sm whitespace-nowrap">
+                          {formatCurrency((item.price * item.quantity) / 100)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    Não há produtos ainda.
+                  </div>
+                )}
+              </HoverCardContent>
+
+            </HoverCard>
           </div>
 
+          {/* Mobile Menu */}
           <div className="md:hidden order-3 md:order-none">
             <Sheet>
               <SheetTrigger asChild>
@@ -89,6 +145,6 @@ const Navbar = () => {
       </div>
     </nav>
   );
-}
+};
 
 export default Navbar;
