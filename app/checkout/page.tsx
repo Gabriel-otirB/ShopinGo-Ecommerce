@@ -53,7 +53,7 @@ export default function CheckoutPage() {
           ) : (
             <>
               <h1 className="text-3xl font-bold mb-8 text-center">Carrinho De Compras</h1>
-              <Card className="max-w-md mx-auto mb-8">
+              <Card className="max-w-md mx-auto mb-2">
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-center">Resumo do pedido</CardTitle>
                 </CardHeader>
@@ -142,7 +142,7 @@ export default function CheckoutPage() {
                   type="submit"
                   variant="default"
                   className="
-                  mt-2 w-full px-6 py-3 bg-black hover:bg-black/90 text-white
+                  w-full px-6 py-3 bg-black hover:bg-black/90 text-white
                 dark:text-black dark:bg-white dark:hover:bg-white/90 cursor-pointer"
                   disabled={!selectedFreight}
                 >

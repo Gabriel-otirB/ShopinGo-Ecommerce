@@ -11,7 +11,6 @@ export interface CartItem {
 
 interface CartStore {
   items: CartItem[];
-  isHydrated: boolean;
   addItem: (item: CartItem) => void;
   removeItem: (id: string) => void;
   clearItem: (id: string) => void;
@@ -20,49 +19,47 @@ interface CartStore {
 
 export const useCartStore = create<CartStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       items: [],
-      isHydrated: false,
+      addItem: (item) =>
+        set((state) => {
+          const existing = state.items.find((i) => i.id === item.id);
 
-      addItem: (item) => {
-        const existing = get().items.find((i) => i.id === item.id);
-        if (existing) {
-          set({
-            items: get().items.map((i) =>
-              i.id === item.id
-                ? { ...i, quantity: i.quantity + item.quantity }
-                : i
-            ),
-          });
-        } else {
-          set({ items: [...get().items, item] });
-        }
-      },
+          if (existing) {
+            return {
+              items: state.items.map((i) =>
+                i.id === item.id
+                  ? { ...i, quantity: i.quantity + item.quantity }
+                  : i
+              ),
+            };
+          }
 
-      removeItem: (id) => {
-        set({
-          items: get()
-            .items.map((item) =>
-              item.id === id && item.quantity > 1
-                ? { ...item, quantity: item.quantity - 1 }
-                : item
-            )
-            .filter((item) => item.quantity > 0),
-        });
-      },
-
-      clearItem: (id) =>
-        set({
-          items: get().items.filter((item) => item.id !== id),
+          return { items: [...state.items, item] };
         }),
 
-      clearCart: () => set({ items: [] }),
+      removeItem: (id) =>
+        set((state) => {
+          return {
+            items: state.items
+              .map((item) =>
+                item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
+              )
+              .filter((item) => item.quantity > 0),
+          };
+        }),
+
+      clearItem: (id) =>
+        set((state) => {
+          return {
+            items: state.items.filter((item) => item.id !== id),
+          };
+        }),
+        clearCart: () =>
+          set(() => {
+            return { items: [] };
+          }),
     }),
-    {
-      name: "cart",
-      onRehydrateStorage: () => (state) => {
-        state?.setState({ isHydrated: true });
-      },
-    }
+    { name: "cart" }
   )
 );

@@ -8,13 +8,11 @@ import { CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function SuccessPage() {
-  const { clearCart, isHydrated } = useCartStore();
+  const { clearCart } = useCartStore();
 
   useEffect(() => {
-    if (isHydrated) {
-      clearCart();
-    }
-  }, [isHydrated, clearCart]);
+    clearCart();
+  }, [clearCart]);
 
   return (
     <motion.div
