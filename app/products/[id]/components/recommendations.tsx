@@ -51,29 +51,27 @@ export const Recommendations = ({ recommendedProducts }: Props) => {
         >
           {recommendedProducts && recommendedProducts.length > 0 ? (
             recommendedProducts.map((product) => (
-              <>
-                <Link href={`/products/${product.id}`} key={product.id}>
-                  <div
-                    className="
+              <Link href={`/products/${product.id}`} key={product.id}>
+                <div
+                  className="
                     min-w-[150px] max-w-[150px] h-[220px]
                     bg-neutral-100 dark:bg-neutral-900
                     rounded shadow border-2 border-gray-300 dark:border-neutral-500
                     p-2 flex flex-col items-center justify-center text-center"
-                    >
-                    <div className="relative w-[100px] h-[100px] mb-2 flex items-center justify-center">
-                      <Image
-                        src={product.images?.[0] || "/placeholder.png"}
-                        alt={product.name}
-                        fill
-                        className="object-contain rounded"
-                        sizes="100px"
-                      />
-                    </div>
-
-                    <p className="text-sm line-clamp-2 px-1">{product.name}</p>
+                >
+                  <div className="relative w-[100px] h-[100px] mb-2 flex items-center justify-center">
+                    <Image
+                      src={product.images?.[0] || "/placeholder.png"}
+                      alt={product.name}
+                      fill
+                      className="object-contain rounded"
+                      sizes="100px"
+                    />
                   </div>
-                </Link>
-              </>
+
+                  <p className="text-sm line-clamp-2 px-1">{product.name}</p>
+                </div>
+              </Link>
             ))
           ) : (
             Array.from({ length: 8 }).map((_, i) => (

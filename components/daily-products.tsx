@@ -21,7 +21,7 @@ const DailyProducts = () => {
     return { hours, minutes, seconds };
   };
 
-  const [timeLeft, setTimeLeft] = useState(getTimeLeftToday());
+  const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -130,7 +130,6 @@ const DailyProducts = () => {
       </div>
     </section>
   );
-
 };
 
 export default DailyProducts;

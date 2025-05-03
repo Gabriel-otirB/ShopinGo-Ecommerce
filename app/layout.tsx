@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import { themeInitScript } from '@/lib/theme-script';
 import Footer from '@/components/footer';
+import Providers from './providers';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +37,7 @@ export default function RootLayout({
       >
         <Navbar />
         <main className="flex-grow container mx-auto px-4 py-8 min-h-[calc(100vh-450px)]">
-          {children}
+          <Providers>{children}</Providers>
         </main>
         <Footer />
       </body>

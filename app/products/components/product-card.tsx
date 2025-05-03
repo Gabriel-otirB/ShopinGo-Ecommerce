@@ -3,10 +3,11 @@
 import Link from "next/link";
 import Stripe from "stripe";
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Image from "next/image";
-import { Button } from "./ui/button";
-import { Skeleton } from "./ui/skeleton";
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { formatCurrency } from '@/lib/helper';
 
 interface Props {
   product: Stripe.Product;
@@ -56,11 +57,11 @@ const ProductCard = ({ product }: Props) => {
           {price && price.unit_amount && (
             <>
               <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                R$ {(price.unit_amount / 100).toFixed(2)}
+                {formatCurrency(price.unit_amount/100)}
                 <span className="ml-1 font-normal text-sm text-gray-600 dark:text-gray-300">à vista no Pix</span>
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-300">
-                ou em até 10x de R$ {parcelamento.toFixed(2)} sem juros
+                ou em até 10x de {formatCurrency(parcelamento)} sem juros
               </p>
             </>
           )}
