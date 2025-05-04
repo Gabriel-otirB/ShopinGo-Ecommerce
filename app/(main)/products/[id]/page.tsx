@@ -1,4 +1,4 @@
-import ProductDetail from '@/app/products/[id]/components/product-details';
+import ProductDetail from './components/product-details'; 
 import ScrollTop from '@/components/scroll-top';
 import { stripe } from '@/lib/stripe';
 

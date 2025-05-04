@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, ShoppingCart } from "lucide-react";
+import { Menu, ShoppingCart, UserIcon } from "lucide-react";
 import {
   Sheet,
   SheetTrigger,
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/hover-card";
 import { formatCurrency } from '@/lib/helper';
 import { useState } from 'react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 const Navbar = () => {
   const { items } = useCartStore();
@@ -70,7 +71,7 @@ const Navbar = () => {
 
           {/* Cart HoverCard for Desktop */}
           <div className="relative order-2 md:order-1 hidden md:block">
-            <HoverCard openDelay={50} open={openPreview} onOpenChange={setOpenPreview}>
+            <HoverCard openDelay={50} closeDelay={50} open={openPreview} onOpenChange={setOpenPreview}>
               <HoverCardTrigger asChild>
                 <Link href="/checkout" aria-label="Carrinho" className="relative">
                   <ShoppingCart className="h-6 w-6 text-gray-800 dark:text-white" />
@@ -146,8 +147,28 @@ const Navbar = () => {
             </Link>
           </div>
 
+          {/* Account */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="hidden md:flex relative order-2 md:order-1">
+                  <Link href="/account" aria-label="Minha Conta" className="relative">
+                    <UserIcon className="h-6 w-6 text-gray-800 dark:text-white" />
+                  </Link>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent
+                side="bottom"
+                sideOffset={6}
+                className="bg-white dark:bg-neutral-900 text-gray-800 dark:text-white border py-3 font-medium"
+              >
+                Minha Conta
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
           {/* Mobile Menu */}
-          <div className="md:hidden order-3 md:order-none">
+          <div className="md:hidden order-3 md:order-none flex items-center">
             <Sheet open={openNavbar} onOpenChange={setOpenNavbar}>
               <SheetTrigger asChild>
                 <button aria-label="Abrir menu de navegação">
@@ -162,6 +183,7 @@ const Navbar = () => {
                   <Link href="/" className={getLinkClass("/")} onClick={() => setOpenNavbar(false)}>Início</Link>
                   <Link href="/products" className={getLinkClass("/products")} onClick={() => setOpenNavbar(false)}>Produtos</Link>
                   <Link href="/checkout" className={getLinkClass("/checkout")} onClick={() => setOpenNavbar(false)}>Carrinho</Link>
+                  <Link href="/account" className={getLinkClass("/account")} onClick={() => setOpenNavbar(false)}>Minha Conta</Link>
                 </nav>
               </SheetContent>
             </Sheet>

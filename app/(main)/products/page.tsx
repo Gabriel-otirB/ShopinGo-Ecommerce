@@ -1,5 +1,5 @@
 import { stripe } from "@/lib/stripe";
-import { ProductList } from "@/app/products/components/product-list";
+import { ProductList } from './components/product-list'; 
 import ScrollTop from '@/components/scroll-top'; 
 
 export default async function CategoryPage() {
