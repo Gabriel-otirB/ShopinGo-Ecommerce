@@ -14,18 +14,18 @@ import Link from 'next/link';
 
 const AccountPage = () => {
   return (
-    <div className="container mx-auto px-4 pb-2">
+    <div className="container mx-auto px-4 p-2 md:pb-6 -mt-4">
       <h1 className="text-2xl font-bold mb-6 text-center">Minha Conta</h1>
 
       <Tabs defaultValue="orders" className="w-full max-w-3xl mx-auto">
-        <TabsList className="grid w-full grid-cols-2 mb-6 h-full dark:bg-neutral-950 border-2 border-gray-300 dark:border-neutral-500">
-          <TabsTrigger value="orders" className='cursor-pointer'>Meus Pedidos</TabsTrigger>
-          <TabsTrigger value="settings" className='cursor-pointer'>Configurações</TabsTrigger>
+        <TabsList className="grid w-full h-full grid-cols-2 dark:bg-neutral-950 border-2 border-gray-300 dark:border-neutral-500">
+          <TabsTrigger value="orders" className="cursor-pointer">Meus Pedidos</TabsTrigger>
+          <TabsTrigger value="settings" className="cursor-pointer">Configurações</TabsTrigger>
         </TabsList>
 
         <TabsContent value="orders">
-          <Card className='border-2 border-gray-300 dark:border-neutral-500'>
-            <CardContent className="py-6">
+          <Card className="border-2 border-gray-300 dark:border-neutral-500">
+            <CardContent className="pb-4">
               <div className="space-y-4">
                 <h2 className="text-lg font-semibold text-center">Últimos Pedidos</h2>
                 <div className="border rounded p-4 hover:bg-neutral-100 hover:dark:bg-neutral-900 cursor-pointer duration-300">
@@ -54,8 +54,8 @@ const AccountPage = () => {
         </TabsContent>
 
         <TabsContent value="settings">
-          <Card className='border-2 border-gray-300 dark:border-neutral-500'>
-            <CardContent className="py-6 space-y-6">
+          <Card className="border-2 border-gray-300 dark:border-neutral-500">
+            <CardContent className="space-y-6">
               <h2 className="text-lg font-semibold text-center">Atualizar Informações</h2>
               <div className="space-y-4">
                 <div className="flex flex-col gap-2">
@@ -114,7 +114,7 @@ const AccountPage = () => {
                   <Input id="phone" type="tel" placeholder="(99) 99999-9999" />
                 </div>
 
-                <Button className='flex justify-center items-center cursor-pointer mx-auto'>Salvar Alterações</Button>
+                <Button className="flex justify-center items-center cursor-pointer mx-auto">Salvar Alterações</Button>
               </div>
             </CardContent>
           </Card>

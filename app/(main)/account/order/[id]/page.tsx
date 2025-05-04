@@ -47,7 +47,7 @@ const OrderDetail = () => {
   };
 
   return (
-    <div className="container mx-auto py-4 px-4">
+    <div className="container mx-auto pb-2 md:pb-4 md:pt-2 px-4">
       <div className="max-w-2xl mx-auto space-y-4">
         <span className="flex items-center font-medium m-0">
           <Link href="/account" className='flex items-center'>

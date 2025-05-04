@@ -68,11 +68,11 @@ const DailyProducts = () => {
                     <p className="text-sm text-neutral-600 dark:text-neutral-100 mt-1 text-center">
                       {offer.description}
                     </p>
-                    <p className="text-sm font-medium text-red-600 dark:text-red-400 mt-2 text-center">
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-red-600 dark:text-red-400 pt-1 pb-2 text-center">
                       Termina em {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
                     </p>
-                  </div>
-                  <div className="-mt-4">
                     <Link href={offer.link}>
                       <button className="w-full rounded-full px-6 py-3 bg-black text-white hover:bg-black/90 cursor-pointer">
                         Ver Mais

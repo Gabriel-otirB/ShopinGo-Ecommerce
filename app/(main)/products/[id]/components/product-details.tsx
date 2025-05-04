@@ -21,6 +21,7 @@ interface Props {
 const ProductDetail = ({ product, recommendedProducts }: Props) => {
   const { addItem } = useCartStore();
   const price = product.default_price as Stripe.Price;
+  const parcelamento = price.unit_amount && price.unit_amount / 100 / 10;
   const [quantity, setQuantity] = useState(1);
 
   const handleAddItem = () => {
@@ -55,7 +56,7 @@ const ProductDetail = ({ product, recommendedProducts }: Props) => {
       imageUrl: product.images ? product.images[0] : null,
       quantity: quantity,
     });
-    
+
     redirect('/checkout');
   };
 
@@ -116,17 +117,28 @@ const ProductDetail = ({ product, recommendedProducts }: Props) => {
           <div className="flex items-center justify-between -mt-4 md:mt-0">
             <div className="flex self-end">
               {price?.unit_amount && (
-                <p className="text-2xl font-semibold text-primary">
-                  {formatCurrency(price.unit_amount / 100)}
-                </p>
+                <div>
+                  <span className="flex text-sm mt-4 md:mt-0 text-black dark:text-neutral-50">
+                    {formatCurrency(price.unit_amount / 100)} em até 10x de {formatCurrency(parcelamento)} sem juros
+                  </span>
+                  <div>
+                    <p className="text-2xl font-semibold text-neutral-900 dark:text-white">
+                      <span className="mr-1 font-normal text-sm text-black dark:text-neutral-50">ou</span>
+                      {formatCurrency(price.unit_amount / 100)}
+                      <span className="ml-1 font-normal text-sm text-black dark:text-neutral-50">à vista no Pix</span>
+                    </p>
+                  </div>
+                </div>
               )}
             </div>
             <div className="flex flex-col md:flex-row lg justify-center items-center md:gap-4 gap-2">
-              <span className="text-gray-700 dark:text-gray-300 text-base font-medium">Quantidade</span>
+              <span className="text-neutral-900 dark:text-neutral-50 text-base font-medium mt-1 md:mt-0">Quantidade</span>
               <div className="flex flex-row gap-2 items-center justify-center">
                 <Button
                   variant="outline"
-                  className="cursor-pointer border-2 bg-neutral-100 hover:bg-neutral-200/75 transition-colors duration-200 dark:bg-neutral-900 border-gray-300 dark:border-neutral-500"
+                  className="
+                  cursor-pointer border-2 bg-neutral-100 hover:bg-neutral-200/75 transition-colors duration-200
+                dark:bg-neutral-900 border-gray-300 dark:border-neutral-500 "
                   onClick={() => quantity > 1 && setQuantity(quantity - 1)}
                   disabled={quantity === 1}
                 >
@@ -144,7 +156,7 @@ const ProductDetail = ({ product, recommendedProducts }: Props) => {
             </div>
           </div>
 
-          <div className="flex flex-col items-center gap-4 mt-2 mb-4 md:mb-0">
+          <div className="flex flex-col items-center gap-4 md:mt-2 mb-4 md:mb-0">
             <Button
               className="w-full cursor-pointer bg-neutral-200 hover:bg-neutral-300/80 
             text-black hover:text-black dark:bg-white hover:dark:bg-white/90 dark:text-black"
