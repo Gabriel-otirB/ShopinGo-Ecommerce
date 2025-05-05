@@ -21,6 +21,7 @@ import {
 import { formatCurrency } from '@/lib/helper';
 import { useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { useAuth } from '@/providers/auth-context';
 
 const Navbar = () => {
   const { items } = useCartStore();
@@ -28,6 +29,8 @@ const Navbar = () => {
   const pathname = usePathname();
   const [openNavbar, setOpenNavbar] = useState(false);
   const [openPreview, setOpenPreview] = useState(false);
+
+  const { user } = useAuth();
 
   const getLinkClass = (href: string) => {
     const isActive =
@@ -191,7 +194,7 @@ const Navbar = () => {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          
+
           {/* Account Mobile */}
           <div className="flex md:hidden relative order-2">
             <Link href="/account" aria-label="Minha Conta" className="relative">
@@ -199,32 +202,37 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Admin Panel Desktop */}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="hidden md:flex relative order-2">
-                  <Link href="/admin" aria-label="Minha Conta" className="relative">
-                    <PanelTop className="h-6 w-6 text-gray-800 dark:text-white" />
-                  </Link>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent
-                side="bottom"
-                sideOffset={6}
-                className="bg-white dark:bg-neutral-900 text-gray-800 dark:text-white border py-3 font-medium"
-              >
-                Painel Admin
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          
-          {/* Admin Panel Mobile */}
-          <div className="flex md:hidden relative order-2">
-            <Link href="/admin" aria-label="Minha Conta" className="relative">
-              <PanelTop className="h-6 w-6 text-gray-800 dark:text-white" />
-            </Link>
-          </div>
+          {user && (
+            <>
+              {/* Admin Panel Desktop */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="hidden md:flex relative order-2">
+                      <Link href="/admin" aria-label="Minha Conta" className="relative">
+                        <PanelTop className="h-6 w-6 text-gray-800 dark:text-white" />
+                      </Link>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="bottom"
+                    sideOffset={6}
+                    className="bg-white dark:bg-neutral-900 text-gray-800 dark:text-white border py-3 font-medium"
+                  >
+                    Painel Admin
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+
+              {/* Admin Panel Mobile */}
+              <div className="flex md:hidden relative order-2">
+                <Link href="/admin" aria-label="Minha Conta" className="relative">
+                  <PanelTop className="h-6 w-6 text-gray-800 dark:text-white" />
+                </Link>
+              </div>
+            </>
+          )}
 
         </div>
       </div>

@@ -40,7 +40,7 @@ const Footer = () => {
               <div
                 key={payment.name}
                 className="
-                w-14 h-10 p-1.5 bg-white dark:bg-neutral-800
+                w-12 h-8 p-1 bg-white dark:bg-neutral-800
                 border border-gray-300 dark:border-neutral-600
                 rounded-md shadow-sm flex items-center justify-center overflow-hidden"
               >

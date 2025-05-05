@@ -21,7 +21,7 @@ import {
 import Link from 'next/link';
 import ScrollTop from '@/components/scroll-top';
 import { ShoppingCart } from 'lucide-react';
-import ShippingCalculator from './shipping-calculator';
+import ShippingCalculator from './components/shipping-calculator';
 
 export default function CheckoutPage() {
   const { items, clearItem, addItem, removeItem } = useCartStore();

@@ -63,7 +63,7 @@ const Admin = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <Label htmlFor="admin-switch">Administrador</Label>
-                  <Switch id="admin-switch" className="cursor-pointer"/>
+                  <Switch id="admin-switch" className="cursor-pointer" />
                 </div>
               </div>
             </CardContent>

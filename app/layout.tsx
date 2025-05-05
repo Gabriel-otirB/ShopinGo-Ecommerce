@@ -4,9 +4,10 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import { themeInitScript } from '@/lib/theme-script';
 import Footer from '@/components/footer';
-import LoadingProvider from '../components/loading-provider';
+import LoadingProvider from '../providers/loading-provider';
 import "react-toastify/dist/ReactToastify.css";
-import ToastProvider from '@/components/toast-provider';
+import ToastProvider from '@/providers/toast-provider';
+import { AuthProvider } from '@/providers/auth-context';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +29,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -38,12 +38,14 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable}
         flex min-h-full flex-col bg-white dark:bg-neutral-800`}
       >
-        <Navbar />
-        <ToastProvider />
-        <main className="flex-grow container mx-auto px-4 py-8 min-h-[calc(100vh-450px)]">
-          <LoadingProvider>{children}</LoadingProvider>
-        </main>
-        <Footer />
+        <AuthProvider>
+          <Navbar />
+          <ToastProvider />
+          <main className="flex-grow container mx-auto px-4 py-8 min-h-[calc(100vh-450px)]">
+            <LoadingProvider>{children}</LoadingProvider>
+          </main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );
