@@ -69,7 +69,6 @@ const Admin = () => {
             </CardContent>
           </Card>
         </TabsContent>
-
       </Tabs>
     </div>
   );

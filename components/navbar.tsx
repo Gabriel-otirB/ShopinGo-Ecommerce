@@ -126,6 +126,7 @@ const Navbar = () => {
                             width={50}
                             height={50}
                             className="rounded object-contain w-[50px] h-[50px]"
+                            draggable={false}
                           />
                           <div className="flex flex-col flex-1 overflow-hidden">
                             <span className="font-medium text-sm line-clamp-3 break-words">
@@ -193,7 +194,7 @@ const Navbar = () => {
           
           {/* Account Mobile */}
           <div className="flex md:hidden relative order-2">
-            <Link href="/admin" aria-label="Minha Conta" className="relative">
+            <Link href="/account" aria-label="Minha Conta" className="relative">
               <UserIcon className="h-6 w-6 text-gray-800 dark:text-white" />
             </Link>
           </div>
@@ -220,7 +221,7 @@ const Navbar = () => {
           
           {/* Admin Panel Mobile */}
           <div className="flex md:hidden relative order-2">
-            <Link href="/Admin Panel" aria-label="Minha Conta" className="relative">
+            <Link href="/admin" aria-label="Minha Conta" className="relative">
               <PanelTop className="h-6 w-6 text-gray-800 dark:text-white" />
             </Link>
           </div>

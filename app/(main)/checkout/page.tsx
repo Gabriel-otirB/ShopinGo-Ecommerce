@@ -70,6 +70,7 @@ export default function CheckoutPage() {
                                 width={64}
                                 height={64}
                                 className="rounded object-contain w-16 h-16"
+                                draggable={false}
                               />
                               <span className="flex-1 font-medium px-3 text-sm overflow-hidden line-clamp-3 break-words">
                                 {item.name}

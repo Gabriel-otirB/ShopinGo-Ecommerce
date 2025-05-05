@@ -44,23 +44,23 @@ const ProductCard = ({ product }: Props) => {
           </div>
         )}
         <CardHeader className="p-4 pt-0 pb-0 -mb-1">
-          <CardTitle className="text-xl font-bold text-gray-800 dark:text-white truncate">
+          <CardTitle className="text-xl font-bold text-neutral-900 dark:text-white truncate">
             {product.name}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-4 flex-grow flex flex-col justify-between">
           {product.description && (
-            <p className="text-gray-600 text-sm dark:text-gray-300 line-clamp-3 mb-1">
+            <p className="text-gray-700 text-sm dark:text-gray-300 line-clamp-3 mb-1">
               {product.description}
             </p>
           )}
           {price && price.unit_amount && (
             <>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+              <p className="text-lg font-semibold text-neutral-900 dark:text-white">
                 {formatCurrency(price.unit_amount/100)}
-                <span className="ml-1 font-normal text-sm text-gray-600 dark:text-gray-300">à vista no Pix</span>
+                <span className="ml-1 font-normal text-sm text-black dark:text-neutral-50">à vista no Pix</span>
               </p>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-black dark:text-neutral-50">
                 ou em até 10x de {formatCurrency(parcelamento)} sem juros
               </p>
             </>
