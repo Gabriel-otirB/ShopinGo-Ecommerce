@@ -5,26 +5,36 @@ import { Button } from '@/components/ui/button';
 import { MinusIcon, PlusIcon, Share2, ShoppingBag, ShoppingCart } from 'lucide-react';
 import type Stripe from 'stripe';
 import { useCartStore } from '@/store/cart-store';
-import { redirect } from 'next/navigation';
+import { redirect, usePathname, useRouter } from 'next/navigation';
 import { Recommendations } from './recommendations';
 import { toast } from "react-toastify";
 import { Flip } from "react-toastify";
 import { formatCurrency } from '@/lib/helper';
 import ExpandableDescription from './expandable';
 import { useState } from 'react';
+import { useAuth } from '@/providers/auth-context';
 
 interface Props {
   product: Stripe.Product;
   recommendedProducts: Stripe.Product[];
 }
 
-const ProductDetail = ({ product, recommendedProducts }: Props) => {
+const ProductDetails = ({ product, recommendedProducts }: Props) => {
   const { addItem } = useCartStore();
   const price = product.default_price as Stripe.Price;
   const parcelamento = price.unit_amount && price.unit_amount / 100 / 10;
   const [quantity, setQuantity] = useState(1);
 
+  const { user } = useAuth();
+  const router = useRouter();
+
   const handleAddItem = () => {
+
+    if (!user) {
+      router.push(`/auth/login?redirectTo=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+      return;
+    }
+
     addItem({
       id: product.id,
       name: product.name,
@@ -48,7 +58,14 @@ const ProductDetail = ({ product, recommendedProducts }: Props) => {
     return;
   };
 
+
   const handleBuyItem = () => {
+
+    if (!user) {
+      router.push(`/auth/login?redirectTo=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+      return;
+    }
+
     addItem({
       id: product.id,
       name: product.name,
@@ -200,4 +217,4 @@ const ProductDetail = ({ product, recommendedProducts }: Props) => {
   );
 };
 
-export default ProductDetail;
+export default ProductDetails;

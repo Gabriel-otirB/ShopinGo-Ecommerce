@@ -35,8 +35,8 @@ const AccountPage = () => {
 
       <Tabs defaultValue="orders" className="w-full max-w-3xl mx-auto">
         <div className="overflow-x-auto">
-          <TabsList 
-          className="
+          <TabsList
+            className="
           flex w-max min-w-full h-full gap-2 px-2 py-1 dark:bg-neutral-950 border-2
         border-gray-300 dark:border-neutral-500 whitespace-nowrap">
             <TabsTrigger value="orders" className="cursor-pointer">Meus Pedidos</TabsTrigger>
@@ -77,8 +77,12 @@ const AccountPage = () => {
                 <Input id="email" type="email" placeholder="seuemail@email.com" />
               </div>
               <div className="flex flex-col gap-2">
-                <Label htmlFor="password">Nova Senha</Label>
+                <Label htmlFor="password">Senha Atual</Label>
                 <Input id="password" type="password" placeholder="********" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="newPassword">Nova Senha</Label>
+                <Input id="newPassword" type="password" placeholder="********" />
               </div>
               <div className="flex flex-col gap-2">
                 <Label htmlFor="phone">Telefone</Label>

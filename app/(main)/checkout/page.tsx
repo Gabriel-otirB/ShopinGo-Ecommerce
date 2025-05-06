@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useCartStore } from "@/store/cart-store";
@@ -18,10 +18,10 @@ import {
   AlertDialogCancel,
   AlertDialogAction
 } from "@/components/ui/alert-dialog";
-import Link from 'next/link';
-import ScrollTop from '@/components/scroll-top';
-import { ShoppingCart } from 'lucide-react';
-import ShippingCalculator from './components/shipping-calculator';
+import Link from "next/link";
+import ScrollTop from "@/components/scroll-top";
+import { ShoppingCart } from "lucide-react";
+import ShippingCalculator from "./components/shipping-calculator";
 
 export default function CheckoutPage() {
   const { items, clearItem, addItem, removeItem } = useCartStore();
@@ -98,7 +98,7 @@ export default function CheckoutPage() {
                             variant="outline"
                             size="sm" 
                             onClick={() => addItem({ ...item, quantity: 1 })}
-                            className='cursor-pointer'
+                            className="cursor-pointer"
                             >
                               +
                             </Button>
@@ -106,7 +106,7 @@ export default function CheckoutPage() {
 
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button variant="destructive" size="sm" className='cursor-pointer'>Remover</Button>
+                              <Button variant="destructive" size="sm" className="cursor-pointer">Remover</Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
@@ -116,8 +116,8 @@ export default function CheckoutPage() {
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => clearItem(item.id)}>
+                                <AlertDialogCancel className="cursor-pointer">Cancelar</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => clearItem(item.id)} className="cursor-pointer">
                                   Remover
                                 </AlertDialogAction>
                               </AlertDialogFooter>

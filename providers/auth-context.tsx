@@ -36,8 +36,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
-  const signInWithGoogle = () => {
-    supabase.auth.signInWithOAuth({ provider: 'google' });
+  const signInWithGoogle = (redirectPath?: string) => {
+    const redirectTo =
+      redirectPath || window.location.pathname + window.location.search;
+  
+    const url = `${window.location.origin}/auth/callback?redirectTo=${encodeURIComponent(redirectTo)}`;
+  
+    supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: url,
+      },
+    });
   };
 
   const signOut = () => {

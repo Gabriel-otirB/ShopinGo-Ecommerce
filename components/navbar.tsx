@@ -22,6 +22,7 @@ import { formatCurrency } from '@/lib/helper';
 import { useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { useAuth } from '@/providers/auth-context';
+import { Button } from './ui/button';
 
 const Navbar = () => {
   const { items } = useCartStore();
@@ -30,7 +31,7 @@ const Navbar = () => {
   const [openNavbar, setOpenNavbar] = useState(false);
   const [openPreview, setOpenPreview] = useState(false);
 
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
 
   const getLinkClass = (href: string) => {
     const isActive =
@@ -188,12 +189,35 @@ const Navbar = () => {
               <TooltipContent
                 side="bottom"
                 sideOffset={6}
-                className="bg-white dark:bg-neutral-900 text-gray-800 dark:text-white border py-3 font-medium"
+                className="bg-white dark:bg-neutral-900 text-gray-800 dark:text-white border pt-3 px-4 font-medium rounded shadow-lg space-y-2"
               >
-                Minha Conta
+                <div className="flex flex-col space-y-2">
+
+                  {user ? (
+                    <>
+                      <Link href="/account" className="hover:underline text-sm">
+                        Minha Conta
+                      </Link>
+
+                      <Button
+                        onClick={() => { signOut() }}
+                        variant={"destructive"}
+                        className="cursor-pointer text-sm h-6"
+                      >
+                        Sair
+                      </Button>
+                    </>
+                  ) : (
+                    <Link href="/auth/login" className="hover:underline text-sm">
+                      Entrar
+                    </Link>
+                  )}
+
+                </div>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+
 
           {/* Account Mobile */}
           <div className="flex md:hidden relative order-2">
@@ -219,7 +243,10 @@ const Navbar = () => {
                     sideOffset={6}
                     className="bg-white dark:bg-neutral-900 text-gray-800 dark:text-white border py-3 font-medium"
                   >
-                    Painel Admin
+                    <Link href="/admin" className="hover:underline text-sm">
+                      Painel Admin
+                    </Link>
+
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>

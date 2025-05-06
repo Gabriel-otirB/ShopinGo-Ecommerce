@@ -3,6 +3,7 @@
 import { useAuth } from '@/providers/auth-context'; 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Loading from './loading';
 
 const RedirectIfAuthenticated = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -14,8 +15,8 @@ const RedirectIfAuthenticated = ({ children }: { children: React.ReactNode }) =>
     }
   }, [user, router, loading]);
 
-  if (loading) return <div>Carregando...</div>;
-  if (user) return null;
+  if (loading) return <Loading />;
+  if (user) return <Loading />;
 
   return <>{children}</>;
 };

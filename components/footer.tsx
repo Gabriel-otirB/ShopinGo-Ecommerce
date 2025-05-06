@@ -40,9 +40,9 @@ const Footer = () => {
               <div
                 key={payment.name}
                 className="
-                w-12 h-8 p-1 bg-white dark:bg-neutral-800
+                w-14 h-8 p-1 bg-white dark:bg-neutral-800
                 border border-gray-300 dark:border-neutral-600
-                rounded-md shadow-sm flex items-center justify-center overflow-hidden"
+                rounded-[2px] shadow-sm flex items-center justify-center overflow-hidden"
               >
                 <Image
                   src={payment.image}
