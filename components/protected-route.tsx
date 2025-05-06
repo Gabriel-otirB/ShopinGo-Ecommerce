@@ -10,13 +10,19 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && user === null) {
-      router.push("/auth/login");
+    if (!loading) {
+      if (!user) {
+        router.push("/auth/login");
+      } else if (!user.email_confirmed_at) {
+        router.push("/auth/verify-email");
+      }
     }
   }, [user, loading, router]);
+  
 
   if (loading) return <Loading />;
   if (!user) return <Loading />;
+  if (user === null) return <Loading />;
 
   return <>{children}</>;
 };

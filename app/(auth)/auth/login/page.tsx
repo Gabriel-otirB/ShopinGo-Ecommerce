@@ -12,7 +12,6 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { supabase } from "@/lib/supabase-client";
 import { useAuth } from '@/providers/auth-context';
 import RedirectIfAuthenticated from '@/components/redirect-if-authenticated';
 
@@ -28,42 +27,34 @@ const Login = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") || "/";
-  const { signInWithGoogle } = useAuth();
-
-
-  const validateName = (name: string) => {
-    const regex = /^[A-Za-z\s]+$/;
-    if (!regex.test(name)) return setNameError("Apenas letras e espaços");
-    if (name.length < 2) return setNameError("Mínimo de 2 letras");
-    if (name.length > 100) return setNameError("Máximo de 100 letras");
-    setNameError("");
-  };
+  const { signIn, signUp, signInWithGoogle } = useAuth();
 
   const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-  const validatePasswords = (password: string, confirm: string) => password === confirm;
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
+    const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
     const confirm = form.confirm.value;
 
-    validateName(form.name.value);
-    setEmailError(validateEmail(email) ? "" : "Email inválido");
-    setPasswordError(password.length >= 6 ? "" : "Mínimo de 6 caracteres");
-    setConfirmPasswordError(validatePasswords(password, confirm) ? "" : "As senhas não coincidem");
+    const nameValid = /^[A-Za-z\s]+$/.test(name) && name.length >= 2 && name.length <= 100;
+    const emailValid = validateEmail(email);
+    const passwordValid = password.length >= 6;
+    const passwordsMatch = password === confirm;
 
-    if (emailError || passwordError || confirmPasswordError || nameError) return;
+    setNameError(nameValid ? "" : "Nome inválido");
+    setEmailError(emailValid ? "" : "Email inválido");
+    setPasswordError(passwordValid ? "" : "Mínimo de 6 caracteres");
+    setConfirmPasswordError(passwordsMatch ? "" : "As senhas não coincidem");
 
-    const { error: signUpError } = await supabase.auth.signUp({ email, password });
-    if (signUpError) return console.error("Erro ao criar conta:", signUpError);
+    if (!nameValid || !emailValid || !passwordValid || !passwordsMatch) return;
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-    if (signInError) return console.error("Erro ao logar:", signInError);
+    await signUp(email, password, name);
+    await signIn(email, password);
 
-    router.push(redirectTo);
+    router.push("/auth/verify-email");
   };
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -72,15 +63,14 @@ const Login = () => {
     const email = form.email.value;
     const password = form.password.value;
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) return console.error("Erro ao entrar:", error);
+    await signIn(email, password);
 
     router.push(redirectTo);
   };
 
   return (
     <RedirectIfAuthenticated>
-      <div className="flex flex-col items-center justify-center px-4 gap-4 -mt-4">
+      <div className="flex flex-col items-center justify-center px-4 gap-4">
         <Card className="w-full max-w-md border-2 border-gray-300 dark:border-neutral-500">
           <CardHeader>
             <CardTitle
@@ -185,7 +175,7 @@ const Login = () => {
                     {confirmPasswordError && <p className="text-sm text-red-500">{confirmPasswordError}</p>}
                   </div>
 
-                  <Button type="submit" className="w-full cursor-pointer">Criar Conta</Button>
+                  <Button type="submit" className="w-full cursor-pointer" onClick={() => handleSignUp}>Criar Conta</Button>
                 </form>
 
                 <Separator className="my-6" />

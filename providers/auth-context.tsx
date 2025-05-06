@@ -7,6 +7,8 @@ import { supabase } from '@/lib/supabase-client';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, name: string) => Promise<void>;
   signInWithGoogle: () => void;
   signOut: () => void;
 }
@@ -36,12 +38,49 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
+  const signIn = async (email: string, password: string) => {
+    setLoading(true);
+    const { error, data } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      console.error("Erro ao fazer login:", error.message);
+    } else {
+      setUser(data.user);
+    }
+
+    setLoading(false);
+  };
+
+  const signUp = async (email: string, password: string, name: string) => {
+    setLoading(true);
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name },
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+
+    if (error) {
+      console.error("Erro ao cadastrar:", error.message);
+    } else {
+      setUser(null);
+    }
+
+    setLoading(false);
+  };
+
+
   const signInWithGoogle = (redirectPath?: string) => {
     const redirectTo =
       redirectPath || window.location.pathname + window.location.search;
-  
+
     const url = `${window.location.origin}/auth/callback?redirectTo=${encodeURIComponent(redirectTo)}`;
-  
+
     supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -55,7 +94,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signOut }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        signIn,
+        signUp,
+        signInWithGoogle,
+        signOut,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
