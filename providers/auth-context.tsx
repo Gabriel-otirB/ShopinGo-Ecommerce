@@ -18,36 +18,31 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<{ role: string } | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getInitialSession = async () => {
+    const syncSession = async () => {
+      setLoading(true);
+
       const { data: { session } } = await supabase.auth.getSession();
       const currentUser = session?.user ?? null;
+
       setUser(currentUser);
-      setLoading(false);
-
-      if (currentUser) {
-        await ensureProfileExists(currentUser);
-      }
-    };
-
-    getInitialSession();
-
-    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
-      setLoading(false);
-
       if (currentUser) {
         await ensureProfileExists(currentUser);
       } else {
         setProfile(null);
       }
-    });
 
-    return () => listener.subscription.unsubscribe();
+      setLoading(false);
+    };
+
+    syncSession();
+
+    return () => {
+      supabase.auth.signOut();
+    };
   }, []);
 
   const ensureProfileExists = async (user: User) => {
@@ -83,9 +78,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       throw new Error(error.message);
     }
 
-    const user = data.user;
-    setUser(user);
-    await ensureProfileExists(user);
+    const currentUser = data.user;
+    setUser(currentUser);
+    await ensureProfileExists(currentUser);
   };
 
   const signUp = async (email: string, password: string, name: string) => {
@@ -120,15 +115,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     setLoading(true);
-    const { error } = await supabase.auth.signOut();
-    setLoading(false);
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
+    await supabase.auth.signOut();
     setUser(null);
     setProfile(null);
+    setLoading(false);
   };
 
   return (
