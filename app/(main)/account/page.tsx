@@ -142,7 +142,13 @@ const AccountPage = () => {
               <h2 className="text-lg font-semibold text-center">Configurações</h2>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="destructive" className="w-full cursor-pointer">
+                  <Button
+                    onClick={async () => {
+                      await signOut();
+                      window.location.href = '/';
+                    }}
+                    variant="destructive"
+                    className="w-full cursor-pointer">
                     Sair da Conta
                   </Button>
                 </AlertDialogTrigger>

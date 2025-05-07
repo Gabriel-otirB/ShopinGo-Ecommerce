@@ -31,7 +31,7 @@ const Navbar = () => {
   const [openNavbar, setOpenNavbar] = useState(false);
   const [openPreview, setOpenPreview] = useState(false);
 
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
 
   const getLinkClass = (href: string) => {
     const isActive =
@@ -200,12 +200,16 @@ const Navbar = () => {
                       </Link>
 
                       <Button
-                        onClick={() => { signOut() }}
+                        onClick={async () => {
+                          await signOut();
+                          window.location.href = '/';
+                        }}
                         variant={"destructive"}
                         className="cursor-pointer text-sm h-6"
                       >
                         Sair
                       </Button>
+
                     </>
                   ) : (
                     <Link href="/auth/login" className="hover:underline text-sm">
@@ -226,14 +230,14 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {user && (
+          {user && profile?.role === 'admin' && (
             <>
               {/* Admin Panel Desktop */}
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="hidden md:flex relative order-2">
-                      <Link href="/admin" aria-label="Minha Conta" className="relative">
+                      <Link href="/admin" aria-label="Painel Admin" className="relative">
                         <PanelTop className="h-6 w-6 text-gray-800 dark:text-white" />
                       </Link>
                     </div>
@@ -246,15 +250,13 @@ const Navbar = () => {
                     <Link href="/admin" className="hover:underline text-sm">
                       Painel Admin
                     </Link>
-
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
 
-
               {/* Admin Panel Mobile */}
               <div className="flex md:hidden relative order-2">
-                <Link href="/admin" aria-label="Minha Conta" className="relative">
+                <Link href="/admin" aria-label="Painel Admin" className="relative">
                   <PanelTop className="h-6 w-6 text-gray-800 dark:text-white" />
                 </Link>
               </div>

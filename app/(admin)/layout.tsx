@@ -1,11 +1,11 @@
-import ProtectedRoute from '@/components/protected-route';
+import ProtectedAdminRoute from '@/components/protected-admin-route' 
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <ProtectedRoute>
+      <ProtectedAdminRoute>
         {children}
-      </ProtectedRoute>
+      </ProtectedAdminRoute>
     </>
   )
 };

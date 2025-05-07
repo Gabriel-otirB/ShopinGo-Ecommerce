@@ -11,16 +11,24 @@ import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "react-toastify";
 
 import { useAuth } from '@/providers/auth-context';
 import RedirectIfAuthenticated from '@/components/redirect-if-authenticated';
 
 const Login = () => {
   const [activeTab, setActiveTab] = useState("login");
-  const [nameError, setNameError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
+  // Erros do Login
+  const [loginEmailError, setLoginEmailError] = useState("");
+  const [loginPasswordError, setLoginPasswordError] = useState("");
+
+  // Erros do Signup
+  const [signupNameError, setSignupNameError] = useState("");
+  const [signupEmailError, setSignupEmailError] = useState("");
+  const [signupPasswordError, setSignupPasswordError] = useState("");
+  const [signupConfirmPasswordError, setSignupConfirmPasswordError] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -44,28 +52,48 @@ const Login = () => {
     const passwordValid = password.length >= 6;
     const passwordsMatch = password === confirm;
 
-    setNameError(nameValid ? "" : "Nome inválido");
-    setEmailError(emailValid ? "" : "Email inválido");
-    setPasswordError(passwordValid ? "" : "Mínimo de 6 caracteres");
-    setConfirmPasswordError(passwordsMatch ? "" : "As senhas não coincidem");
+    setSignupNameError(nameValid ? "" : "Nome inválido");
+    setSignupEmailError(emailValid ? "" : "Email inválido");
+    setSignupPasswordError(passwordValid ? "" : "Mínimo de 6 caracteres");
+    setSignupConfirmPasswordError(passwordsMatch ? "" : "As senhas não coincidem");
 
     if (!nameValid || !emailValid || !passwordValid || !passwordsMatch) return;
 
-    await signUp(email, password, name);
-    await signIn(email, password);
-
-    router.push("/auth/verify-email");
+    try {
+      await signUp(email, password, name);
+      toast.success("Conta criada! Verifique seu email.");
+      router.push("/auth/verify-email");
+    } catch (error: any) {
+      toast.error(error?.message || "Erro ao criar conta");
+    }
   };
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
-    const email = form.email.value;
+    const email = form.email.value.trim();
     const password = form.password.value;
 
-    await signIn(email, password);
+    const emailValid = validateEmail(email);
+    const passwordValid = password.length >= 6;
 
-    router.push(redirectTo);
+    setLoginEmailError(emailValid ? "" : "Email inválido");
+    setLoginPasswordError(passwordValid ? "" : "Mínimo de 6 caracteres");
+
+    if (!emailValid || !passwordValid) return;
+
+    try {
+      await signIn(email, password);
+      router.push(redirectTo);
+    } catch (error: any) {
+      const message = error?.message || "Erro ao fazer login";
+      if (message.toLowerCase().includes("invalid") || message.toLowerCase().includes("credenciais")) {
+        setLoginPasswordError("Email ou senha incorretos");
+      } else {
+        setLoginPasswordError(message);
+      }
+      toast.error(message);
+    }
   };
 
   return (
@@ -73,9 +101,7 @@ const Login = () => {
       <div className="flex flex-col items-center justify-center px-4 gap-4">
         <Card className="w-full max-w-md border-2 border-gray-300 dark:border-neutral-500">
           <CardHeader>
-            <CardTitle
-              className="text-2xl font-bold text-gray-800 dark:text-white hover:text-blue-600
-             dark:hover:text-blue-400 transition-colors cursor-pointer mx-auto">
+            <CardTitle className="text-2xl font-bold text-center text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">
               ShopinGo
             </CardTitle>
           </CardHeader>
@@ -86,16 +112,19 @@ const Login = () => {
                 <TabsTrigger value="signup" className="cursor-pointer">Criar Conta</TabsTrigger>
               </TabsList>
 
+              {/* LOGIN */}
               <TabsContent value="login">
                 <form className="space-y-4" onSubmit={handleLogin}>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" placeholder="seuemail@email.com" />
+                    <Label htmlFor="login-email">Email</Label>
+                    <Input id="login-email" name="email" type="email" placeholder="seuemail@email.com" />
+                    {loginEmailError && <p className="text-sm text-red-500">{loginEmailError}</p>}
                   </div>
+
                   <div className="space-y-2 relative">
-                    <Label htmlFor="password">Senha</Label>
+                    <Label htmlFor="login-password">Senha</Label>
                     <Input
-                      id="password"
+                      id="login-password"
                       name="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="********"
@@ -103,44 +132,47 @@ const Login = () => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-[31px] text-gray-500 hover:text-gray-700 cursor-pointer"
+                      className="absolute right-3 top-[31px] text-gray-500 hover:text-gray-700"
                     >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      {showPassword ? <EyeOff className="cursor-pointer" size={18} /> : <Eye className="cursor-pointer" size={18} />}
                     </button>
+                    {loginPasswordError && <p className="text-sm text-red-500 text-center">{loginPasswordError}</p>}
                   </div>
+
                   <Button type="submit" className="w-full cursor-pointer">Entrar</Button>
-                  <p className="text-center text-sm mt-2">
-                    Não tem uma conta?
-                    <span onClick={() => setActiveTab("signup")} className="ml-1 underline cursor-pointer text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-600">
-                      Crie agora
-                    </span>
-                  </p>
                 </form>
 
                 <Separator className="my-6" />
-                <Button variant="outline" className="w-full cursor-pointer" onClick={() => signInWithGoogle(redirectTo)}>
+                <Button variant="outline" className="w-full flex items-center gap-2 cursor-pointer" onClick={() => signInWithGoogle(redirectTo)}>
+                  <svg className="w-5 h-5" viewBox="0 0 533.5 544.3" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#4285F4" d="M533.5 278.4c0-17.4-1.5-34-4.3-50.2H272v95h146.9c-6.3 33.6-25.2 62-53.7 81.1v67h86.9c50.8-46.8 81.4-115.7 81.4-192.9z" />
+                    <path fill="#34A853" d="M272 544.3c72.6 0 133.7-24.1 178.3-65.4l-86.9-67c-24.1 16.2-55 25.7-91.4 25.7-70.3 0-129.9-47.5-151.2-111.5h-89v69.9C77.8 486.6 168.9 544.3 272 544.3z" />
+                    <path fill="#FBBC05" d="M120.8 326.1c-9.6-28.6-9.6-59.8 0-88.4v-69.9h-89c-39.3 78.5-39.3 170.3 0 248.7l89-69.9z" />
+                    <path fill="#EA4335" d="M272 107.7c39.5-.6 77.4 13.9 106.4 39.7l79.4-79.4C417.5 24.7 346.8-0.8 272 0 168.9 0 77.8 57.7 31.8 144.3l89 69.9C142.1 155.2 201.7 107.7 272 107.7z" />
+                  </svg>
                   Entrar com Google
                 </Button>
               </TabsContent>
 
+              {/* SIGNUP */}
               <TabsContent value="signup">
                 <form className="space-y-4" onSubmit={handleSignUp}>
                   <div className="space-y-2">
                     <Label htmlFor="name">Nome</Label>
                     <Input id="name" name="name" placeholder="Seu nome completo" required />
-                    {nameError && <p className="text-sm text-red-500">{nameError}</p>}
+                    {signupNameError && <p className="text-sm text-red-500">{signupNameError}</p>}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" placeholder="seu@email.com" required />
-                    {emailError && <p className="text-sm text-red-500">{emailError}</p>}
+                    <Label htmlFor="signup-email">Email</Label>
+                    <Input id="signup-email" name="email" type="email" placeholder="seu@email.com" required />
+                    {signupEmailError && <p className="text-sm text-red-500">{signupEmailError}</p>}
                   </div>
 
                   <div className="space-y-2 relative">
-                    <Label htmlFor="password">Senha</Label>
+                    <Label htmlFor="signup-password">Senha</Label>
                     <Input
-                      id="password"
+                      id="signup-password"
                       name="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="Crie uma senha segura"
@@ -149,11 +181,11 @@ const Login = () => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-[31px] text-gray-500 hover:text-gray-700 cursor-pointer"
+                      className="absolute right-3 top-[31px] text-gray-500 hover:text-gray-700"
                     >
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      {showPassword ? <EyeOff className="cursor-pointer" size={18} /> : <Eye className="cursor-pointer" size={18} />}
                     </button>
-                    {passwordError && <p className="text-sm text-red-500">{passwordError}</p>}
+                    {signupPasswordError && <p className="text-sm text-red-500">{signupPasswordError}</p>}
                   </div>
 
                   <div className="space-y-2 relative">
@@ -168,23 +200,27 @@ const Login = () => {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-[31px] text-gray-500 hover:text-gray-700 cursor-pointer"
+                      className="absolute right-3 top-[31px] text-gray-500 hover:text-gray-700"
                     >
-                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      {showConfirmPassword ? <EyeOff className="cursor-pointer" size={18} /> : <Eye className="cursor-pointer" size={18} />}
                     </button>
-                    {confirmPasswordError && <p className="text-sm text-red-500">{confirmPasswordError}</p>}
+                    {signupConfirmPasswordError && <p className="text-sm text-red-500">{signupConfirmPasswordError}</p>}
                   </div>
 
-                  <Button type="submit" className="w-full cursor-pointer" onClick={() => handleSignUp}>Criar Conta</Button>
+                  <Button type="submit" className="w-full cursor-pointer">Criar Conta</Button>
                 </form>
 
                 <Separator className="my-6" />
-
-                <Button variant="outline" className="w-full cursor-pointer" onClick={() => signInWithGoogle(redirectTo)}>
+                <Button variant="outline" className="w-full flex items-center gap-2 cursor-pointer" onClick={() => signInWithGoogle(redirectTo)}>
+                  <svg className="w-5 h-5" viewBox="0 0 533.5 544.3" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#4285F4" d="M533.5 278.4c0-17.4-1.5-34-4.3-50.2H272v95h146.9c-6.3 33.6-25.2 62-53.7 81.1v67h86.9c50.8-46.8 81.4-115.7 81.4-192.9z" />
+                    <path fill="#34A853" d="M272 544.3c72.6 0 133.7-24.1 178.3-65.4l-86.9-67c-24.1 16.2-55 25.7-91.4 25.7-70.3 0-129.9-47.5-151.2-111.5h-89v69.9C77.8 486.6 168.9 544.3 272 544.3z" />
+                    <path fill="#FBBC05" d="M120.8 326.1c-9.6-28.6-9.6-59.8 0-88.4v-69.9h-89c-39.3 78.5-39.3 170.3 0 248.7l89-69.9z" />
+                    <path fill="#EA4335" d="M272 107.7c39.5-.6 77.4 13.9 106.4 39.7l79.4-79.4C417.5 24.7 346.8-0.8 272 0 168.9 0 77.8 57.7 31.8 144.3l89 69.9C142.1 155.2 201.7 107.7 272 107.7z" />
+                  </svg>
                   Criar com Google
                 </Button>
               </TabsContent>
-
             </Tabs>
           </CardContent>
         </Card>
