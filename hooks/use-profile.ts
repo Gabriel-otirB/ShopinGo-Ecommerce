@@ -4,9 +4,20 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase-client';
 import { useAuth } from '@/providers/auth-context';
 
+interface Profile {
+  id: string;
+  user_id: string;
+  email: string;
+  name: string | null;
+  phone: string | null;
+  role: 'admin' | 'customer';
+  updated_at: string | null;
+  [key: string]: any;
+}
+
 export const useProfile = () => {
   const { user } = useAuth();
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,16 +36,17 @@ export const useProfile = () => {
       setError(error.message);
     } else {
       setProfile(data);
+      setError(null);
     }
 
     setLoading(false);
   };
 
-  const updateProfile = async (updates: any) => {
+  const updateProfile = async (updates: Partial<Profile>) => {
     if (!user) return;
 
-    // Validating updates
-    if (!updates.name || updates.name.length < 2) {
+    // Validações
+    if (updates.name && updates.name.length < 2) {
       setError('Nome deve ter no mínimo 2 caracteres.');
       return;
     }
@@ -47,13 +59,14 @@ export const useProfile = () => {
 
     const { error } = await supabase
       .from('profiles')
-      .update({ ...updates, updated_at: new Date() })
+      .update({ ...updates, updated_at: new Date().toISOString() })
       .eq('user_id', user.id);
 
     if (error) {
       setError(error.message);
     } else {
       await fetchProfile();
+      setError(null);
     }
 
     setLoading(false);
@@ -62,7 +75,6 @@ export const useProfile = () => {
   const updatePassword = async (currentPassword: string, newPassword: string) => {
     if (!user) return;
 
-    // Validating new password
     if (newPassword.length < 6) {
       setError('A nova senha deve ter pelo menos 6 caracteres.');
       return;
@@ -70,19 +82,19 @@ export const useProfile = () => {
 
     setLoading(true);
 
-    // Check if current password is correct
-    const { user: authenticatedUser, error: passwordError } = await supabase.auth.signInWithPassword({
+    // Validate current password
+    const { error: signInError } = await supabase.auth.signInWithPassword({
       email: user.email,
       password: currentPassword,
     });
 
-    if (passwordError) {
+    if (signInError) {
       setError('Senha atual incorreta.');
       setLoading(false);
       return;
     }
 
-    // If current password is correct, update password
+    // Change password
     const { error: updateError } = await supabase.auth.updateUser({
       password: newPassword,
     });
@@ -90,7 +102,7 @@ export const useProfile = () => {
     if (updateError) {
       setError(updateError.message);
     } else {
-      setError(null); 
+      setError(null);
     }
 
     setLoading(false);

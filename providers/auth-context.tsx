@@ -3,11 +3,10 @@
 import { User } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase-client";
-import { redirect } from 'next/dist/server/api-utils';
 
 interface AuthContextType {
   user: User | null;
-  profile: { role: string } | null;
+  profile: { role: string; email: string } | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, name: string) => Promise<void>;
@@ -19,7 +18,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<{ role: string } | null>(null);
+  const [profile, setProfile] = useState<{ role: string; email: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,10 +39,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     syncSession();
-
-    // return () => {
-    //   supabase.auth.signOut();
-    // };
   }, []);
 
   const ensureProfileExists = async (user: User) => {
@@ -57,16 +52,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (!profileData) {
       const name = user.user_metadata?.name ?? "Sem nome";
+      const email = user.email ?? "Sem email";
+
       const { error: insertError } = await supabase.from("profiles").insert({
         user_id: user.id,
         name,
+        email,
       });
 
       if (!insertError) {
-        setProfile({ role: "user" });
+        setProfile({ role: "user", email });
       }
     } else {
-      setProfile({ role: profileData.role || "user" });
+      setProfile({
+        role: profileData.role || "user",
+        email: profileData.email || "Sem email",
+      });
     }
   };
 
