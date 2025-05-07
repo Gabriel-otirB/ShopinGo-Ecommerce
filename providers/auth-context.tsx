@@ -3,6 +3,7 @@
 import { User } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase-client";
+import { redirect } from 'next/dist/server/api-utils';
 
 interface AuthContextType {
   user: User | null;
@@ -40,9 +41,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     syncSession();
 
-    return () => {
-      supabase.auth.signOut();
-    };
+    // return () => {
+    //   supabase.auth.signOut();
+    // };
   }, []);
 
   const ensureProfileExists = async (user: User) => {

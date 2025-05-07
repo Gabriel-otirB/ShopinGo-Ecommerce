@@ -136,7 +136,7 @@ const Login = () => {
                     >
                       {showPassword ? <EyeOff className="cursor-pointer" size={18} /> : <Eye className="cursor-pointer" size={18} />}
                     </button>
-                    {loginPasswordError && <p className="text-sm text-red-500 text-center">{loginPasswordError}</p>}
+                    {loginPasswordError && <p className="text-sm text-red-500">{loginPasswordError}</p>}
                   </div>
 
                   <Button type="submit" className="w-full cursor-pointer">Entrar</Button>

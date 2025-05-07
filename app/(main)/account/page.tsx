@@ -20,11 +20,11 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { useAuth } from '@/providers/auth-context';
+import AddressForm from './components/address-form';
+import UserProfileForm from './components/profile-form';
 
 const AccountPage = () => {
   const { signOut } = useAuth();
@@ -68,27 +68,7 @@ const AccountPage = () => {
           <Card className="border-2 border-gray-300 dark:border-neutral-500">
             <CardContent className="space-y-4">
               <h2 className="text-lg font-semibold text-center">Dados do Usuário</h2>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="name">Nome</Label>
-                <Input id="name" placeholder="Seu nome" />
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="seuemail@email.com" />
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="password">Senha Atual</Label>
-                <Input id="password" type="password" placeholder="********" />
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="newPassword">Nova Senha</Label>
-                <Input id="newPassword" type="password" placeholder="********" />
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="phone">Telefone</Label>
-                <Input id="phone" type="tel" placeholder="(99) 99999-9999" />
-              </div>
-              <Button variant="default" className="w-full cursor-pointer">Salvar Alterações</Button>
+              <UserProfileForm />
             </CardContent>
           </Card>
         </TabsContent>
@@ -97,41 +77,7 @@ const AccountPage = () => {
           <Card className="border-2 border-gray-300 dark:border-neutral-500">
             <CardContent className="space-y-4">
               <h2 className="text-lg font-semibold text-center">Endereço</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="cep">CEP</Label>
-                  <Input id="cep" placeholder="00000-000" />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="city">Cidade</Label>
-                  <Input id="city" placeholder="Ex: São Paulo" />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="state">Estado (UF)</Label>
-                  <Input id="state" placeholder="Ex: SP" maxLength={2} />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="street">Rua</Label>
-                  <Input id="street" placeholder="Nome da rua" />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="number">Número</Label>
-                  <Input id="number" placeholder="123" />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="neighborhood">Bairro</Label>
-                  <Input id="neighborhood" placeholder="Nome do bairro" />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="complement">Complemento</Label>
-                  <Input id="complement" placeholder="Apto, bloco, etc." />
-                </div>
-              </div>
-              <Button variant="default" className="w-full cursor-pointer">Salvar Endereço</Button>
+              <AddressForm />
             </CardContent>
           </Card>
         </TabsContent>
