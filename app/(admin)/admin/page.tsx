@@ -116,7 +116,6 @@ const Admin = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex justify-between">
-                <Button className="cursor-pointer">+ Adicionar Produto</Button>
                 <Button
                   onClick={handleSync}
                   disabled={loading}

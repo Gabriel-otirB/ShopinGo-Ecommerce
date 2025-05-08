@@ -17,22 +17,18 @@ interface Profile {
 const UserList = ({ profiles: initialProfiles, search }: { profiles: Profile[], search: string }) => {
   const { user } = useAuth();
   const [visibleUsersCount, setVisibleUsersCount] = useState(10);
-  const [profiles, setProfiles] = useState<Profile[]>(initialProfiles); // Gerenciar o estado dos perfis localmente
+  const [profiles, setProfiles] = useState<Profile[]>(initialProfiles);
 
-  // Filtrar os usuários conforme o valor da busca
   const filteredProfiles = profiles.filter(profile =>
     profile.email.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Exibir apenas os usuários visíveis
   const visibleProfiles = filteredProfiles.slice(0, visibleUsersCount);
 
-  // Função para carregar mais usuários
   const handleShowMore = () => {
     setVisibleUsersCount((prevCount) => prevCount + 10);
   };
 
-  // Função para alterar o papel do usuário
   const handleRoleToggle = async (profile: Profile) => {
     const newRole = profile.role === "admin" ? "customer" : "admin";
 
@@ -46,11 +42,10 @@ const UserList = ({ profiles: initialProfiles, search }: { profiles: Profile[], 
       return;
     }
 
-    // Atualiza o estado local após a mudança de papel
     const updatedProfiles = profiles.map((p) =>
       p.id === profile.id ? { ...p, role: newRole } : p
     );
-    setProfiles(updatedProfiles); // Atualiza o estado local com os novos perfis
+    setProfiles(updatedProfiles);
   };
 
   return (
@@ -85,7 +80,6 @@ const UserList = ({ profiles: initialProfiles, search }: { profiles: Profile[], 
         ))
       )}
 
-      {/* Botão "Ver mais" */}
       {visibleUsersCount < filteredProfiles.length && filteredProfiles.length >= 10 && (
         <Button onClick={handleShowMore} className="mt-4">Ver mais</Button>
       )}
