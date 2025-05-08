@@ -6,20 +6,14 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase-client";
 import { useAuth } from "@/providers/auth-context";
+import ProductList from './components/product-list';
+import UserList from './components/user-list';
 
 interface Profile {
   id: string;
@@ -28,11 +22,25 @@ interface Profile {
   user_id: string;
 }
 
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  active: boolean;
+  image_url: string | null;
+  stripe_product_id: string;
+}
+
 const Admin = () => {
   const { user } = useAuth();
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [syncResult, setSyncResult] = useState<string | null>(null);
 
+  // Buscar perfis de usuário
   useEffect(() => {
     const fetchProfiles = async () => {
       const { data, error } = await supabase
@@ -50,34 +58,45 @@ const Admin = () => {
     fetchProfiles();
   }, []);
 
-  const handleRoleToggle = async (profile: Profile) => {
-    const newRole = profile.role === "admin" ? "customer" : "admin";
-
-    const { error } = await supabase
-      .from("profiles")
-      .update({ role: newRole })
-      .eq("id", profile.id);
+  // Buscar produtos
+  const fetchProducts = async () => {
+    const { data, error } = await supabase.from("products").select("*");
 
     if (error) {
-      console.error("Erro ao atualizar papel:", error);
+      console.error("Erro ao buscar produtos:", error);
       return;
     }
 
-    setProfiles((prev) =>
-      prev.map((p) =>
-        p.id === profile.id ? { ...p, role: newRole } : p
-      )
-    );
+    setProducts(data);
   };
 
-  const filteredProfiles = profiles
-  .filter((profile) => profile.email.toLowerCase().includes(search.toLowerCase()))
-  .sort((a, b) => {
-    if (a.user_id === user?.id) return -1;
-    if (b.user_id === user?.id) return 1;
-    return 0;
-  });
+  // Buscar produtos na primeira carga e após sync
+  useEffect(() => {
+    fetchProducts();
+  }, [syncResult]);
 
+  // Sincronizar produtos com Stripe
+  const handleSync = async () => {
+    setLoading(true);
+    setSyncResult(null);
+
+    try {
+      const res = await fetch("/api/sync-products", { method: "POST" });
+      const data = await res.json();
+
+      if (data.success) {
+        setSyncResult(`Produtos adicionados: ${data.result.added}`);
+        await fetchProducts();
+      } else {
+        setSyncResult("Erro ao sincronizar produtos.");
+      }
+    } catch (error) {
+      console.error(error);
+      setSyncResult("Erro ao sincronizar produtos.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="container mx-auto">
@@ -96,16 +115,28 @@ const Admin = () => {
               <CardDescription>Adicione, edite ou remova produtos do catálogo.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button className="cursor-pointer">+ Adicionar Produto</Button>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between border rounded p-2">
-                  <span>Tênis Esportivo</span>
-                  <div className="space-x-2">
-                    <Button variant="outline" size="sm" className="cursor-pointer">Editar</Button>
-                    <Button variant="destructive" size="sm" className="cursor-pointer">Remover</Button>
-                  </div>
-                </div>
+              <div className="flex justify-between">
+                <Button className="cursor-pointer">+ Adicionar Produto</Button>
+                <Button
+                  onClick={handleSync}
+                  disabled={loading}
+                  className="cursor-pointer"
+                >
+                  {loading ? "Sincronizando..." : "Sincronizar com Painel Stripe"}
+                </Button>
               </div>
+
+              {/* Campo de busca */}
+              <div className="mt-4">
+                <Input
+                  placeholder="Buscar por nome do produto..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+
+              {/* Lista de produtos */}
+              <ProductList products={products} search={search} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -122,32 +153,8 @@ const Admin = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              {filteredProfiles.map((profile) => (
-                <div
-                  key={profile.id}
-                  className="border rounded p-4 flex justify-between items-center"
-                >
-                  <div>
-                    <p className="font-medium">{
-                      profile.user_id === user?.id && (
-                        <span className="text-blue-600 hover:text-blue-400 mr-1">(Eu)</span>
-                      )}{profile.email}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {profile.role === "admin" ? "Administrador" : "Usuário comum"}
-                    </p>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Label htmlFor={`admin-switch-${profile.id}`}>Administrador</Label>
-                    <Switch
-                      id={`admin-switch-${profile.id}`}
-                      checked={profile.role === "admin"}
-                      onCheckedChange={() => handleRoleToggle(profile)}
-                      disabled={profile.user_id === user?.id}
-                      className="cursor-pointer"
-                    />
-                  </div>
-                </div>
-              ))}
+              {/* Lista de usuários */}
+              <UserList profiles={profiles} search={search} />
             </CardContent>
           </Card>
         </TabsContent>
