@@ -28,7 +28,7 @@ interface Product {
   description: string;
   price: number;
   active: boolean;
-  image_url: string | null;
+  image_url: string[];
   stripe_product_id: string;
 }
 

@@ -1,11 +1,10 @@
-// src/components/product/ProductForm.tsx
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
 interface ProductFormProps {
-  product: { name: string; description: string; price: number; image_url: string };
-  onSubmit: (data: { name: string; description: string; price: number; image_url: string }) => void;
+  product: { name: string; description: string; price: number; image_url: string[] };
+  onSubmit: (data: { name: string; description: string; price: number; image_url: string[] }) => void;
   onClose: () => void;
   isEditMode: boolean;
 }

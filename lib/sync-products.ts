@@ -1,5 +1,5 @@
 import { stripe } from './stripe';
-import { supabase } from './supabase-client';
+import { supabaseAdmin as supabase } from './supabase-admin';
 
 export const syncStripeProducts = async () => {
   try {
@@ -43,7 +43,8 @@ export const syncStripeProducts = async () => {
       const { error: insertError } = await supabase.from("products").insert([{
         name: product.name,
         description: product.description,
-        price: 0,
+        price: product.default_price,
+        category: product.metadata.category,
         active: product.active,
         image_url: product.images.length ? product.images : [],
         stripe_product_id: product.id,
