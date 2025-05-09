@@ -4,7 +4,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import Image from 'next/image';
+import Image from "next/image";
+import { uploadImageToStorage } from "@/lib/upload-image";
+import { createStripeProduct } from "@/api/create-product";
 
 interface ProductFormProps {
   product: {
@@ -41,29 +43,49 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const form = e.currentTarget;
-    const imageUrls: string[] = [];
+    let imageUrl = product.image_url?.[0] || "";
 
-    // Se houver imagem selecionada, você deve fazer o upload aqui
     if (selectedFile) {
-      // Exemplo: upload para Supabase Storage, Cloudinary, etc.
-      // const uploadedUrl = await uploadImage(selectedFile);
-      // imageUrls.push(uploadedUrl);
-
-      // Placeholder para fins de teste local
-      imageUrls.push(previewUrl || "");
-    } else {
-      imageUrls.push(...product.image_url);
+      const uploadedUrl = await uploadImageToStorage(selectedFile);
+      if (!uploadedUrl) {
+        alert("Erro ao fazer upload da imagem.");
+        return;
+      }
+      imageUrl = uploadedUrl;
     }
 
+    // Requisição para rota de API (servidor)
+    const response = await fetch("/api/create-product", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: form.name.value,
+        description: form.description.value,
+        price: parseFloat(form.price.value),
+        category: form.category.value,
+        active: form.active.checked,
+        image_url: [imageUrl],
+      }),
+    });
+
+    if (!response.ok) {
+      alert("Erro ao criar produto no Stripe.");
+      return;
+    }
+
+    const data = await response.json();
+
+    // Persistir no banco local
     onSubmit({
       name: form.name.value,
       description: form.description.value,
       price: parseFloat(form.price.value),
       category: form.category.value,
       active: form.active.checked,
-      image_url: imageUrls,
+      image_url: [imageUrl],
     });
   };
 
