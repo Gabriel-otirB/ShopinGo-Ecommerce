@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase-client";
 import ProductList from './components/product-list';
 import UserList from './components/user-list';
+import { Bounce, Flip, toast } from 'react-toastify';
 
 interface Profile {
   id: string;
@@ -70,16 +71,38 @@ const Admin = () => {
       const data = await res.json();
       if (data.success) {
         setSyncResult(`Produtos adicionados: ${data.result.added}`);
+        toast.success(`Sincronização concluída! ${data.result.added} produtos adicionados.`, {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          transition: Flip,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        });
         await fetchProducts();
       } else {
         setSyncResult("Erro ao sincronizar produtos.");
+        toast.error("Erro ao sincronizar produtos.", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          transition: Bounce,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        });
       }
     } catch {
       setSyncResult("Erro ao sincronizar produtos.");
+      toast.error("Erro ao sincronizar produtos.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="container mx-auto">
@@ -98,7 +121,7 @@ const Admin = () => {
             </CardHeader>
             <CardContent className="space-y-4 -mt-2">
               <div className="flex justify-between">
-                <Button onClick={handleSync} disabled={loading}>
+                <Button onClick={handleSync} disabled={loading} className="cursor-pointer">
                   {loading ? "Sincronizando..." : "Sincronizar com Painel Stripe"}
                 </Button>
               </div>

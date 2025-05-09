@@ -92,7 +92,7 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
 
   return (
     <div className="space-y-2">
-      <Button onClick={handleCreateClick}>+ Adicionar Produto</Button>
+      <Button onClick={handleCreateClick} className="cursor-pointer">+ Adicionar Produto</Button>
 
       {visibleProducts.length === 0 ? (
         <p className="text-sm text-muted-foreground">Nenhum produto encontrado.</p>
@@ -126,6 +126,7 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
                 variant="outline"
                 size="sm"
                 onClick={() => handleEditClick(product)}
+                className="cursor-pointer"
               >
                 Editar
               </Button>
@@ -141,9 +142,9 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
       {filteredProducts.length > 10 && (
         <div className="flex justify-center mt-4">
           {visibleProductsCount < filteredProducts.length ? (
-            <Button onClick={handleShowMore}>Ver mais</Button>
+            <Button onClick={handleShowMore} className="cursor-pointer">Ver mais</Button>
           ) : (
-            <Button onClick={() => setVisibleProductsCount(10)}>Ver menos</Button>
+            <Button onClick={() => setVisibleProductsCount(10)} className="cursor-pointer">Ver menos</Button>
           )}
         </div>
       )}

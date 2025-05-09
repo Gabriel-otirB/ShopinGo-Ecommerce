@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { uploadImageToStorage } from "@/lib/upload-image";
-import { Bounce, toast } from 'react-toastify';
+import { Bounce, Flip, toast } from "react-toastify";
 
 interface ProductFormProps {
   product: {
@@ -38,6 +38,7 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(product.image_url?.[0] || null);
   const [active, setActive] = useState<boolean>(product.active ?? true);
+  const [errors, setErrors] = useState<{ name?: string; description?: string; category?: string }>({});
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -51,41 +52,44 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
     e.preventDefault();
     const form = e.currentTarget;
 
-    let imageUrl = product.image_url?.[0] || "";
+    const name = form.name.value.trim();
+    const description = form.description.value.trim();
+    const price = parseFloat(form.price.value);
+    const category = form.category.value.trim();
 
-    if (selectedFile) {
-      const uploadedUrl = await uploadImageToStorage(selectedFile);
-      if (!uploadedUrl) {
-        toast.error("Erro ao fazer upload da imagem.", {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        transition: Bounce,
-        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
-      });
-        return;
-      }
-      imageUrl = uploadedUrl;
-    }
+    // Validação de campos
+    const newErrors: typeof errors = {};
+    if (name.length > 250) newErrors.name = "O nome deve ter no máximo 250 caracteres.";
+    if (description.length > 500) newErrors.description = "A descrição deve ter no máximo 500 caracteres.";
+    if (!category) newErrors.category = "A categoria é obrigatória.";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
 
-    const priceValue = parseFloat(form.price.value);
-    if (isNaN(priceValue) || priceValue <= 0) {
+    if (isNaN(price) || price <= 0) {
       toast.error("O preço deve ser um número válido maior que zero.", {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
         transition: Bounce,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
       return;
+    }
+
+    let imageUrl = product.image_url?.[0] || "";
+    if (selectedFile) {
+      const uploadedUrl = await uploadImageToStorage(selectedFile);
+      if (!uploadedUrl) {
+        toast.error("Erro ao fazer upload da imagem.", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          transition: Bounce,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        });
+        return;
+      }
+      imageUrl = uploadedUrl;
     }
 
     const isUpdate = !!product.stripe_product_id;
@@ -93,23 +97,23 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
 
     const body = isUpdate
       ? {
-        stripe_product_id: product.stripe_product_id,
-        name: form.name.value,
-        description: form.description.value,
-        old_price: product.price,
-        new_price: priceValue,
-        category: form.category.value,
-        active,
-        image_url: [imageUrl],
-      }
+          stripe_product_id: product.stripe_product_id,
+          name,
+          description,
+          old_price: product.price,
+          new_price: price,
+          category,
+          active,
+          image_url: [imageUrl],
+        }
       : {
-        name: form.name.value,
-        description: form.description.value,
-        price: priceValue,
-        category: form.category.value,
-        active,
-        image_url: [imageUrl],
-      };
+          name,
+          description,
+          price,
+          category,
+          active,
+          image_url: [imageUrl],
+        };
 
     const response = await fetch(apiEndpoint, {
       method: "POST",
@@ -123,36 +127,46 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
         transition: Bounce,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
       return;
     }
 
-    onSubmit({
-      name: form.name.value,
-      description: form.description.value,
-      price: priceValue,
-      category: form.category.value,
-      active,
-      image_url: [imageUrl],
+    // TOAST de sucesso
+    toast.success(`Produto ${isEditMode ? "atualizado" : "criado"} com sucesso!`, {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: true,
+      transition: Flip,
+      theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
     });
+
+    onSubmit({ name, description, price, category, active, image_url: [imageUrl] });
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <Input name="name" placeholder="Nome do Produto" defaultValue={product.name} required />
-      <Textarea name="description" placeholder="Descrição" defaultValue={product.description} required />
+      <div className="flex flex-col gap-1">
+        <Input name="name" placeholder="Nome do Produto" defaultValue={product.name} required />
+        {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <Textarea name="description" placeholder="Descrição" defaultValue={product.description} required />
+        {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
+      </div>
+
       <Input name="price" type="number" step="0.01" placeholder="Preço" defaultValue={product.price} required />
-      <Input name="category" placeholder="Categoria" defaultValue={product.category} required />
+
+      <div className="flex flex-col gap-1">
+        <Input name="category" placeholder="Categoria" defaultValue={product.category} required />
+        {errors.category && <p className="text-sm text-red-500">{errors.category}</p>}
+      </div>
 
       <div className="flex items-center gap-2">
         <Label htmlFor="active">Ativo</Label>
-        <Switch id="active" checked={active} onCheckedChange={setActive} className="cursor-pointer"/>
+        <Switch id="active" checked={active} onCheckedChange={setActive} className="cursor-pointer" />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -176,8 +190,12 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
       </div>
 
       <div className="flex justify-between">
-        <Button type="button" className="cursor-pointer" variant="outline" onClick={onClose}>Cancelar</Button>
-        <Button type="submit" className="cursor-pointer">{isEditMode ? "Salvar" : "Criar"}</Button>
+        <Button type="button" className="cursor-pointer" variant="outline" onClick={onClose}>
+          Cancelar
+        </Button>
+        <Button type="submit" className="cursor-pointer">
+          {isEditMode ? "Salvar" : "Criar"}
+        </Button>
       </div>
     </form>
   );
