@@ -1,57 +1,72 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
+import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  try {
+    const body = await req.json();
+    const {
+      stripe_product_id,
+      name,
+      description,
+      category,
+      active,
+      image_url,
+      old_price,
+      new_price,
+    } = body;
 
-  // Atualiza o produto no Stripe
-  const updatedProduct = await stripe.products.update(body.stripe_product_id, {
-    name: body.name,
-    description: body.description,
-    active: body.active,
-    images: body.image_url,
-    metadata: { category: body.category },
-  });
+    if (!stripe_product_id) {
+      return NextResponse.json({ error: "ID do produto do Stripe ausente." }, { status: 400 });
+    }
 
-  let newPriceId = null;
-
-  // Se o preço mudou, cria um novo
-  if (body.new_price && body.new_price !== body.old_price) {
-    const newPrice = await stripe.prices.create({
-      product: body.stripe_product_id,
-      unit_amount: Math.round(body.new_price * 100),
-      currency: "brl",
+    // Atualiza o produto no Stripe
+    const updatedProduct = await stripe.products.update(stripe_product_id, {
+      name,
+      description,
+      active,
+      images: image_url,
+      metadata: { category },
     });
 
-    // Define o novo preço padrão no produto
-    await stripe.products.update(body.stripe_product_id, {
-      default_price: newPrice.id,
-    });
+    let newPriceId = null;
 
-    newPriceId = newPrice.id;
+    // Cria novo preço se necessário
+    if (new_price !== old_price) {
+      const newStripePrice = await stripe.prices.create({
+        product: stripe_product_id,
+        unit_amount: Math.round(new_price * 100),
+        currency: "brl",
+      });
+
+      await stripe.products.update(stripe_product_id, {
+        default_price: newStripePrice.id,
+      });
+
+      newPriceId = newStripePrice.id;
+    }
+
+    // Atualiza no Supabase
+    const { error } = await supabase
+      .from("products")
+      .update({
+        name,
+        description,
+        price: new_price,
+        category,
+        active,
+        image_url,
+      })
+      .eq("stripe_product_id", stripe_product_id);
+
+    if (error) {
+      console.error("Erro ao atualizar no Supabase:", error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ updatedProduct, newPriceId });
+  } catch (error: any) {
+    console.error("Erro no update-product:", error);
+    return NextResponse.json({ error: error.message || "Erro desconhecido." }, { status: 500 });
   }
-
-  // Atualiza o registro do produto no Supabase
-  const { error } = await supabase
-    .from("products") // Tabela onde os produtos estão armazenados
-    .update({
-      name: body.name,
-      description: body.description,
-      price: body.new_price || body.old_price,
-      category: body.category,
-      active: body.active,
-      image_url: body.image_url,
-    })
-    .eq("stripe_product_id", body.stripe_product_id); // Filtra pelo stripe_product_id
-
-  if (error) {
-    console.log("Erro ao atualizar no Supabase:", error.message); // Log para debug
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  return NextResponse.json({
-    updatedProduct,
-    newPriceId,
-  });
 }

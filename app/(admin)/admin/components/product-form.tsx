@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -68,19 +70,30 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
     const isUpdate = !!product.stripe_product_id;
     const apiEndpoint = isUpdate ? "/api/update-product" : "/api/create-product";
 
-    const response = await fetch(apiEndpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    const body = isUpdate
+      ? {
         stripe_product_id: product.stripe_product_id,
         name: form.name.value,
         description: form.description.value,
         old_price: product.price,
+        new_price: priceValue,
+        category: form.category.value,
+        active,
+        image_url: [imageUrl],
+      }
+      : {
+        name: form.name.value,
+        description: form.description.value,
         price: priceValue,
         category: form.category.value,
         active,
         image_url: [imageUrl],
-      }),
+      };
+
+    const response = await fetch(apiEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
