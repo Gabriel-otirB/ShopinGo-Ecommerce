@@ -60,7 +60,10 @@ const Admin = () => {
 
   // Buscar produtos
   const fetchProducts = async () => {
-    const { data, error } = await supabase.from("products").select("*");
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .eq("active", true);
 
     if (error) {
       console.error("Erro ao buscar produtos:", error);
