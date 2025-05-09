@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from '@/lib/helper';
 import { Button } from '@/components/ui/button';
-import { ChevronLeftIcon, MoveLeft } from 'lucide-react';
+import { ChevronLeftIcon } from 'lucide-react';
 import Link from 'next/link';
 
 const OrderDetail = () => {
@@ -50,13 +50,15 @@ const OrderDetail = () => {
     <div className="container mx-auto pb-2 md:pb-4 md:pt-2 px-4">
       <div className="max-w-2xl mx-auto space-y-4">
         <span className="flex items-center font-medium m-0">
-          <Link href="/account" className='flex items-center'>
-            <ChevronLeftIcon />
-            <span className="hover:underline">Voltar</span>
-          </Link>
+          <Button className="bg-black hover:bg-black text-white cursor-pointer">
+            <Link href="/account" className='flex items-center'>
+              <ChevronLeftIcon />
+              <span className="hover:underline">Voltar</span>
+            </Link>
+          </Button>
         </span>
         <div className='flex items-center'>
-          <h1 className="flex-1 mx-auto text-xl font-bold text-center">Detalhes do Pedido</h1>
+          <h1 className="flex-1 mx-auto text-2xl font-bold text-center">Detalhes do Pedido</h1>
         </div>
 
         <Card className='border-2 border-gray-300 dark:border-neutral-500'>
