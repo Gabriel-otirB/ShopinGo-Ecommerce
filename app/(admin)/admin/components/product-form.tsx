@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { uploadImageToStorage } from "@/lib/upload-image";
+import { Bounce, toast } from 'react-toastify';
 
 interface ProductFormProps {
   product: {
@@ -55,7 +56,17 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
     if (selectedFile) {
       const uploadedUrl = await uploadImageToStorage(selectedFile);
       if (!uploadedUrl) {
-        alert("Erro ao fazer upload da imagem.");
+        toast.error("Erro ao fazer upload da imagem.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
         return;
       }
       imageUrl = uploadedUrl;
@@ -63,7 +74,17 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
 
     const priceValue = parseFloat(form.price.value);
     if (isNaN(priceValue) || priceValue <= 0) {
-      alert("O preço deve ser um número válido maior que zero.");
+      toast.error("O preço deve ser um número válido maior que zero.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
       return;
     }
 
@@ -98,7 +119,17 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
 
     if (!response.ok) {
       const errorData = await response.json();
-      alert(`Erro: ${errorData.error || "Falha ao salvar produto."}`);
+      toast.error(`Erro: ${errorData.error || "Falha ao salvar produto."}`, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
       return;
     }
 

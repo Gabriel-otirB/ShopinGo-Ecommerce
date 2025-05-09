@@ -10,6 +10,7 @@ import {
 import { useDisclosure } from "@/hooks/use-disclosure";
 import ProductForm from "./product-form";
 import ProductDeleteAlert from "./product-delete-alert";
+import { Bounce, Flip, toast } from 'react-toastify';
 
 interface Product {
   id: string;
@@ -62,11 +63,30 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
 
       if (!response.ok) throw new Error("Erro ao remover o produto");
 
-      alert("Produto desativado com sucesso!");
-      onReload(); // atualiza após exclusão
+      toast.success("Produto desativado com sucesso!", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        transition: Flip,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
+      onReload();
     } catch (error) {
-      alert("Erro ao desativar o produto.");
-      console.error(error);
+      toast.error("Erro ao desativar o produto.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
     }
   };
 

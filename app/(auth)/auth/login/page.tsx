@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { toast } from "react-toastify";
+import { Bounce, Flip, toast } from "react-toastify";
 
 import { useAuth } from '@/providers/auth-context';
 import RedirectIfAuthenticated from '@/components/redirect-if-authenticated';
@@ -61,10 +61,32 @@ const Login = () => {
 
     try {
       await signUp(email, password, name);
-      toast.success("Conta criada! Verifique seu email.");
+
+      toast.success("Conta criada! Verifique seu email.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        transition: Flip,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
+
       router.push("/auth/verify-email");
     } catch (error: any) {
-      toast.error(error?.message || "Erro ao criar conta");
+      toast.error("Erro ao criar conta.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
     }
   };
 
@@ -92,7 +114,17 @@ const Login = () => {
       } else {
         setLoginPasswordError(message);
       }
-      toast.error(message);
+      toast.error(message, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
     }
   };
 
@@ -128,13 +160,13 @@ const Login = () => {
                       name="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="********"
-                    />
+                    />s
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-[31px] text-gray-500 hover:text-gray-700"
+                      className="absolute right-3 top-[31px] text-gray-500 hover:text-gray-700 cursor-pointer"
                     >
-                      {showPassword ? <EyeOff className="cursor-pointer" size={18} /> : <Eye className="cursor-pointer" size={18} />}
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                     {loginPasswordError && <p className="text-sm text-red-500">{loginPasswordError}</p>}
                   </div>
@@ -181,9 +213,9 @@ const Login = () => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-[31px] text-gray-500 hover:text-gray-700"
+                      className="absolute right-3 top-[31px] text-gray-500 hover:text-gray-700 cursor-pointer"
                     >
-                      {showPassword ? <EyeOff className="cursor-pointer" size={18} /> : <Eye className="cursor-pointer" size={18} />}
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                     {signupPasswordError && <p className="text-sm text-red-500">{signupPasswordError}</p>}
                   </div>
@@ -202,7 +234,7 @@ const Login = () => {
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       className="absolute right-3 top-[31px] text-gray-500 hover:text-gray-700"
                     >
-                      {showConfirmPassword ? <EyeOff className="cursor-pointer" size={18} /> : <Eye className="cursor-pointer" size={18} />}
+                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                     {signupConfirmPasswordError && <p className="text-sm text-red-500">{signupConfirmPasswordError}</p>}
                   </div>
