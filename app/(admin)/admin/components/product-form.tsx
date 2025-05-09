@@ -57,29 +57,26 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
       imageUrl = uploadedUrl;
     }
 
-    const body = {
-      name: form.name.value,
-      description: form.description.value,
-      price: parseFloat(form.price.value),
-      category: form.category.value,
-      active: form.active.checked,
-      image_url: [imageUrl],
-      old_price: product.price, // Enviar o preço antigo para comparação
-      new_price: parseFloat(form.price.value), // Novo preço enviado para criar um novo preço, se necessário
-      stripe_product_id: product.stripe_product_id,
-    };
-
-    // Requisição para a rota de API para atualizar o produto
+    // Requisição para a rota de API de atualização de produto
     const response = await fetch("/api/update-product", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        stripe_product_id: product.stripe_product_id, // Envia o stripe_product_id para identificar o produto no Stripe e no Supabase
+        name: form.name.value,
+        description: form.description.value,
+        old_price: product.price,
+        new_price: parseFloat(form.price.value),
+        category: form.category.value,
+        active: form.active.checked,
+        image_url: [imageUrl],
+      }),
     });
 
     if (!response.ok) {
-      alert("Erro ao atualizar produto no Stripe.");
+      alert("Erro ao atualizar produto no Stripe ou Supabase.");
       return;
     }
 
@@ -94,8 +91,6 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
       active: form.active.checked,
       image_url: [imageUrl],
     });
-
-    onClose();
   };
 
   return (

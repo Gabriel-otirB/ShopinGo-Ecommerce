@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
+import { supabase } from '@/lib/supabase-client'; // Importe o supabase
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -29,6 +30,23 @@ export async function POST(req: NextRequest) {
     });
 
     newPriceId = newPrice.id;
+  }
+
+  // Atualiza o registro do produto no Supabase
+  const { error } = await supabase
+    .from("products") // Tabela onde os produtos estão armazenados
+    .update({
+      name: body.name,
+      description: body.description,
+      price: body.new_price || body.old_price,
+      category: body.category,
+      active: body.active,
+      image_url: body.image_url,
+    })
+    .eq("stripe_product_id", body.stripe_product_id); // Filtra pelo stripe_product_id
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
   return NextResponse.json({
