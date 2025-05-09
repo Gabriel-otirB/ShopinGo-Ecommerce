@@ -1,31 +1,63 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
+import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  try {
+    const body = await req.json();
+    const {
+      name,
+      description,
+      price,
+      category,
+      active,
+      image_url,
+    } = body;
 
-  // Cria o produto primeiro, sem default_price
-  const product = await stripe.products.create({
-    name: body.name,
-    description: body.description,
-    images: body.image_url,
-    active: body.active,
-    metadata: {
-      category: body.category,
-    },
-  });
+    const priceValue = parseFloat(price);
+    if (isNaN(priceValue) || priceValue <= 0) {
+      return NextResponse.json({ error: "Preço inválido." }, { status: 400 });
+    }
 
-  // Cria o preço
-  const price = await stripe.prices.create({
-    product: product.id,
-    unit_amount: Math.round(body.price * 100), // em centavos
-    currency: "brl",
-  });
+    // Criação do produto no Stripe (sem default_price)
+    const product = await stripe.products.create({
+      name,
+      description,
+      images: image_url,
+      active,
+      metadata: { category },
+    });
 
-  // Atualiza o produto para definir o preço como padrão
-  const updatedProduct = await stripe.products.update(product.id, {
-    default_price: price.id,
-  });
+    // Criação do preço em centavos
+    const unitAmount = Math.round(priceValue * 100);
+    const createdPrice = await stripe.prices.create({
+      product: product.id,
+      unit_amount: unitAmount,
+      currency: "brl",
+    });
 
-  return NextResponse.json({ product: updatedProduct, price });
+    // Atualiza o produto com o preço padrão
+    const updatedProduct = await stripe.products.update(product.id, {
+      default_price: createdPrice.id,
+    });
+
+    // Persistência no Supabase
+    const { error: dbError } = await supabase.from("products").insert([{
+      name,
+      description,
+      price: priceValue,
+      category,
+      active,
+      image_url,
+      stripe_product_id: product.id,
+    }]);
+
+    if (dbError) {
+      return NextResponse.json({ error: dbError.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ product: updatedProduct, price: createdPrice });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || "Erro desconhecido." }, { status: 500 });
+  }
 }

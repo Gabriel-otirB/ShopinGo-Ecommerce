@@ -34,6 +34,7 @@ interface ProductFormProps {
 const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(product.image_url?.[0] || null);
+  const [active, setActive] = useState<boolean>(product.active ?? true);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -46,6 +47,7 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
+
     let imageUrl = product.image_url?.[0] || "";
 
     if (selectedFile) {
@@ -57,38 +59,42 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
       imageUrl = uploadedUrl;
     }
 
-    // Requisição para a rota de API de atualização de produto
-    const response = await fetch("/api/update-product", {
+    const priceValue = parseFloat(form.price.value);
+    if (isNaN(priceValue) || priceValue <= 0) {
+      alert("O preço deve ser um número válido maior que zero.");
+      return;
+    }
+
+    const isUpdate = !!product.stripe_product_id;
+    const apiEndpoint = isUpdate ? "/api/update-product" : "/api/create-product";
+
+    const response = await fetch(apiEndpoint, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        stripe_product_id: product.stripe_product_id, // Envia o stripe_product_id para identificar o produto no Stripe e no Supabase
+        stripe_product_id: product.stripe_product_id,
         name: form.name.value,
         description: form.description.value,
         old_price: product.price,
-        new_price: parseFloat(form.price.value),
+        price: priceValue,
         category: form.category.value,
-        active: form.active.checked,
+        active,
         image_url: [imageUrl],
       }),
     });
 
     if (!response.ok) {
-      alert("Erro ao atualizar produto no Stripe ou Supabase.");
+      const errorData = await response.json();
+      alert(`Erro: ${errorData.error || "Falha ao salvar produto."}`);
       return;
     }
 
-    const data = await response.json();
-
-    // Persistir no banco local
     onSubmit({
       name: form.name.value,
       description: form.description.value,
-      price: parseFloat(form.price.value),
+      price: priceValue,
       category: form.category.value,
-      active: form.active.checked,
+      active,
       image_url: [imageUrl],
     });
   };
@@ -102,19 +108,17 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
 
       <div className="flex items-center gap-2">
         <Label htmlFor="active">Ativo</Label>
-        <Switch id="active" name="active" defaultChecked={product.active} />
+        <Switch id="active" checked={active} onCheckedChange={setActive} />
       </div>
 
       <div>
-        <div className="flex flex-col gap-y-2">
-          <Label>Imagem</Label>
-          <Input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="h-auto dark:text-white/50 text-black/60 cursor-pointer max-w-[310px]"
-          />
-        </div>
+        <Label>Imagem</Label>
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="h-auto text-black/60 dark:text-white/50 cursor-pointer max-w-[310px]"
+        />
         {previewUrl && (
           <Image
             src={previewUrl}
@@ -122,13 +126,14 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
             height={120}
             alt="Pré-visualização"
             draggable={false}
-            className="mt-2 rounded object-contain border-gray-300 dark:border-neutral-500 border-2 w-30 h-30 p-2" />
+            className="mt-2 rounded object-contain border-2 p-2 w-30 h-30"
+          />
         )}
       </div>
 
       <div className="flex justify-between">
-        <Button type="button" variant="outline" onClick={onClose} className="cursor-pointer">Cancelar</Button>
-        <Button type="submit" className="cursor-pointer">{isEditMode ? "Salvar" : "Criar"}</Button>
+        <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
+        <Button type="submit">{isEditMode ? "Salvar" : "Criar"}</Button>
       </div>
     </form>
   );
