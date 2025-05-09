@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { supabase } from '@/lib/supabase-client'; // Importe o supabase
+import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
     .eq("stripe_product_id", body.stripe_product_id); // Filtra pelo stripe_product_id
 
   if (error) {
+    console.log("Erro ao atualizar no Supabase:", error.message); // Log para debug
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
