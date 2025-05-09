@@ -121,10 +121,10 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
 
       <div className="flex items-center gap-2">
         <Label htmlFor="active">Ativo</Label>
-        <Switch id="active" checked={active} onCheckedChange={setActive} />
+        <Switch id="active" checked={active} onCheckedChange={setActive} className="cursor-pointer"/>
       </div>
 
-      <div>
+      <div className="flex flex-col gap-2">
         <Label>Imagem</Label>
         <Input
           type="file"
@@ -145,8 +145,8 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
       </div>
 
       <div className="flex justify-between">
-        <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
-        <Button type="submit">{isEditMode ? "Salvar" : "Criar"}</Button>
+        <Button type="button" className="cursor-pointer" variant="outline" onClick={onClose}>Cancelar</Button>
+        <Button type="submit" className="cursor-pointer">{isEditMode ? "Salvar" : "Criar"}</Button>
       </div>
     </form>
   );

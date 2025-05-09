@@ -69,8 +69,8 @@ const ProductList = ({ products, search }: { products: Product[]; search: string
   };
 
   return (
-    <div className="space-y-2 mt-4">
-      <Button onClick={handleCreateClick} className="mt-4">
+    <div className="space-y-2">
+      <Button onClick={handleCreateClick} className="cursor-pointer">
         + Adicionar Produto
       </Button>
 
@@ -122,10 +122,14 @@ const ProductList = ({ products, search }: { products: Product[]; search: string
         ))
       )}
 
-      {visibleProductsCount < filteredProducts.length && filteredProducts.length >= 10 && (
-        <Button onClick={handleShowMore} className="mt-4">
-          Ver mais
-        </Button>
+      {filteredProducts.length > 10 && (
+        <div className="flex justify-center mt-4">
+          {visibleProductsCount < filteredProducts.length ? (
+            <Button onClick={handleShowMore} className="cursor-pointer">Ver mais</Button>
+          ) : (
+            <Button onClick={() => setVisibleProductsCount(10)} className="cursor-pointer">Ver menos</Button>
+          )}
+        </div>
       )}
 
       <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>

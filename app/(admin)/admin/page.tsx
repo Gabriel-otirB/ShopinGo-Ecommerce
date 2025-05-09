@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase-client";
-import { useAuth } from "@/providers/auth-context";
 import ProductList from './components/product-list';
 import UserList from './components/user-list';
 
@@ -33,7 +32,6 @@ interface Product {
 }
 
 const Admin = () => {
-  const { user } = useAuth();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
@@ -117,7 +115,7 @@ const Admin = () => {
               <CardTitle>Gerenciar Produtos</CardTitle>
               <CardDescription>Adicione, edite ou remova produtos do catálogo.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 -mt-2">
               <div className="flex justify-between">
                 <Button
                   onClick={handleSync}
@@ -149,7 +147,7 @@ const Admin = () => {
               <CardTitle>Gerenciar Usuários</CardTitle>
               <CardDescription>Visualize usuários e altere privilégios de administrador.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 -mt-2">
               <Input
                 placeholder="Buscar por email..."
                 value={search}
