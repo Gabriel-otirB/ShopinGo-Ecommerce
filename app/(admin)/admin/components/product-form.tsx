@@ -6,7 +6,6 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { uploadImageToStorage } from "@/lib/upload-image";
-import { createStripeProduct } from "@/api/create-product";
 
 interface ProductFormProps {
   product: {
