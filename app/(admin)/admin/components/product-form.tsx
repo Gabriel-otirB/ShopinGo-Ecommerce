@@ -9,12 +9,15 @@ import { uploadImageToStorage } from "@/lib/upload-image";
 
 interface ProductFormProps {
   product: {
+    id?: string;
     name: string;
     description: string;
     price: number;
     category: string;
     active: boolean;
     image_url: string[];
+    stripe_product_id?: string;
+    old_price?: number;
   };
   onSubmit: (data: {
     name: string;
@@ -22,7 +25,7 @@ interface ProductFormProps {
     price: number;
     category: string;
     active: boolean;
-    image_url: string[]; // URLs após o upload
+    image_url: string[];
   }) => void;
   onClose: () => void;
   isEditMode: boolean;
@@ -54,24 +57,29 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
       imageUrl = uploadedUrl;
     }
 
-    // Requisição para rota de API (servidor)
-    const response = await fetch("/api/create-product", {
+    const body = {
+      name: form.name.value,
+      description: form.description.value,
+      price: parseFloat(form.price.value),
+      category: form.category.value,
+      active: form.active.checked,
+      image_url: [imageUrl],
+      old_price: product.price, // Enviar o preço antigo para comparação
+      new_price: parseFloat(form.price.value), // Novo preço enviado para criar um novo preço, se necessário
+      stripe_product_id: product.stripe_product_id,
+    };
+
+    // Requisição para a rota de API para atualizar o produto
+    const response = await fetch("/api/update-product", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        name: form.name.value,
-        description: form.description.value,
-        price: parseFloat(form.price.value),
-        category: form.category.value,
-        active: form.active.checked,
-        image_url: [imageUrl],
-      }),
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
-      alert("Erro ao criar produto no Stripe.");
+      alert("Erro ao atualizar produto no Stripe.");
       return;
     }
 
@@ -86,6 +94,8 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
       active: form.active.checked,
       image_url: [imageUrl],
     });
+
+    onClose();
   };
 
   return (

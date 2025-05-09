@@ -1,8 +1,6 @@
-"use client";
-
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -99,14 +97,7 @@ const ProductList = ({ products, search }: { products: Product[], search: string
           </DialogHeader>
 
           <ProductForm
-            product={
-              currentProduct || {
-                name: "",
-                description: "",
-                price: 0,
-                image_url: ""
-              }
-            }
+            product={currentProduct || { name: "", description: "", price: 0, image_url: [] }}
             isEditMode={!!currentProduct}
             onSubmit={(data) => {
               if (currentProduct) {
