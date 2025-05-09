@@ -21,7 +21,13 @@ interface Product {
   stripe_product_id: string;
 }
 
-const ProductList = ({ products, search }: { products: Product[]; search: string }) => {
+interface ProductListProps {
+  products: Product[];
+  search: string;
+  onReload: () => void;
+}
+
+const ProductList = ({ products, search, onReload }: ProductListProps) => {
   const [visibleProductsCount, setVisibleProductsCount] = useState(10);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const { isOpen, open, close } = useDisclosure();
@@ -50,18 +56,14 @@ const ProductList = ({ products, search }: { products: Product[]; search: string
     try {
       const response = await fetch("/api/remove-product", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId }),
       });
 
-      if (!response.ok) {
-        throw new Error("Erro ao remover o produto");
-      }
+      if (!response.ok) throw new Error("Erro ao remover o produto");
 
-      // Atualizar a UI ou fazer outra ação após remoção
       alert("Produto desativado com sucesso!");
+      onReload(); // atualiza após exclusão
     } catch (error) {
       alert("Erro ao desativar o produto.");
       console.error(error);
@@ -70,9 +72,7 @@ const ProductList = ({ products, search }: { products: Product[]; search: string
 
   return (
     <div className="space-y-2">
-      <Button onClick={handleCreateClick} className="cursor-pointer">
-        + Adicionar Produto
-      </Button>
+      <Button onClick={handleCreateClick}>+ Adicionar Produto</Button>
 
       {visibleProducts.length === 0 ? (
         <p className="text-sm text-muted-foreground">Nenhum produto encontrado.</p>
@@ -80,7 +80,7 @@ const ProductList = ({ products, search }: { products: Product[]; search: string
         visibleProducts.map((product) => (
           <div key={product.id} className="flex items-center justify-between border rounded p-2">
             <div className="flex items-center gap-4">
-              {product.image_url && product.image_url.length > 0 && (
+              {product.image_url.length > 0 && (
                 <div className="relative w-12 h-12">
                   <Image
                     src={product.image_url[0]}
@@ -88,14 +88,11 @@ const ProductList = ({ products, search }: { products: Product[]; search: string
                     fill
                     className="object-contain rounded"
                     unoptimized
-                    draggable={false}
                   />
                 </div>
               )}
               <div>
-                <div className="font-medium max-w-[81px] sm:max-w-[320px] md:max-w-[400px] lg:max-w-[480px] line-clamp-1">
-                  {product.name}
-                </div>
+                <div className="font-medium line-clamp-1 max-w-[320px]">{product.name}</div>
                 <div className="text-sm text-muted-foreground">
                   {Intl.NumberFormat("pt-BR", {
                     style: "currency",
@@ -109,7 +106,6 @@ const ProductList = ({ products, search }: { products: Product[]; search: string
                 variant="outline"
                 size="sm"
                 onClick={() => handleEditClick(product)}
-                className="cursor-pointer"
               >
                 Editar
               </Button>
@@ -125,9 +121,9 @@ const ProductList = ({ products, search }: { products: Product[]; search: string
       {filteredProducts.length > 10 && (
         <div className="flex justify-center mt-4">
           {visibleProductsCount < filteredProducts.length ? (
-            <Button onClick={handleShowMore} className="cursor-pointer">Ver mais</Button>
+            <Button onClick={handleShowMore}>Ver mais</Button>
           ) : (
-            <Button onClick={() => setVisibleProductsCount(10)} className="cursor-pointer">Ver menos</Button>
+            <Button onClick={() => setVisibleProductsCount(10)}>Ver menos</Button>
           )}
         </div>
       )}
@@ -137,17 +133,12 @@ const ProductList = ({ products, search }: { products: Product[]; search: string
           <DialogHeader>
             <DialogTitle>{currentProduct ? "Editar Produto" : "Criar Produto"}</DialogTitle>
           </DialogHeader>
-
           <ProductForm
             product={currentProduct || { name: "", description: "", price: 0, image_url: [] }}
             isEditMode={!!currentProduct}
-            onSubmit={(data) => {
-              if (currentProduct) {
-                console.log("Atualizar:", data);
-              } else {
-                console.log("Criar:", data);
-              }
+            onSubmit={() => {
               close();
+              onReload(); // recarrega após criar/editar
             }}
             onClose={close}
           />
