@@ -15,18 +15,15 @@ export const syncStripeProducts = async () => {
       });
 
       allProducts = allProducts.concat(response.data);
-
       hasMore = response.has_more;
       if (hasMore) {
         startingAfter = response.data[response.data.length - 1].id;
       }
     }
 
-    console.log("Todos os produtos do Stripe:", allProducts);
-
     const { data: localProducts, error } = await supabase
       .from("products")
-      .select("id, stripe_product_id");
+      .select("stripe_product_id");
 
     if (error) throw new Error(error.message);
 
@@ -35,18 +32,27 @@ export const syncStripeProducts = async () => {
       (product) => !existingIds.includes(product.id)
     );
 
-    console.log("Produtos novos a serem adicionados:", newProducts);
-
     for (const product of newProducts) {
-      console.log("Inserindo produto:", product.name);
+      let priceValue = 0;
+
+      if (product.default_price) {
+        try {
+          const price = await stripe.prices.retrieve(product.default_price as string);
+          if (price.unit_amount !== null) {
+            priceValue = price.unit_amount / 100; // Stripe retorna em centavos
+          }
+        } catch (err) {
+          console.warn(`Erro ao buscar preço do produto ${product.id}:`, err);
+        }
+      }
 
       const { error: insertError } = await supabase.from("products").insert([{
         name: product.name,
-        description: product.description,
-        price: product.default_price,
-        category: product.metadata.category,
+        description: product.description || "",
+        price: priceValue,
+        category: product.metadata.category || "",
         active: product.active,
-        image_url: product.images.length ? product.images : [],
+        image_url: product.images || [],
         stripe_product_id: product.id,
       }]);
 

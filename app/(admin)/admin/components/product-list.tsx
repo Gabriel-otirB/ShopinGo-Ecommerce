@@ -13,7 +13,6 @@ import { useDisclosure } from '@/hooks/use-disclosure';
 import ProductForm from './product-form';
 import ProductDeleteAlert from './product-delete-alert';
 
-// Interface de Produto
 interface Product {
   id: string;
   name: string;
@@ -51,34 +50,39 @@ const ProductList = ({ products, search }: { products: Product[], search: string
 
   return (
     <div className="space-y-2 mt-4">
-      <Button onClick={handleCreateClick} className="cursor-pointer mt-4">+ Adicionar Produto</Button>
+      <Button onClick={handleCreateClick} className="mt-4">+ Adicionar Produto</Button>
 
       {visibleProducts.length === 0 ? (
         <p className="text-sm text-muted-foreground">Nenhum produto encontrado.</p>
       ) : (
         visibleProducts.map((product) => (
           <div key={product.id} className="flex items-center justify-between border rounded p-2">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
               {product.image_url && product.image_url.length > 0 && (
                 <div className="relative w-12 h-12">
                   <Image
                     src={product.image_url[0]}
                     alt={product.name}
                     fill
-                    className="object-cover rounded"
+                    className="object-contain rounded"
                     unoptimized
+                    draggable={false}
                   />
                 </div>
               )}
-              <span className="truncate max-w-[150px] lg:max-w-[400px]">{product.name}</span>
+              <div>
+                <div className="font-medium max-w-[81px] sm:max-w-[320px] md:max-w-[400px] lg:max-w-[480px] line-clamp-1">{product.name}</div>
+                <div className="text-sm text-muted-foreground">
+                  {Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(product.price)}
+                </div>
+              </div>
             </div>
             <div className="space-x-2">
               <Button variant="outline" size="sm" onClick={() => handleEditClick(product)} className="cursor-pointer">Editar</Button>
-              <ProductDeleteAlert
-                onConfirm={() => {
-                  console.log("Remover produto:", product.id);
-                }}
-              />
+              <ProductDeleteAlert onConfirm={() => console.log("Remover produto:", product.id)} />
             </div>
           </div>
         ))
@@ -95,7 +99,14 @@ const ProductList = ({ products, search }: { products: Product[], search: string
           </DialogHeader>
 
           <ProductForm
-            product={currentProduct || { name: "", description: "", price: 0, image_url: "" }}
+            product={
+              currentProduct || {
+                name: "",
+                description: "",
+                price: 0,
+                image_url: ""
+              }
+            }
             isEditMode={!!currentProduct}
             onSubmit={(data) => {
               if (currentProduct) {

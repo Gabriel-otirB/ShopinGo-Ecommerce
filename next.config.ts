@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: 'files.stripe.com',
         pathname: '/**',  // permite qualquer caminho dentro do domínio
       },
+      {
+        protocol: 'https',
+        hostname: 'bnfcwqwulvplfbpnnzgv.supabase.co',
+        pathname: '/**',  // permite qualquer caminho dentro do domínio
+      },
     ],
   },
 };
