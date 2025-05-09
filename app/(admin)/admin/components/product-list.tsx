@@ -7,9 +7,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useDisclosure } from '@/hooks/use-disclosure';
-import ProductForm from './product-form';
-import ProductDeleteAlert from './product-delete-alert';
+import { useDisclosure } from "@/hooks/use-disclosure";
+import ProductForm from "./product-form";
+import ProductDeleteAlert from "./product-delete-alert";
 
 interface Product {
   id: string;
@@ -21,19 +21,19 @@ interface Product {
   stripe_product_id: string;
 }
 
-const ProductList = ({ products, search }: { products: Product[], search: string }) => {
+const ProductList = ({ products, search }: { products: Product[]; search: string }) => {
   const [visibleProductsCount, setVisibleProductsCount] = useState(10);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const { isOpen, open, close } = useDisclosure();
 
-  const filteredProducts = products.filter(product =>
+  const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase())
   );
 
   const visibleProducts = filteredProducts.slice(0, visibleProductsCount);
 
   const handleShowMore = () => {
-    setVisibleProductsCount(prev => prev + 10);
+    setVisibleProductsCount((prev) => prev + 10);
   };
 
   const handleEditClick = (product: Product) => {
@@ -46,9 +46,33 @@ const ProductList = ({ products, search }: { products: Product[], search: string
     open();
   };
 
+  const handleDeleteProduct = async (productId: string) => {
+    try {
+      const response = await fetch("/api/remove-product", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ productId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erro ao remover o produto");
+      }
+
+      // Atualizar a UI ou fazer outra ação após remoção
+      alert("Produto desativado com sucesso!");
+    } catch (error) {
+      alert("Erro ao desativar o produto.");
+      console.error(error);
+    }
+  };
+
   return (
     <div className="space-y-2 mt-4">
-      <Button onClick={handleCreateClick} className="mt-4">+ Adicionar Produto</Button>
+      <Button onClick={handleCreateClick} className="mt-4">
+        + Adicionar Produto
+      </Button>
 
       {visibleProducts.length === 0 ? (
         <p className="text-sm text-muted-foreground">Nenhum produto encontrado.</p>
@@ -69,7 +93,9 @@ const ProductList = ({ products, search }: { products: Product[], search: string
                 </div>
               )}
               <div>
-                <div className="font-medium max-w-[81px] sm:max-w-[320px] md:max-w-[400px] lg:max-w-[480px] line-clamp-1">{product.name}</div>
+                <div className="font-medium max-w-[81px] sm:max-w-[320px] md:max-w-[400px] lg:max-w-[480px] line-clamp-1">
+                  {product.name}
+                </div>
                 <div className="text-sm text-muted-foreground">
                   {Intl.NumberFormat("pt-BR", {
                     style: "currency",
@@ -79,15 +105,27 @@ const ProductList = ({ products, search }: { products: Product[], search: string
               </div>
             </div>
             <div className="space-x-2">
-              <Button variant="outline" size="sm" onClick={() => handleEditClick(product)} className="cursor-pointer">Editar</Button>
-              <ProductDeleteAlert onConfirm={() => console.log("Remover produto:", product.id)} />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleEditClick(product)}
+                className="cursor-pointer"
+              >
+                Editar
+              </Button>
+              <ProductDeleteAlert
+                productId={product.id}
+                onConfirm={handleDeleteProduct}
+              />
             </div>
           </div>
         ))
       )}
 
       {visibleProductsCount < filteredProducts.length && filteredProducts.length >= 10 && (
-        <Button onClick={handleShowMore} className="mt-4">Ver mais</Button>
+        <Button onClick={handleShowMore} className="mt-4">
+          Ver mais
+        </Button>
       )}
 
       <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
