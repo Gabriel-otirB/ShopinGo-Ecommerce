@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/helper';
 import { useAddress } from '@/hooks/use-address';
+import { toast } from 'react-toastify';
 
 type FreightOption = {
   name: string;
@@ -15,9 +16,14 @@ type FreightOption = {
 type Props = {
   onSelectFreight: (freight: FreightOption | null) => void;
   onAddressValidityChange?: (isValid: boolean) => void;
+  onFormDataChange?: (formData: any) => void;
 };
 
-export default function ShippingCalculator({ onSelectFreight, onAddressValidityChange }: Props) {
+export default function ShippingCalculator({
+  onSelectFreight,
+  onAddressValidityChange,
+  onFormDataChange,
+}: Props) {
   const { address, saveAddress, loading: loadingAddress, error: addressError } = useAddress();
 
   const [formData, setFormData] = useState({
@@ -35,7 +41,12 @@ export default function ShippingCalculator({ onSelectFreight, onAddressValidityC
   const [error, setError] = useState('');
   const [freightOptions, setFreightOptions] = useState<FreightOption[] | null>(null);
   const [selectedFreight, setSelectedFreight] = useState<FreightOption | null>(null);
+  const [isAddressValid, setIsAddressValid] = useState(false);
 
+  const [isDirty, setIsDirty] = useState(false); // Flag para detectar alterações no formulário
+  const [hasFreightBeenCalculated, setHasFreightBeenCalculated] = useState(false); // Flag para verificar se o frete foi calculado
+
+  // Atualiza formData com dados do Supabase se houver
   useEffect(() => {
     if (address) {
       setFormData(prevFormData => ({
@@ -47,29 +58,46 @@ export default function ShippingCalculator({ onSelectFreight, onAddressValidityC
         uf: prevFormData.uf || address.uf || '',
         complement: prevFormData.complement || address.complement || '',
       }));
-
-      handleCalculate(); // Calcular frete automaticamente quando o endereço for preenchido
     }
   }, [address]);
+
+  // Envia formData atualizado para o componente pai
+  useEffect(() => {
+    onFormDataChange?.(formData);
+  }, [formData]);
+
+  // Valida endereço ao mudar formData
+  useEffect(() => {
+    validateAddress(false);
+  }, [formData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    setIsDirty(true); // Marca o formulário como alterado
+    setHasFreightBeenCalculated(false); // Quando o formulário mudar, forçamos o recálculo do frete
   };
 
-  const validateAddress = () => {
+  const validateAddress = (setErrorState = true) => {
     const requiredFields = ['street', 'number', 'neighborhood', 'city', 'uf'];
     const newErrors: Record<string, string> = {};
     requiredFields.forEach(field => {
       if (!formData[field]) newErrors[field] = 'Campo obrigatório';
     });
-    setErrors(newErrors);
+
+    if (setErrorState) {
+      setErrors(newErrors);
+    }
+
     const isValid = Object.keys(newErrors).length === 0;
+    setIsAddressValid(isValid);
     onAddressValidityChange?.(isValid);
     return isValid;
   };
 
   const handleCalculate = async () => {
+    if (!validateAddress()) return;
+
     setError('');
     setFreightOptions(null);
     setSelectedFreight(null);
@@ -88,7 +116,6 @@ export default function ShippingCalculator({ onSelectFreight, onAddressValidityC
 
       if (data.erro) throw new Error('CEP não encontrado');
 
-      // Atualiza os campos apenas se o valor retornado do viacep não for null
       setFormData(prev => ({
         ...prev,
         street: prev.street || data.logradouro || '',
@@ -111,6 +138,7 @@ export default function ShippingCalculator({ onSelectFreight, onAddressValidityC
           ];
 
       setFreightOptions(simulatedFreights);
+      setHasFreightBeenCalculated(true); // Marca que o frete foi calculado
     } catch (err: any) {
       setError(err.message || 'Erro ao buscar o CEP');
     } finally {
@@ -127,6 +155,13 @@ export default function ShippingCalculator({ onSelectFreight, onAddressValidityC
       onSelectFreight(null);
     }
   };
+
+  useEffect(() => {
+    // Se o formulário foi alterado e o frete já foi calculado, força o recálculo
+    if (isDirty && hasFreightBeenCalculated) {
+      handleCalculate();
+    }
+  }, [isDirty]);
 
   return (
     <div className="max-w-md mx-auto my-6 p-4 border rounded shadow-sm bg-white dark:bg-neutral-900 dark:border-neutral-800">
@@ -150,14 +185,7 @@ export default function ShippingCalculator({ onSelectFreight, onAddressValidityC
 
       <h2 className="text-lg font-semibold my-4">Endereço</h2>
       <div className="grid grid-cols-1 gap-3 mb-4">
-        {[
-          { name: 'street', placeholder: 'Rua' },
-          { name: 'number', placeholder: 'Número' },
-          { name: 'neighborhood', placeholder: 'Bairro' },
-          { name: 'city', placeholder: 'Cidade' },
-          { name: 'uf', placeholder: 'UF', maxLength: 2 },
-          { name: 'complement', placeholder: 'Complemento (opcional)' },
-        ].map(({ name, placeholder, maxLength }) => (
+        {[{ name: 'street', placeholder: 'Rua' }, { name: 'number', placeholder: 'Número' }, { name: 'neighborhood', placeholder: 'Bairro' }, { name: 'city', placeholder: 'Cidade' }, { name: 'uf', placeholder: 'UF', maxLength: 2 }, { name: 'complement', placeholder: 'Complemento (opcional)' }].map(({ name, placeholder, maxLength }) => (
           <div key={name}>
             <Input
               name={name}
@@ -171,10 +199,16 @@ export default function ShippingCalculator({ onSelectFreight, onAddressValidityC
         ))}
       </div>
 
-      <Button onClick={() => saveAddress(formData)} className="cursor-pointer w-full mb-4">Salvar endereço</Button>
+      <Button
+        onClick={handleCalculate}
+        className="cursor-pointer w-full mb-4"
+        disabled={loading || loadingAddress || !isAddressValid}
+      >
+        {isAddressValid ? 'Calcular frete' : 'Preencha todos os campos'}
+      </Button>
 
       {freightOptions && (
-        <>
+        <div>
           <h2 className="text-lg font-semibold mb-4">Frete</h2>
           <div className="space-y-2 mt-2">
             {freightOptions.map(option => (
@@ -194,7 +228,7 @@ export default function ShippingCalculator({ onSelectFreight, onAddressValidityC
               </div>
             ))}
           </div>
-        </>
+        </div>
       )}
     </div>
   );

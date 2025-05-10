@@ -22,16 +22,36 @@ import Link from 'next/link';
 import ScrollTop from '@/components/scroll-top';
 import { ShoppingCart } from 'lucide-react';
 import ShippingCalculator from './components/shipping-calculator';
+import { useAddress } from '@/hooks/use-address';
 
 export default function CheckoutPage() {
-  const { items, clearItem, addItem, removeItem } = useCartStore();
+  const { items, clearCart, addItem, removeItem } = useCartStore();
   const [selectedFreight, setSelectedFreight] = useState(null);
   const [addressValid, setAddressValid] = useState(false);
-  const [addressData, setAddressData] = useState(null); // Novo estado para armazenar endereço
+  const [addressData, setAddressData] = useState(null);
 
   const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const freightValue = selectedFreight?.price ?? 0;
   const grandTotal = total + freightValue;
+
+  const { saveAddress } = useAddress();
+
+  const handleCheckout = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();  // Evita o envio padrão do formulário
+
+    saveAddress(addressData!);
+
+    // Criação de FormData
+    const formData = new FormData();
+    formData.append("items", JSON.stringify(items));  // Adicionando os itens do carrinho
+    formData.append("freight", JSON.stringify(selectedFreight));  // Adicionando o frete selecionado
+
+    // Passa os dados para o checkoutAction, sem modificar o campo de endereço
+    await checkoutAction(formData);
+
+    // Limpar o carrinho após o checkout, por exemplo
+    clearCart();
+  };
 
   return (
     <>
@@ -129,7 +149,7 @@ export default function CheckoutPage() {
                   <ShippingCalculator
                     onSelectFreight={setSelectedFreight}
                     onAddressValidityChange={setAddressValid}
-                    onFormDataChange={setAddressData} // Aqui recebemos os dados do endereço
+                    onFormDataChange={setAddressData}
                   />
 
                   <div className="mt-4 pt-2 text-lg font-semibold">
@@ -138,7 +158,7 @@ export default function CheckoutPage() {
                 </CardContent>
               </Card>
 
-              <form action={() => alert(addressData)} className="max-w-md mx-auto">
+              <form onSubmit={handleCheckout} className="max-w-md mx-auto">
                 <input type="hidden" name="items" value={JSON.stringify(items)} />
                 <input type="hidden" name="freight" value={JSON.stringify(selectedFreight)} />
                 <input type="hidden" name="address" value={JSON.stringify(addressData)} />
