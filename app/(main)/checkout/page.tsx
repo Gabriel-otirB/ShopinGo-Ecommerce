@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCartStore } from "@/store/cart-store";
-import { checkoutAction } from "./checkout-action";
-import Image from "next/image";
-import { formatCurrency } from "@/lib/helper";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useCartStore } from '@/store/cart-store';
+import { checkoutAction } from './checkout-action';
+import Image from 'next/image';
+import { formatCurrency } from '@/lib/helper';
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -17,15 +17,16 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction
-} from "@/components/ui/alert-dialog";
-import Link from "next/link";
-import ScrollTop from "@/components/scroll-top";
-import { ShoppingCart } from "lucide-react";
-import ShippingCalculator from "./components/shipping-calculator";
+} from '@/components/ui/alert-dialog';
+import Link from 'next/link';
+import ScrollTop from '@/components/scroll-top';
+import { ShoppingCart } from 'lucide-react';
+import ShippingCalculator from './components/shipping-calculator';
 
 export default function CheckoutPage() {
   const { items, clearItem, addItem, removeItem } = useCartStore();
   const [selectedFreight, setSelectedFreight] = useState(null);
+  const [addressValid, setAddressValid] = useState(false);
 
   const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const freightValue = selectedFreight?.price ?? 0;
@@ -63,19 +64,17 @@ export default function CheckoutPage() {
                       <li key={item.id} className="flex flex-col gap-2 border-b pb-2">
                         <div className="flex justify-between items-center">
                           <Link href={`/products/${item.id}`} className="flex items-center gap-2">
-                            <div className="flex items-center w-full">
-                              <Image
-                                src={item.imageUrl || ""}
-                                alt={item.name}
-                                width={64}
-                                height={64}
-                                className="rounded object-contain w-16 h-16"
-                                draggable={false}
-                              />
-                              <span className="flex-1 font-medium px-3 text-sm overflow-hidden line-clamp-3 break-words">
-                                {item.name}
-                              </span>
-                            </div>
+                            <Image
+                              src={item.imageUrl || ''}
+                              alt={item.name}
+                              width={64}
+                              height={64}
+                              className="rounded object-contain w-16 h-16"
+                              draggable={false}
+                            />
+                            <span className="flex-1 font-medium px-3 text-sm overflow-hidden line-clamp-3 break-words">
+                              {item.name}
+                            </span>
                           </Link>
                           <span className="font-semibold whitespace-nowrap text-sm">
                             {formatCurrency((item.price * item.quantity) / 100)}
@@ -84,21 +83,19 @@ export default function CheckoutPage() {
 
                         <div className="flex justify-between items-center gap-2">
                           <div className="flex align-center gap-2">
-                            <Button 
-                            variant="outline"
-                            disabled={item.quantity === 1}
-                            size="sm" 
-                            onClick={() => removeItem(item.id)}
-                            className='cursor-pointer'
+                            <Button
+                              variant="outline"
+                              disabled={item.quantity === 1}
+                              size="sm"
+                              onClick={() => removeItem(item.id)}
                             >
                               –
                             </Button>
                             <span className="text-lg font-semibold">{item.quantity}</span>
-                            <Button 
-                            variant="outline"
-                            size="sm" 
-                            onClick={() => addItem({ ...item, quantity: 1 })}
-                            className="cursor-pointer"
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => addItem({ ...item, quantity: 1 })}
                             >
                               +
                             </Button>
@@ -106,7 +103,7 @@ export default function CheckoutPage() {
 
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button variant="destructive" size="sm" className="cursor-pointer">Remover</Button>
+                              <Button variant="destructive" size="sm">Remover</Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
@@ -116,8 +113,8 @@ export default function CheckoutPage() {
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel className="cursor-pointer">Cancelar</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => clearItem(item.id)} className="cursor-pointer">
+                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => clearItem(item.id)}>
                                   Remover
                                 </AlertDialogAction>
                               </AlertDialogFooter>
@@ -128,7 +125,10 @@ export default function CheckoutPage() {
                     ))}
                   </ul>
 
-                  <ShippingCalculator onSelectFreight={setSelectedFreight} />
+                  <ShippingCalculator
+                    onSelectFreight={setSelectedFreight}
+                    onAddressValidityChange={setAddressValid}
+                  />
 
                   <div className="mt-4 pt-2 text-lg font-semibold">
                     Total: {formatCurrency(grandTotal / 100)}
@@ -142,10 +142,8 @@ export default function CheckoutPage() {
                 <Button
                   type="submit"
                   variant="default"
-                  className="
-                  w-full px-6 py-3 bg-black hover:bg-black/90 text-white
-                dark:text-black dark:bg-white dark:hover:bg-white/90 cursor-pointer"
-                  disabled={!selectedFreight}
+                  className="w-full px-6 py-3 bg-black hover:bg-black/90 text-white dark:text-black dark:bg-white dark:hover:bg-white/90"
+                  disabled={!selectedFreight || !addressValid}
                 >
                   Finalizar Compra
                 </Button>
