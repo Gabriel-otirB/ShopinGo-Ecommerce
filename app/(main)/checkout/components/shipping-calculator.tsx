@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/helper';
+import { useAddress } from '@/hooks/use-address';
 
 type FreightOption = {
   name: string;
@@ -17,37 +18,53 @@ type Props = {
 };
 
 export default function ShippingCalculator({ onSelectFreight, onAddressValidityChange }: Props) {
-  const [cep, setCep] = useState('');
+  const { address, saveAddress, loading: loadingAddress, error: addressError } = useAddress();
+
+  const [formData, setFormData] = useState({
+    cep: '',
+    street: '',
+    number: '',
+    neighborhood: '',
+    city: '',
+    uf: '',
+    complement: '',
+  });
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [freightOptions, setFreightOptions] = useState<FreightOption[] | null>(null);
   const [selectedFreight, setSelectedFreight] = useState<FreightOption | null>(null);
 
-  const [street, setStreet] = useState('');
-  const [number, setNumber] = useState('');
-  const [complement, setComplement] = useState('');
-  const [neighborhood, setNeighborhood] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
+  useEffect(() => {
+    if (address) {
+      setFormData(prevFormData => ({
+        cep: prevFormData.cep || address.cep,
+        street: prevFormData.street || address.street || '',
+        number: prevFormData.number || address.number || '',
+        neighborhood: prevFormData.neighborhood || address.neighborhood || '',
+        city: prevFormData.city || address.city || '',
+        uf: prevFormData.uf || address.uf || '',
+        complement: prevFormData.complement || address.complement || '',
+      }));
 
-  const [errors, setErrors] = useState({
-    street: '',
-    number: '',
-    neighborhood: '',
-    city: '',
-    state: '',
-  });
+      handleCalculate(); // Calcular frete automaticamente quando o endereço for preenchido
+    }
+  }, [address]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const validateAddress = () => {
-    const newErrors = {
-      street: street ? '' : 'Rua é obrigatória',
-      number: number ? '' : 'Número é obrigatório',
-      neighborhood: neighborhood ? '' : 'Bairro é obrigatório',
-      city: city ? '' : 'Cidade é obrigatória',
-      state: state ? '' : 'UF é obrigatória',
-    };
+    const requiredFields = ['street', 'number', 'neighborhood', 'city', 'uf'];
+    const newErrors: Record<string, string> = {};
+    requiredFields.forEach(field => {
+      if (!formData[field]) newErrors[field] = 'Campo obrigatório';
+    });
     setErrors(newErrors);
-    const isValid = Object.values(newErrors).every((msg) => msg === '');
+    const isValid = Object.keys(newErrors).length === 0;
     onAddressValidityChange?.(isValid);
     return isValid;
   };
@@ -58,7 +75,7 @@ export default function ShippingCalculator({ onSelectFreight, onAddressValidityC
     setSelectedFreight(null);
     onSelectFreight(null);
 
-    const cleanCep = cep.replace(/\D/g, '');
+    const cleanCep = formData.cep.replace(/\D/g, '');
     if (cleanCep.length !== 8) {
       setError('CEP inválido');
       return;
@@ -71,10 +88,14 @@ export default function ShippingCalculator({ onSelectFreight, onAddressValidityC
 
       if (data.erro) throw new Error('CEP não encontrado');
 
-      setStreet(data.logradouro || '');
-      setNeighborhood(data.bairro || '');
-      setCity(data.localidade || '');
-      setState(data.uf || '');
+      // Atualiza os campos apenas se o valor retornado do viacep não for null
+      setFormData(prev => ({
+        ...prev,
+        street: prev.street || data.logradouro || '',
+        neighborhood: prev.neighborhood || data.bairro || '',
+        city: prev.city || data.localidade || '',
+        uf: prev.uf || data.uf || '',
+      }));
 
       const isSpecialUF = ['SP', 'RJ', 'MG'].includes(data.uf);
       const simulatedFreights: FreightOption[] = isSpecialUF
@@ -112,49 +133,51 @@ export default function ShippingCalculator({ onSelectFreight, onAddressValidityC
       <h2 className="text-lg font-semibold mb-4">CEP</h2>
       <div className="flex items-center gap-2 mb-4">
         <Input
+          name="cep"
           placeholder="CEP"
-          value={cep}
-          onChange={(e) => setCep(e.target.value)}
+          value={formData.cep}
+          onChange={handleChange}
           maxLength={9}
           className="flex-1"
         />
-        <Button onClick={handleCalculate} disabled={loading}>
-          {loading ? 'Calculando...' : 'Buscar'}
+        <Button onClick={handleCalculate} disabled={loading || loadingAddress}>
+          {loading || loadingAddress ? 'Calculando...' : 'Buscar'}
         </Button>
       </div>
 
       {error && <p className="text-sm text-red-600 dark:text-red-400 mb-2">{error}</p>}
+      {addressError && <p className="text-sm text-red-600 dark:text-red-400 mb-2">{addressError}</p>}
 
       <h2 className="text-lg font-semibold my-4">Endereço</h2>
       <div className="grid grid-cols-1 gap-3 mb-4">
-        <div>
-          <Input placeholder="Rua" value={street} onChange={(e) => setStreet(e.target.value)} />
-          {errors.street && <p className="text-sm text-red-600">{errors.street}</p>}
-        </div>
-        <div>
-          <Input placeholder="Número" value={number} onChange={(e) => setNumber(e.target.value)} />
-          {errors.number && <p className="text-sm text-red-600">{errors.number}</p>}
-        </div>
-        <div>
-          <Input placeholder="Bairro" value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} />
-          {errors.neighborhood && <p className="text-sm text-red-600">{errors.neighborhood}</p>}
-        </div>
-        <div>
-          <Input placeholder="Cidade" value={city} onChange={(e) => setCity(e.target.value)} />
-          {errors.city && <p className="text-sm text-red-600">{errors.city}</p>}
-        </div>
-        <div>
-          <Input placeholder="UF" value={state} onChange={(e) => setState(e.target.value)} maxLength={2} />
-          {errors.state && <p className="text-sm text-red-600">{errors.state}</p>}
-        </div>
-        <Input placeholder="Complemento" value={complement} onChange={(e) => setComplement(e.target.value)} />
+        {[
+          { name: 'street', placeholder: 'Rua' },
+          { name: 'number', placeholder: 'Número' },
+          { name: 'neighborhood', placeholder: 'Bairro' },
+          { name: 'city', placeholder: 'Cidade' },
+          { name: 'uf', placeholder: 'UF', maxLength: 2 },
+          { name: 'complement', placeholder: 'Complemento (opcional)' },
+        ].map(({ name, placeholder, maxLength }) => (
+          <div key={name}>
+            <Input
+              name={name}
+              placeholder={placeholder}
+              value={(formData as any)[name]}
+              onChange={handleChange}
+              maxLength={maxLength}
+            />
+            {errors[name] && <p className="text-sm text-red-600">{errors[name]}</p>}
+          </div>
+        ))}
       </div>
+
+      <Button onClick={() => saveAddress(formData)} className="cursor-pointer w-full mb-4">Salvar endereço</Button>
 
       {freightOptions && (
         <>
           <h2 className="text-lg font-semibold mb-4">Frete</h2>
           <div className="space-y-2 mt-2">
-            {freightOptions.map((option) => (
+            {freightOptions.map(option => (
               <div
                 key={option.name}
                 onClick={() => handleSelectFreight(option)}
@@ -164,7 +187,9 @@ export default function ShippingCalculator({ onSelectFreight, onAddressValidityC
                     : ''
                 }`}
               >
-                <span>{option.name} (até {option.estimatedDays} dias úteis)</span>
+                <span>
+                  {option.name} (até {option.estimatedDays} dias úteis)
+                </span>
                 <span className="font-medium">{formatCurrency(option.price / 100)}</span>
               </div>
             ))}

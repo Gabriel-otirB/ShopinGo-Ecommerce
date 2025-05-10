@@ -27,6 +27,7 @@ export default function CheckoutPage() {
   const { items, clearItem, addItem, removeItem } = useCartStore();
   const [selectedFreight, setSelectedFreight] = useState(null);
   const [addressValid, setAddressValid] = useState(false);
+  const [addressData, setAddressData] = useState(null); // Novo estado para armazenar endereço
 
   const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const freightValue = selectedFreight?.price ?? 0;
@@ -128,6 +129,7 @@ export default function CheckoutPage() {
                   <ShippingCalculator
                     onSelectFreight={setSelectedFreight}
                     onAddressValidityChange={setAddressValid}
+                    onFormDataChange={setAddressData} // Aqui recebemos os dados do endereço
                   />
 
                   <div className="mt-4 pt-2 text-lg font-semibold">
@@ -136,9 +138,10 @@ export default function CheckoutPage() {
                 </CardContent>
               </Card>
 
-              <form action={checkoutAction} className="max-w-md mx-auto">
+              <form action={() => alert(addressData)} className="max-w-md mx-auto">
                 <input type="hidden" name="items" value={JSON.stringify(items)} />
                 <input type="hidden" name="freight" value={JSON.stringify(selectedFreight)} />
+                <input type="hidden" name="address" value={JSON.stringify(addressData)} />
                 <Button
                   type="submit"
                   variant="default"

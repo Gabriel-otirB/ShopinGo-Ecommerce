@@ -160,7 +160,7 @@ const Login = () => {
                       name="password"
                       type={showPassword ? "text" : "password"}
                       placeholder="********"
-                    />s
+                    />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
