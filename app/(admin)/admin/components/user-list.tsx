@@ -19,9 +19,15 @@ const UserList = ({ profiles: initialProfiles, search }: { profiles: Profile[], 
   const [visibleUsersCount, setVisibleUsersCount] = useState(10);
   const [profiles, setProfiles] = useState<Profile[]>(initialProfiles);
 
-  const filteredProfiles = profiles.filter(profile =>
+  const filteredProfiles = profiles
+  .filter(profile =>
     profile.email.toLowerCase().includes(search.toLowerCase())
-  );
+  )
+  .sort((a, b) => {
+    if (a.user_id === user?.id) return -1;
+    if (b.user_id === user?.id) return 1;
+    return 0;
+  });
 
   const visibleProfiles = filteredProfiles.slice(0, visibleUsersCount);
 
@@ -54,9 +60,9 @@ const UserList = ({ profiles: initialProfiles, search }: { profiles: Profile[], 
         <p className="text-sm text-muted-foreground">Nenhum usuário encontrado.</p>
       ) : (
         visibleProfiles.map((profile) => (
-          <div key={profile.id} className="flex items-center justify-between border rounded p-4">
+          <div key={profile.id} className="flex flex-wrap justify-between border rounded p-4 gap-4 sm:items-center">
             <div>
-              <p className="font-medium">
+              <p className="font-medium break-all">
                 {profile.user_id === user?.id && (
                   <span className="text-blue-600 hover:text-blue-400 mr-1">(Eu)</span>
                 )}
@@ -66,7 +72,7 @@ const UserList = ({ profiles: initialProfiles, search }: { profiles: Profile[], 
                 {profile.role === "admin" ? "Administrador" : "Usuário comum"}
               </p>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-row gap-2 sm:gap-0 items-end justify-end sm:items-center sm:space-x-2 space-y-1 sm:space-y-0 text-right">
               <Label htmlFor={`role-switch-${profile.id}`}>Administrador</Label>
               <Switch
                 id={`role-switch-${profile.id}`}

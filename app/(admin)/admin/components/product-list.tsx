@@ -112,7 +112,7 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
                 </div>
               )}
               <div>
-                <div className="font-medium line-clamp-1 max-w-[320px]">{product.name}</div>
+                <div className="font-medium line-clamp-1 max-w-[80px] sm:max-w-[320px] mr-1 sm:mr-0">{product.name}</div>
                 <div className="text-sm text-muted-foreground">
                   {Intl.NumberFormat("pt-BR", {
                     style: "currency",
@@ -121,7 +121,7 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
                 </div>
               </div>
             </div>
-            <div className="space-x-2">
+            <div className="space-x-2 space-y-2 sm:space-y-0 flex">
               <Button
                 variant="outline"
                 size="sm"
