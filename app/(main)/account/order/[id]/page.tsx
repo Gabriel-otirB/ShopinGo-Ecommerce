@@ -83,7 +83,6 @@ const OrderDetail = () => {
   const [order, setOrder] = useState<Order | null>(null);
   const [items, setItems] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
   const params = useParams();
   const orderId = params.id;
 

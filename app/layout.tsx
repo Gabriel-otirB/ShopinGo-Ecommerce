@@ -8,6 +8,7 @@ import LoadingProvider from '../providers/loading-provider';
 import "react-toastify/dist/ReactToastify.css";
 import ToastProvider from '@/providers/toast-provider';
 import { AuthProvider } from '@/providers/auth-context';
+import CartSync from "@/components/cart-sync"; // <- componente cliente
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export default function RootLayout({
         flex min-h-full flex-col bg-white dark:bg-neutral-800`}
       >
         <AuthProvider>
+          <CartSync /> {/* <- aqui está o componente cliente com useEffect */}
           <Navbar />
           <ToastProvider />
           <main className="flex-grow container mx-auto px-4 py-8 min-h-[calc(100vh-450px)]">
