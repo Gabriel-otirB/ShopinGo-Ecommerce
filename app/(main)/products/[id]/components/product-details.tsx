@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { MinusIcon, PlusIcon, Share2, ShoppingBag, ShoppingCart } from 'lucide-react';
 import type Stripe from 'stripe';
 import { useCartStore } from '@/store/cart-store';
-import { redirect, usePathname, useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { Recommendations } from './recommendations';
 import { toast } from "react-toastify";
 import { Flip } from "react-toastify";

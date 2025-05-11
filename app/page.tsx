@@ -42,8 +42,8 @@ export default async function Home() {
               variant="default"
               className="
               inline-flex items-center justify-center 
-              rounded-full px-6 py-3 bg-black text-white 
-              cursor-pointer hover:bg-black/90"
+              rounded-full px-6 py-3 bg-black text-white hover:bg-black/90
+              cursor-pointer dark:bg-white dark:text-black dark:hover:bg-white/90"
             >
               <Link
                 href="/products"

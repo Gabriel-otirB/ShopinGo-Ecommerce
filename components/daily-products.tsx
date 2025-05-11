@@ -74,7 +74,9 @@ const DailyProducts = () => {
                       Termina em {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
                     </p>
                     <Link href={offer.link}>
-                      <button className="w-full rounded-full px-6 py-3 bg-black text-white hover:bg-black/90 cursor-pointer">
+                      <button className="
+                      w-full rounded-full cursor-pointer px-6 py-3 
+                    bg-black text-white hover:bg-black/90 dark:bg-white dark:hover:bg-white/90 dark:text-black">
                         Ver Mais
                       </button>
                     </Link>

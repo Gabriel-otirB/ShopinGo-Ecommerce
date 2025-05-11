@@ -69,7 +69,7 @@ const ProductCard = ({ product }: Props) => {
             <Button 
             className="
             mt-2 inline-flex items-center justify-center w-full px-6 py-3 bg-black text-white 
-            cursor-pointer hover:bg-black/90 dark:hover:bg-black/90">
+            cursor-pointer hover:bg-black/90 dark:bg-white dark:hover:bg-white/90 dark:text-black dark:">
               Ver detalhes
             </Button>
           </Link>

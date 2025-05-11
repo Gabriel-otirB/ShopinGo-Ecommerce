@@ -314,7 +314,7 @@ const OrderDetail = () => {
             </AlertDialog>
           )}
           <a target='_blank' href='https://rastreamento.correios.com.br/app/index.php'>
-            <Button className="bg-black hover:bg-black text-white cursor-pointer">
+            <Button className="bg-black hover:bg-black text-white dark:bg-white dark:text-black dark:hover:bg-white/90 cursor-pointer">
               Acompanhar Pedido
             </Button>
           </a>
