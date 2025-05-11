@@ -91,8 +91,34 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
   };
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(window.location.href);
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      navigator.clipboard.writeText(window.location.href)
+        .then(() => {
+          toast.success("Link copiado para a área de transferência");
+        })
+        .catch((err) => {
+          console.error("Erro ao copiar: ", err);
+          fallbackCopy();
+        });
+    } else {
+      fallbackCopy();
+    }
   };
+
+  const fallbackCopy = () => {
+    try {
+      const dummy = document.createElement("input");
+      document.body.appendChild(dummy);
+      dummy.value = window.location.href;
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
+      toast.success("Link copiado para a área de transferência");
+    } catch (error) {
+      toast.error("Não foi possível copiar o link.");
+    }
+  };
+
 
   return (
     <article>
@@ -124,11 +150,10 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
                 {product.images.map((img, idx) => (
                   <div
                     key={idx}
-                    className={`relative w-20 h-20 border-2 rounded-md cursor-pointer ${
-                      selectedImage === img
+                    className={`relative w-20 h-20 border-2 rounded-md cursor-pointer ${selectedImage === img
                         ? 'border-black dark:border-white'
                         : 'border-gray-300 dark:border-neutral-600'
-                    }`}
+                      }`}
                     onClick={() => setSelectedImage(img)}
                   >
                     <Image
