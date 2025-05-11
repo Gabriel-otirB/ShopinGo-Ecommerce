@@ -1,12 +1,31 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { XCircle } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Loading from '@/components/loading';
 
-export default function CancelPage() {
+export default function SuccessPage() {
+  const params = useSearchParams();
+  const session_id = params.get('session_id');
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+
+    if (session_id) {
+      fetch(`/api/stripe/status?session_id=${session_id}`)
+        .then(res => res.json())
+        .then(data => {
+          console.log("Status do pagamento:", data);
+          setPaymentStatus(data.status);
+        });
+    }
+  }, [session_id]);
+
+  if (!paymentStatus) return <Loading />;
 
   return (
     <motion.div
@@ -15,10 +34,14 @@ export default function CancelPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
     >
-      <XCircle className="mx-auto text-red-500 mb-4" size={64} />
-      <h1 className="text-3xl font-bold mb-4">Pagamento cancelado!</h1>
-      <p className="mb-6 text-gray-600 dark:text-gray-300">Você pode tentar novamente a qualquer momento.</p>
-      <Button onClick={() => router.push('/products')}>Voltar aos produtos</Button>
+      {paymentStatus === 'canceled' && (
+        <>
+          <CheckCircle className="mx-auto text-red-500 mb-4" size={64} />
+          <h1 className="text-3xl font-bold mb-4">Pagamento falhou!</h1>
+          <p className="mb-6 text-gray-600 dark:text-gray-300">Tente novamente ou use outro método de pagamento.</p>
+          <Button onClick={() => router.push('/checkout')}>Tentar novamente</Button>
+        </>
+      )}
     </motion.div>
   );
 }

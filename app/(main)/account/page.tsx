@@ -123,14 +123,14 @@ const AccountPage = () => {
         <TabsContent value="orders">
           <Card className="border-2 border-gray-300 dark:border-neutral-500">
             <CardContent className="pb-4">
-              <div className="space-y-4">
+              <div className="flex flex-col gap-4">
                 <h2 className="text-lg font-semibold text-center">Últimos Pedidos</h2>
                 {orders.length === 0 ? (
                   <p className="text-sm text-muted-foreground text-center">Nenhum pedido encontrado.</p>
                 ) : (
                   orders.map((order) => (
                     <Link href={`/account/order/${order.id}`} key={order.id}>
-                      <div className="relative border rounded p-4 hover:bg-neutral-100 hover:dark:bg-neutral-900 cursor-pointer duration-300 space-y-1">
+                      <div className="relative border-2 rounded p-4 hover:bg-neutral-100 hover:dark:bg-neutral-900 cursor-pointer duration-300 space-y-1">
                         <p className="font-medium">
                           Pedido #{String(order.id).padStart(8, "0")}
                         </p>

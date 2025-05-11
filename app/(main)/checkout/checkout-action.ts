@@ -37,6 +37,8 @@ export const checkoutAction = async (formData: FormData): Promise<void> => {
       profile_id: profile.id,
       total_price: totalPrice,
       payment_method: "undefined",
+      shipping_price: freight?.price || 0,
+      shipping_provider: freight?.name.toLowerCase(),
       status: "processing",
       address_street: address.street,
       address_number: address.number,
