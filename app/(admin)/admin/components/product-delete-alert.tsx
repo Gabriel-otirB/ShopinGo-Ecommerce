@@ -12,7 +12,6 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 
 interface ProductDeleteAlertProps {
   onConfirm: (productId: string) => void;

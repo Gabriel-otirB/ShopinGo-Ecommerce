@@ -98,7 +98,7 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
         <p className="text-sm text-muted-foreground">Nenhum produto encontrado.</p>
       ) : (
         visibleProducts.map((product) => (
-          <div key={product.id} className="flex items-center justify-between border rounded p-2">
+          <div key={product.id} className="flex items-center justify-between rounded p-2 border-2 border-gray-300 dark:border-neutral-500">
             <div className="flex items-center gap-4">
               {product.image_url.length > 0 && (
                 <div className="relative w-12 h-12">

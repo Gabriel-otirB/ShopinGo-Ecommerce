@@ -24,12 +24,12 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
   const price = product.default_price as Stripe.Price;
   const parcelamento = price.unit_amount && price.unit_amount / 100 / 10;
   const [quantity, setQuantity] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(product.images?.[0] || '');
 
   const { user } = useAuth();
   const router = useRouter();
 
   const handleAddItem = () => {
-
     if (!user) {
       router.push(`/auth/login?redirectTo=${encodeURIComponent(window.location.pathname + window.location.search)}`);
       return;
@@ -39,7 +39,7 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
       id: product.id,
       name: product.name,
       price: price.unit_amount as number,
-      imageUrl: product.images ? product.images[0] : null,
+      imageUrl: selectedImage,
       quantity: quantity,
     });
 
@@ -54,13 +54,9 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
       transition: Flip,
       theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
     });
-
-    return;
   };
 
-
   const handleBuyItem = () => {
-
     if (!user) {
       router.push(`/auth/login?redirectTo=${encodeURIComponent(window.location.pathname + window.location.search)}`);
       return;
@@ -70,7 +66,7 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
       id: product.id,
       name: product.name,
       price: price.unit_amount as number,
-      imageUrl: product.images ? product.images[0] : null,
+      imageUrl: selectedImage,
       quantity: quantity,
     });
 
@@ -101,25 +97,50 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
   return (
     <article>
       <div className="container mx-auto px-4 pb-2 md:py-4 flex flex-col md:flex-row gap-10 items-start min-h-[calc(100vh-450px)]">
-        {product.images?.[0] && (
-          <div className="relative w-full md:w-[50%] h-[300px] md:h-[450px] overflow-hidden rounded-lg shadow-md bg-neutral-100 dark:bg-neutral-900 border-2 border-gray-300 dark:border-neutral-500">
-            <Image
-              src={product.images[0]}
-              alt={product.name}
-              fill
-              style={{ objectFit: 'contain' }}
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="rounded-lg p-10"
-              draggable={false}
-            />
-            <Button
-              variant="outline"
-              className="absolute left-2 bottom-2 cursor-pointer border-2 bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200/75 transition-colors duration-200 border-gray-300 dark:border-neutral-500"
-              onClick={handleShare}
-            >
-              <Share2 className="h-5 w-5" />
-              Compartilhar
-            </Button>
+        {selectedImage && (
+          <div className="w-full md:w-[50%]">
+            <div className="relative w-full h-[300px] md:h-[450px] overflow-hidden rounded-lg shadow-md bg-neutral-100 dark:bg-neutral-900 border-2 border-gray-300 dark:border-neutral-500">
+              <Image
+                src={selectedImage}
+                alt={product.name}
+                fill
+                style={{ objectFit: 'contain' }}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="rounded-lg p-10"
+                draggable={false}
+              />
+              <Button
+                variant="outline"
+                className="absolute left-2 bottom-2 cursor-pointer border-2 bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200/75 transition-colors duration-200 border-gray-300 dark:border-neutral-500"
+                onClick={handleShare}
+              >
+                <Share2 className="h-5 w-5" />
+                Compartilhar
+              </Button>
+            </div>
+
+            {product.images?.length > 1 && (
+              <div className="mt-4 flex gap-2 overflow-x-auto">
+                {product.images.map((img, idx) => (
+                  <div
+                    key={idx}
+                    className={`relative w-20 h-20 border-2 rounded-md cursor-pointer ${
+                      selectedImage === img
+                        ? 'border-black dark:border-white'
+                        : 'border-gray-300 dark:border-neutral-600'
+                    }`}
+                    onClick={() => setSelectedImage(img)}
+                  >
+                    <Image
+                      src={img}
+                      alt={`${product.name} ${idx}`}
+                      fill
+                      className="object-contain rounded-md"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -153,9 +174,7 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
               <div className="flex flex-row gap-2 items-center justify-center">
                 <Button
                   variant="outline"
-                  className="
-                  cursor-pointer border-2 bg-neutral-100 hover:bg-neutral-200/75 transition-colors duration-200
-                dark:bg-neutral-900 border-gray-300 dark:border-neutral-500 "
+                  className="cursor-pointer border-2 bg-neutral-100 hover:bg-neutral-200/75 transition-colors duration-200 dark:bg-neutral-900 border-gray-300 dark:border-neutral-500"
                   onClick={() => quantity > 1 && setQuantity(quantity - 1)}
                   disabled={quantity === 1}
                 >
@@ -175,16 +194,16 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
 
           <div className="flex flex-col items-center gap-4 md:mt-2 mb-4 md:mb-0">
             <Button
-              className="w-full cursor-pointer bg-neutral-200 hover:bg-neutral-300/80 
-            text-black hover:text-black dark:bg-white hover:dark:bg-white/90 dark:text-black"
-              onClick={handleAddItem}>
+              className="w-full cursor-pointer bg-neutral-200 hover:bg-neutral-300/80 text-black hover:text-black dark:bg-white hover:dark:bg-white/90 dark:text-black"
+              onClick={handleAddItem}
+            >
               <ShoppingBag /> Adicionar ao carrinho
             </Button>
 
             <Button
-              className="w-full cursor-pointer dark:bg-black dark:text-white 
-            bg-black hover:bg-black/90 hover:dark:bg-black/90 text-white hover:text-white"
-              onClick={handleBuyItem}>
+              className="w-full cursor-pointer dark:bg-black dark:text-white bg-black hover:bg-black/90 hover:dark:bg-black/90 text-white hover:text-white"
+              onClick={handleBuyItem}
+            >
               <ShoppingCart /> Comprar agora
             </Button>
           </div>

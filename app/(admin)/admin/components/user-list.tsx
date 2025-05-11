@@ -60,7 +60,9 @@ const UserList = ({ profiles: initialProfiles, search }: { profiles: Profile[], 
         <p className="text-sm text-muted-foreground">Nenhum usuário encontrado.</p>
       ) : (
         visibleProfiles.map((profile) => (
-          <div key={profile.id} className="flex flex-wrap justify-between border rounded p-4 gap-4 sm:items-center">
+          <div key={profile.id} 
+          className="flex flex-wrap justify-between rounded p-4 gap-4 sm:items-center 
+          border-2 border-gray-300 dark:border-neutral-500">
             <div>
               <p className="font-medium break-all">
                 {profile.user_id === user?.id && (

@@ -114,7 +114,7 @@ const Admin = () => {
         </TabsList>
 
         <TabsContent value="products">
-          <Card>
+          <Card className="border-2 border-gray-300 dark:border-neutral-500">
             <CardHeader>
               <CardTitle>Gerenciar Produtos</CardTitle>
               <CardDescription>Adicione, edite ou remova produtos do catálogo.</CardDescription>
@@ -130,6 +130,7 @@ const Admin = () => {
                   placeholder="Buscar por nome do produto..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
+                  className="border-2 border-gray-300 dark:border-neutral-500"
                 />
               </div>
               <ProductList
@@ -142,7 +143,7 @@ const Admin = () => {
         </TabsContent>
 
         <TabsContent value="users">
-          <Card>
+          <Card className="border-2 border-gray-300 dark:border-neutral-500">
             <CardHeader>
               <CardTitle>Gerenciar Usuários</CardTitle>
               <CardDescription>Visualize usuários e altere privilégios de administrador.</CardDescription>
@@ -152,6 +153,7 @@ const Admin = () => {
                 placeholder="Buscar por email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                className="border-2 border-gray-300 dark:border-neutral-500"
               />
               <UserList profiles={profiles} search={search} />
             </CardContent>
