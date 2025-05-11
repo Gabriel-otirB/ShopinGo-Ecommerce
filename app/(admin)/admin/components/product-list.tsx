@@ -55,7 +55,7 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
 
   const handleDeleteProduct = async (productId: string) => {
     try {
-      const response = await fetch("/api/remove-product", {
+      const response = await fetch("/api/product/remove-product", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId }),

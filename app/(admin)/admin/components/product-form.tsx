@@ -93,7 +93,7 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
     }
 
     const isUpdate = !!product.stripe_product_id;
-    const apiEndpoint = isUpdate ? "/api/update-product" : "/api/create-product";
+    const apiEndpoint = isUpdate ? "/api/product/update-product" : "/api/create-product";
 
     const body = isUpdate
       ? {

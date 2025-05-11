@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/helper';
 import { useAddress } from '@/hooks/use-address';
-import { toast } from 'react-toastify';
 
 type FreightOption = {
   name: string;
@@ -24,7 +23,7 @@ export default function ShippingCalculator({
   onAddressValidityChange,
   onFormDataChange,
 }: Props) {
-  const { address, saveAddress, loading: loadingAddress, error: addressError } = useAddress();
+  const { address, loading: loadingAddress, error: addressError } = useAddress();
 
   const [formData, setFormData] = useState({
     cep: '',
@@ -175,7 +174,10 @@ export default function ShippingCalculator({
           maxLength={9}
           className="flex-1"
         />
-        <Button onClick={handleCalculate} disabled={loading || loadingAddress}>
+        <Button 
+        className="cursor-pointer"
+        onClick={handleCalculate} 
+        disabled={loading || loadingAddress}>
           {loading || loadingAddress ? 'Calculando...' : 'Buscar'}
         </Button>
       </div>

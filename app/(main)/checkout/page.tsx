@@ -23,34 +23,42 @@ import ScrollTop from '@/components/scroll-top';
 import { ShoppingCart } from 'lucide-react';
 import ShippingCalculator from './components/shipping-calculator';
 import { useAddress } from '@/hooks/use-address';
+import { useAuth } from '@/providers/auth-context';
 
 export default function CheckoutPage() {
-  const { items, clearCart, addItem, removeItem } = useCartStore();
+  const { items, addItem, removeItem, clearItem } = useCartStore();
   const [selectedFreight, setSelectedFreight] = useState(null);
   const [addressValid, setAddressValid] = useState(false);
   const [addressData, setAddressData] = useState(null);
+  const { user } = useAuth();
+  const { saveAddress } = useAddress();
 
   const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const freightValue = selectedFreight?.price ?? 0;
   const grandTotal = total + freightValue;
 
-  const { saveAddress } = useAddress();
-
   const handleCheckout = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();  // Evita o envio padrão do formulário
+    event.preventDefault();
 
-    saveAddress(addressData!);
+    if (!user) {
+      alert("Você precisa estar autenticado para finalizar a compra.");
+      return;
+    }
 
-    // Criação de FormData
+    await saveAddress(addressData!);
+
     const formData = new FormData();
-    formData.append("items", JSON.stringify(items));  // Adicionando os itens do carrinho
-    formData.append("freight", JSON.stringify(selectedFreight));  // Adicionando o frete selecionado
+    formData.append("items", JSON.stringify(items));
+    formData.append("freight", JSON.stringify(selectedFreight));
+    formData.append("total_price", String(grandTotal));
+    formData.append("user_id", user.id);
 
-    // Passa os dados para o checkoutAction, sem modificar o campo de endereço
+    // Inclui os campos do endereço individualmente
+    for (const [key, value] of Object.entries(addressData ?? {})) {
+      formData.append(key, value as string);
+    }
+
     await checkoutAction(formData);
-
-    // Limpar o carrinho após o checkout, por exemplo
-    clearCart();
   };
 
   return (
@@ -109,6 +117,7 @@ export default function CheckoutPage() {
                               disabled={item.quantity === 1}
                               size="sm"
                               onClick={() => removeItem(item.id)}
+                              className="cursor-pointer"
                             >
                               –
                             </Button>
@@ -117,6 +126,7 @@ export default function CheckoutPage() {
                               variant="outline"
                               size="sm"
                               onClick={() => addItem({ ...item, quantity: 1 })}
+                              className="cursor-pointer"
                             >
                               +
                             </Button>
@@ -124,7 +134,7 @@ export default function CheckoutPage() {
 
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button variant="destructive" size="sm">Remover</Button>
+                              <Button variant="destructive" size="sm" className="cursor-pointer">Remover</Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
@@ -134,8 +144,8 @@ export default function CheckoutPage() {
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => clearItem(item.id)}>
+                                <AlertDialogCancel className="cursor-pointer">Cancelar</AlertDialogCancel>
+                                <AlertDialogAction className="cursor-pointer" onClick={() => clearItem(item.id)}>
                                   Remover
                                 </AlertDialogAction>
                               </AlertDialogFooter>
@@ -158,14 +168,11 @@ export default function CheckoutPage() {
                 </CardContent>
               </Card>
 
-              <form onSubmit={handleCheckout} className="max-w-md mx-auto">
-                <input type="hidden" name="items" value={JSON.stringify(items)} />
-                <input type="hidden" name="freight" value={JSON.stringify(selectedFreight)} />
-                <input type="hidden" name="address" value={JSON.stringify(addressData)} />
+              <form onSubmit={handleCheckout} className="max-w-md mx-auto mt-4">
                 <Button
                   type="submit"
                   variant="default"
-                  className="w-full px-6 py-3 bg-black hover:bg-black/90 text-white dark:text-black dark:bg-white dark:hover:bg-white/90"
+                  className="w-full px-6 py-3 bg-black hover:bg-black/90 text-white dark:text-black dark:bg-white dark:hover:bg-white/90 cursor-pointer"
                   disabled={!selectedFreight || !addressValid}
                 >
                   Finalizar Compra

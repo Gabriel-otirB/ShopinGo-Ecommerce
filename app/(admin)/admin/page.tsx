@@ -67,7 +67,7 @@ const Admin = () => {
     setLoading(true);
     setSyncResult(null);
     try {
-      const res = await fetch("/api/sync-products", { method: "POST" });
+      const res = await fetch("/api/product/sync-products", { method: "POST" });
       const data = await res.json();
       if (data.success) {
         setSyncResult(`Produtos adicionados: ${data.result.added}`);
