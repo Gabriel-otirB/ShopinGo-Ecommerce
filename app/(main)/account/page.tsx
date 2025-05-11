@@ -62,11 +62,11 @@ const getStatusColor = (status: string) => {
 
 const getBadgeColor = (status: string) => {
   switch (status) {
-    case 'undefined': return 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800';
-    case 'paid': return 'bg-green-100 dark:bg-green-900 text-green-800';
-    case 'shipped': return 'bg-blue-100 dark:bg-blue-900 text-blue-800';
-    case 'delivered': return 'bg-emerald-100 dark:bg-emerald-900 text-emerald-800';
-    case 'canceled': return 'bg-red-100 dark:bg-red-900 text-red-800';
+    case 'undefined': return 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-50';
+    case 'paid': return 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-50';
+    case 'shipped': return 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-50';
+    case 'delivered': return 'bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-50';
+    case 'canceled': return 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-50';
     default: return '';
   }
 };
@@ -113,10 +113,10 @@ const AccountPage = () => {
       <Tabs defaultValue="orders" className="w-full max-w-3xl mx-auto">
         <div className="overflow-x-auto">
           <TabsList className="flex w-max min-w-full h-full gap-2 px-2 py-1 dark:bg-neutral-950 border-2 border-gray-300 dark:border-neutral-500 whitespace-nowrap">
-            <TabsTrigger value="orders">Meus Pedidos</TabsTrigger>
-            <TabsTrigger value="user">Dados do Usuário</TabsTrigger>
-            <TabsTrigger value="address">Endereço</TabsTrigger>
-            <TabsTrigger value="settings">Configurações</TabsTrigger>
+            <TabsTrigger value="orders" className="cursor-pointer">Meus Pedidos</TabsTrigger>
+            <TabsTrigger value="user" className="cursor-pointer">Dados do Usuário</TabsTrigger>
+            <TabsTrigger value="address" className="cursor-pointer">Endereço</TabsTrigger>
+            <TabsTrigger value="settings" className="cursor-pointer">Configurações</TabsTrigger>
           </TabsList>
         </div>
 
@@ -202,7 +202,7 @@ const AccountPage = () => {
                       window.location.href = '/';
                     }}
                     variant="destructive"
-                    className="w-full">
+                    className="w-full cursor-pointer">
                     Sair da Conta
                   </Button>
                 </AlertDialogTrigger>
@@ -216,7 +216,7 @@ const AccountPage = () => {
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
                     <AlertDialogAction
-                      className="bg-red-600 hover:bg-red-700 text-white"
+                      className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
                       onClick={signOut}
                     >
                       Sair
