@@ -1,9 +1,17 @@
 "use client";
 
 import {
-  Tabs, TabsList, TabsTrigger, TabsContent
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
 } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -15,6 +23,7 @@ import { Bounce, Flip, toast } from "react-toastify";
 
 import { useAuth } from '@/providers/auth-context';
 import RedirectIfAuthenticated from '@/components/redirect-if-authenticated';
+import { supabase } from '@/lib/supabase-client';
 
 const Login = () => {
   const [activeTab, setActiveTab] = useState("login");
@@ -22,6 +31,7 @@ const Login = () => {
   // Erros do Login
   const [loginEmailError, setLoginEmailError] = useState("");
   const [loginPasswordError, setLoginPasswordError] = useState("");
+  const [showResetPassword, setShowResetPassword] = useState(false);
 
   // Erros do Signup
   const [signupNameError, setSignupNameError] = useState("");
@@ -101,6 +111,7 @@ const Login = () => {
 
     setLoginEmailError(emailValid ? "" : "Email inválido");
     setLoginPasswordError(passwordValid ? "" : "Mínimo de 6 caracteres");
+    setShowResetPassword(false);
 
     if (!emailValid || !passwordValid) return;
 
@@ -111,9 +122,11 @@ const Login = () => {
       const message = error?.message || "Erro ao fazer login";
       if (message.toLowerCase().includes("invalid") || message.toLowerCase().includes("credenciais")) {
         setLoginPasswordError("Email ou senha incorretos");
+        setShowResetPassword(true);
       } else {
         setLoginPasswordError(message);
       }
+
       toast.error(message, {
         position: "top-center",
         autoClose: 2000,
@@ -123,6 +136,56 @@ const Login = () => {
         draggable: true,
         progress: undefined,
         transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
+    }
+  };
+
+  const handleResetPassword = async () => {
+    const emailInput = document.getElementById("login-email") as HTMLInputElement;
+    const email = emailInput?.value.trim();
+
+    if (!validateEmail(email)) {
+      toast.error("Informe um email válido para redefinir a senha.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
+      return;
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${location.origin}/auth/reset-password`,
+    });
+
+    if (error) {
+      toast.error("Erro ao enviar email de redefinição.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
+    } else {
+      toast.success("Email de redefinição enviado!", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        transition: Flip,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
     }
@@ -169,6 +232,15 @@ const Login = () => {
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                     {loginPasswordError && <p className="text-sm text-red-500">{loginPasswordError}</p>}
+                    {showResetPassword && (
+                      <button
+                        type="button"
+                        onClick={handleResetPassword}
+                        className="text-sm dark:text-blue-400 text-blue-600 hover:underline mt-1 cursor-pointer"
+                      >
+                        Esqueceu a senha?
+                      </button>
+                    )}
                   </div>
 
                   <Button type="submit" className="w-full cursor-pointer">Entrar</Button>
@@ -262,3 +334,7 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
+

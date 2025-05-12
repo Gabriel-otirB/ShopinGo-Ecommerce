@@ -121,7 +121,10 @@ const DailyProducts = () => {
                 </div>
                 <div className="mt-4">
                   <Link href={offer.link}>
-                    <Button className="w-full rounded-full px-6 py-3 bg-black text-white hover:bg-black/90 cursor-pointer">
+                    <Button 
+                    className="
+                    w-full rounded-full px-6 py-3 bg-black dark:bg-white dark:hover:bg-white/90
+                  text-white dark:text-black hover:bg-black/90 cursor-pointer duration-200">
                       Ver Mais
                     </Button>
                   </Link>
