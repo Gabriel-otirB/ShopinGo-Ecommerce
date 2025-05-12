@@ -119,7 +119,7 @@ const Login = () => {
       await signIn(email, password);
       router.push(redirectTo);
     } catch (error: any) {
-      const message = error?.message || "Erro ao fazer login";
+      const message = "Erro ao fazer login";
       if (message.toLowerCase().includes("invalid") || message.toLowerCase().includes("credenciais")) {
         setLoginPasswordError("Email ou senha incorretos");
         setShowResetPassword(true);

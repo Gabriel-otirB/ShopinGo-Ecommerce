@@ -24,6 +24,7 @@ import { ShoppingCart } from 'lucide-react';
 import ShippingCalculator from './components/shipping-calculator';
 import { useAddress } from '@/hooks/use-address';
 import { useAuth } from '@/providers/auth-context';
+import { Bounce, toast } from 'react-toastify';
 
 export default function CheckoutPage() {
   const { items, addItem, removeItem, clearItem } = useCartStore();
@@ -41,7 +42,13 @@ export default function CheckoutPage() {
     event.preventDefault();
 
     if (!user) {
-      alert("Você precisa estar autenticado para finalizar a compra.");
+      toast.error("Você precisa estar autenticado para finalizar a compra.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
       return;
     }
 

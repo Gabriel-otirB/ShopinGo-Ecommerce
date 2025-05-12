@@ -22,7 +22,6 @@ export default function SuccessPage() {
       fetch(`/api/stripe/status?session_id=${session_id}`)
         .then(res => res.json())
         .then(data => {
-          console.log("Status do pagamento:", data);
           setPaymentStatus(data.status);
         });
     }

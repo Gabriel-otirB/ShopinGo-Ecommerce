@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
+import { Bounce, toast } from 'react-toastify';
 
 export async function POST(req: NextRequest) {
   try {
@@ -67,13 +68,25 @@ export async function POST(req: NextRequest) {
       .eq("stripe_product_id", stripe_product_id);
 
     if (error) {
-      console.error("Erro ao atualizar no Supabase:", error.message);
+      toast.error("Erro ao atualizar produto.", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          transition: Bounce,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        });
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ updatedProduct, newPriceId });
   } catch (error: any) {
-    console.error("Erro no update-product:", error);
+    toast.error("Erro ao atualizar produto.", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: true,
+      transition: Bounce,
+      theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+    });
     return NextResponse.json({ error: error.message || "Erro desconhecido." }, { status: 500 });
   }
 }

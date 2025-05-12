@@ -4,6 +4,7 @@ import { stripe } from '@/lib/stripe';
 import { CartItem } from '@/store/cart-store';
 import { redirect } from 'next/navigation';
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
+import { Bounce, toast } from 'react-toastify';
 
 export const checkoutAction = async (formData: FormData): Promise<void> => {
   const items = JSON.parse(formData.get("items") as string) as CartItem[];
@@ -52,7 +53,13 @@ export const checkoutAction = async (formData: FormData): Promise<void> => {
     .single();
 
   if (insertOrderError) {
-    console.error("Erro ao salvar pedido:", insertOrderError);
+    toast.error("Erro ao salvar pedido.", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: true,
+      transition: Bounce,
+      theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+    });
     throw insertOrderError;
   }
 
@@ -66,7 +73,13 @@ export const checkoutAction = async (formData: FormData): Promise<void> => {
   );
 
   if (insertOrderItemError) {
-    console.error("Erro ao salvar items do pedido:", insertOrderItemError);
+    toast.error("Erro ao salvar items do pedido.", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: true,
+      transition: Bounce,
+      theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+    });
     throw insertOrderItemError;
   }
 

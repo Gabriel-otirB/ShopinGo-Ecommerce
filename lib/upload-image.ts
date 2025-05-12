@@ -1,3 +1,4 @@
+import { Bounce, toast } from 'react-toastify';
 import { supabase } from './supabase-client';
 import { v4 as uuidv4 } from "uuid";
 
@@ -11,7 +12,13 @@ export const uploadImageToStorage = async (file: File): Promise<string | null> =
     });
 
   if (error) {
-    console.error("Erro ao fazer upload da imagem:", error.message);
+    toast.error("Erro ao fazer upload da imagem", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: true,
+      transition: Bounce,
+      theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+    });
     return null;
   }
 

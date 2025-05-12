@@ -7,7 +7,7 @@ import type Stripe from 'stripe';
 import { useCartStore } from '@/store/cart-store';
 import { redirect, useRouter } from 'next/navigation';
 import { Recommendations } from './recommendations';
-import { toast } from "react-toastify";
+import { Bounce, toast } from "react-toastify";
 import { Flip } from "react-toastify";
 import { formatCurrency } from '@/lib/helper';
 import ExpandableDescription from './expandable';
@@ -82,8 +82,14 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
           url: window.location.href,
         })
         .catch((error) => {
-          console.log('Erro ao compartilhar', error);
           copyToClipboard();
+          toast.error("Erro ao compartilhar.", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+            transition: Bounce,
+            theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+          });
         });
     } else {
       copyToClipboard();
@@ -97,7 +103,13 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
           toast.success("Link copiado para a área de transferência");
         })
         .catch((err) => {
-          console.error("Erro ao copiar: ", err);
+          toast.error("Erro ao copiar o link.", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          transition: Bounce,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        });
           fallbackCopy();
         });
     } else {

@@ -1,3 +1,4 @@
+import { Bounce, toast } from 'react-toastify';
 import { stripe } from './stripe';
 import { supabaseAdmin as supabase } from './supabase-admin';
 
@@ -39,10 +40,16 @@ export const syncStripeProducts = async () => {
         try {
           const price = await stripe.prices.retrieve(product.default_price as string);
           if (price.unit_amount !== null) {
-            priceValue = price.unit_amount / 100; // Stripe retorna em centavos
+            priceValue = price.unit_amount / 100;
           }
         } catch (err) {
-          console.warn(`Erro ao buscar preço do produto ${product.id}:`, err);
+          toast.error("Erro ao buscar preço do produto.", {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: true,
+            transition: Bounce,
+            theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+          });
         }
       }
 
@@ -57,14 +64,26 @@ export const syncStripeProducts = async () => {
       }]);
 
       if (insertError) {
-        console.error("Erro ao inserir produto:", insertError.message);
+        toast.error("Erro ao inserir produtos no Stripe", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          transition: Bounce,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        });
         return { success: false, error: insertError.message };
       }
     }
 
     return { success: true, added: newProducts.length };
   } catch (err: any) {
-    console.error("Erro ao sincronizar produtos com Stripe:", err);
+    toast.error("Erro ao sincronizar produtos com Stripe", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: true,
+      transition: Bounce,
+      theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+    });
     return { success: false, error: err.message };
   }
 };

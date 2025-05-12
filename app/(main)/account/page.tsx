@@ -29,6 +29,7 @@ import { useEffect, useState } from "react";
 import { supabase } from '@/lib/supabase-client';
 import { formatCurrency } from '@/lib/helper';
 import { Badge } from "@/components/ui/badge";
+import { Bounce, toast } from 'react-toastify';
 
 interface Order {
   id: string;
@@ -86,7 +87,13 @@ const AccountPage = () => {
         .single();
 
       if (profileError || !profileData) {
-        console.error("Erro ao buscar perfil:", profileError);
+        toast.error("Erro ao buscar perfil.", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          transition: Bounce,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        });
         return;
       }
 
@@ -97,7 +104,13 @@ const AccountPage = () => {
         .order("created_at", { ascending: false });
 
       if (ordersError) {
-        console.error("Erro ao buscar pedidos:", ordersError);
+        toast.error("Erro ao buscar pedidos.", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          transition: Bounce,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        });
       } else {
         setOrders(ordersData || []);
       }

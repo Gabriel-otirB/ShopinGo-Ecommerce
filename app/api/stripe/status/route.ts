@@ -1,6 +1,7 @@
 import { stripe } from '@/lib/stripe';
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 import { NextRequest, NextResponse } from 'next/server';
+import { Bounce, toast } from 'react-toastify';
 import Stripe from 'stripe';
 
 export async function GET(req: NextRequest) {
@@ -33,7 +34,13 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ status });
   } catch (error) {
-    console.error('Erro ao recuperar sessão do Stripe:', error);
+    toast.error("Erro ao buscar sessão do stripe.", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: true,
+      transition: Bounce,
+      theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+    });
     return NextResponse.json({ error: 'Erro ao buscar sessão' }, { status: 500 });
   }
 }

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useAuth } from "@/providers/auth-context";
 import { supabase } from "@/lib/supabase-client";
+import { Bounce, toast } from 'react-toastify';
 
 interface Profile {
   id: string;
@@ -20,14 +21,14 @@ const UserList = ({ profiles: initialProfiles, search }: { profiles: Profile[], 
   const [profiles, setProfiles] = useState<Profile[]>(initialProfiles);
 
   const filteredProfiles = profiles
-  .filter(profile =>
-    profile.email.toLowerCase().includes(search.toLowerCase())
-  )
-  .sort((a, b) => {
-    if (a.user_id === user?.id) return -1;
-    if (b.user_id === user?.id) return 1;
-    return 0;
-  });
+    .filter(profile =>
+      profile.email.toLowerCase().includes(search.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (a.user_id === user?.id) return -1;
+      if (b.user_id === user?.id) return 1;
+      return 0;
+    });
 
   const visibleProfiles = filteredProfiles.slice(0, visibleUsersCount);
 
@@ -44,7 +45,13 @@ const UserList = ({ profiles: initialProfiles, search }: { profiles: Profile[], 
       .eq("id", profile.id);
 
     if (error) {
-      console.error("Erro ao atualizar papel:", error);
+      toast.error("Erro ao atualizar papel.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
       return;
     }
 
@@ -60,8 +67,8 @@ const UserList = ({ profiles: initialProfiles, search }: { profiles: Profile[], 
         <p className="text-sm text-muted-foreground">Nenhum usuário encontrado.</p>
       ) : (
         visibleProfiles.map((profile) => (
-          <div key={profile.id} 
-          className="flex flex-wrap justify-between rounded p-4 gap-4 sm:items-center 
+          <div key={profile.id}
+            className="flex flex-wrap justify-between rounded p-4 gap-4 sm:items-center 
           border-2 border-gray-300 dark:border-neutral-500">
             <div>
               <p className="font-medium break-all">

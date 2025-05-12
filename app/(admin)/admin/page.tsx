@@ -15,6 +15,7 @@ import ProductList from './components/product-list';
 import UserList from './components/user-list';
 import { Bounce, Flip, toast } from 'react-toastify';
 
+
 interface Profile {
   id: string;
   email: string;
@@ -44,7 +45,16 @@ const Admin = () => {
       const { data, error } = await supabase
         .from("profiles")
         .select("id, email, role, user_id");
-      if (error) return console.error("Erro ao buscar perfis:", error);
+      if (error) {
+        toast.error("Erro ao buscar perfis.", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          transition: Bounce,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        })
+        return;
+      };
       setProfiles(data);
     };
     fetchProfiles();
@@ -55,7 +65,16 @@ const Admin = () => {
       .from("products")
       .select("*")
       .eq("active", true);
-    if (error) return console.error("Erro ao buscar produtos:", error);
+    if (error) {
+      toast.error("Erro ao buscar produtos.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      })
+      return
+    }
     setProducts(data);
   };
 

@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import Image from "next/image";
 import Loading from '@/components/loading';
+import { Bounce, toast } from 'react-toastify';
 
 // Funções novas para estilização e rotulagem de status
 const getBadgeColor = (status: string) => {
@@ -97,7 +98,13 @@ const OrderDetail = () => {
         .single();
 
       if (orderError || !orderData) {
-        console.error("Erro ao buscar pedido:", orderError);
+        toast.error("Erro ao buscar pedido.", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          transition: Bounce,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        });
         return;
       }
 
@@ -107,7 +114,13 @@ const OrderDetail = () => {
         .eq("order_id", orderId);
 
       if (itemsError || !itemsData) {
-        console.error("Erro ao buscar itens:", itemsError);
+        toast.error("Erro ao buscar itens.", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          transition: Bounce,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        });
         return;
       }
 
@@ -120,7 +133,13 @@ const OrderDetail = () => {
             .single();
 
           if (productError || !product) {
-            console.warn("Erro ao buscar produto:", productError);
+            toast.error("Erro ao buscar produto.", {
+              position: "top-center",
+              autoClose: 2000,
+              hideProgressBar: true,
+              transition: Bounce,
+              theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+            });
             return {
               ...item,
               product_name: "Produto não encontrado",
@@ -145,27 +164,33 @@ const OrderDetail = () => {
   }, [orderId]);
 
   const handleCancelOrder = async () => {
-  if (!orderId) return;
+    if (!orderId) return;
 
-  const { error } = await supabase
-    .from("orders")
-    .update({
-      status: "canceled",
-      updated_at: new Date().toISOString()
-    })
-    .eq("id", orderId);
+    const { error } = await supabase
+      .from("orders")
+      .update({
+        status: "canceled",
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", orderId);
 
-  if (!error && order) {
-    // Atualiza apenas o estado local do pedido
-    setOrder({
-      ...order,
-      status: "canceled",
-      updated_at: new Date().toISOString()
-    });
-  } else {
-    console.error("Erro ao cancelar pedido:", error);
-  }
-};
+    if (!error && order) {
+      // Atualiza apenas o estado local do pedido
+      setOrder({
+        ...order,
+        status: "canceled",
+        updated_at: new Date().toISOString()
+      });
+    } else {
+      toast.error("Erro ao cancelar pedido.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
+    }
+  };
 
   if (loading || !order) return <Loading />;
 

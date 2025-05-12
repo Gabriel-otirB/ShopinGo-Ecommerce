@@ -33,8 +33,6 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const { isOpen, open, close } = useDisclosure();
 
-  console.log(products);
-
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase())
   );

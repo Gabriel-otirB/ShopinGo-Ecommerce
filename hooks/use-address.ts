@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase-client";
 import { useAuth } from "@/providers/auth-context";
+import { Bounce, toast } from 'react-toastify';
 
 interface Address {
   id?: number;
@@ -25,14 +26,18 @@ export const useAddress = () => {
 
   const fetchAddress = async () => {
     if (!user) {
-      console.log("Nenhum usuário logado.");
+      toast.error("Nenhum usuário logado.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
       return;
     }
 
     setLoading(true);
     setError(null);
-
-    console.log("Buscando profile para user id:", user.id);
 
     // Search Profile
     const { data: profile, error: profileError } = await supabase
@@ -42,22 +47,23 @@ export const useAddress = () => {
       .single();
 
     if (profileError) {
-      console.error("Erro ao buscar profile:", profileError);
+      toast.error("Erro ao buscar perfil.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
       setError(profileError.message);
       setLoading(false);
       return;
     }
 
-    console.log("Profile retornado:", profile);
-
     if (!profile.address_id) {
-      console.log("Profile não possui address_id.");
       setAddress(null);
       setLoading(false);
       return;
     }
-
-    console.log("Buscando endereço para address_id:", profile.address_id);
 
     // Search Address
     const { data: addressData, error: addressError } = await supabase
@@ -67,10 +73,15 @@ export const useAddress = () => {
       .single();
 
     if (addressError) {
-      console.error("Erro ao buscar endereço:", addressError);
+      toast.error("Erro ao buscar endereço.", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          transition: Bounce,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        });
       setError(addressError.message);
     } else {
-      console.log("Endereço encontrado:", addressData);
       setAddress(addressData);
     }
 
