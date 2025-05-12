@@ -151,8 +151,8 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
                   <div
                     key={idx}
                     className={`relative w-20 h-20 border-2 rounded-md cursor-pointer ${selectedImage === img
-                        ? 'border-black dark:border-white'
-                        : 'border-gray-300 dark:border-neutral-600'
+                      ? 'border-black dark:border-white'
+                      : 'border-gray-300 dark:border-neutral-600'
                       }`}
                     onClick={() => setSelectedImage(img)}
                   >
@@ -246,12 +246,14 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
         <div className="border-2 p-4 rounded shadow border-gray-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-900">
           <h2 className="text-xl font-semibold mb-2">Especificações</h2>
           <ul className="text-sm mb-2">
-            <li><strong>Marca:</strong> {product.name}</li>
-            <li><strong>Categoria:</strong> {product.metadata.category}</li>
-            <li><strong>Cor:</strong> {product.name}</li>
-            <li><strong>Tamanho:</strong> {product.name}</li>
-            <li><strong>Modelo:</strong> {product.name}</li>
-            <li><strong>Garantia:</strong> 90 dias contra defeitos de fabricação</li>
+            {product.metadata.category &&
+              <li><strong>Categoria:</strong> {product.metadata.category.charAt(0).toUpperCase() + product.metadata.category.slice(1)}</li>
+            }
+            {product.metadata.brand && <li><strong>Marca:</strong> {product.metadata.brand}</li>}
+            {product.metadata.model && <li><strong>Modelo:</strong> {product.metadata.model}</li>}
+            {product.metadata.color && <li><strong>Cor:</strong> {product.metadata.color}</li>}
+            {product.metadata.size && <li><strong>Tamanho:</strong> {product.metadata.size}</li>}
+            {product.metadata.warranty && <li><strong>Garantia:</strong> {product.metadata.warranty}</li>}
           </ul>
         </div>
       </div>

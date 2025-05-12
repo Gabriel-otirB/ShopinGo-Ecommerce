@@ -21,6 +21,11 @@ interface ProductFormProps {
     image_url: string[];
     stripe_product_id?: string;
     old_price?: number;
+    brand?: string;
+    color?: string;
+    model?: string;
+    warranty?: string;
+    size?: string;
   };
   onSubmit: (data: {
     name: string;
@@ -44,11 +49,7 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
     const files = e.target.files;
     if (files) {
       const fileArray = Array.from(files);
-
-      // Garantir que os arquivos estejam ordenados pela data de modificação mais recente,
-      // como aproximação da ordem de clique (nem sempre perfeita)
       fileArray.sort((a, b) => a.lastModified - b.lastModified);
-
       setSelectedFiles((prev) => [...prev, ...fileArray]);
       const newPreviews = fileArray.map((file) => URL.createObjectURL(file));
       setPreviewUrls((prev) => [...prev, ...newPreviews]);
@@ -68,6 +69,12 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
     const description = form.description.value.trim();
     const price = parseFloat(form.price.value);
     const category = form.category.value.trim();
+
+    const brand = form.brand.value.trim();
+    const color = form.color.value.trim();
+    const model = form.model.value.trim();
+    const warranty = form.warranty.value.trim();
+    const size = form.size.value.trim();
 
     const newErrors: typeof errors = {};
     if (name.length > 250) newErrors.name = "O nome deve ter no máximo 250 caracteres.";
@@ -102,7 +109,7 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
           });
           return;
         }
-        uploadedImageUrls.push(uploadedUrl); // ordem preservada
+        uploadedImageUrls.push(uploadedUrl);
       }
     } else {
       uploadedImageUrls = product.image_url || [];
@@ -121,6 +128,11 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
         category,
         active,
         image_url: uploadedImageUrls,
+        brand,
+        color,
+        model,
+        warranty,
+        size,
       }
       : {
         name,
@@ -129,6 +141,11 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
         category,
         active,
         image_url: uploadedImageUrls,
+        brand,
+        color,
+        model,
+        warranty,
+        size,
       };
 
     const response = await fetch(apiEndpoint, {
@@ -161,15 +178,9 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-3">
       <div className="flex flex-col gap-1">
-        <Input
-          name="name"
-          placeholder="Nome do Produto"
-          defaultValue={product.name}
-          required
-          className="border-2 border-gray-300 dark:border-neutral-500"
-        />
+        <Input name="name" placeholder="Nome do Produto" defaultValue={product.name} required className="border-2 border-gray-300 dark:border-neutral-500" />
         {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
       </div>
 
@@ -179,8 +190,7 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
           placeholder="Descrição"
           defaultValue={product.description}
           required
-          className="border-2 border-gray-300 dark:border-neutral-500"
-        />
+          className="border-2 border-gray-300 dark:border-neutral-500" />
         {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
       </div>
 
@@ -190,56 +200,38 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
         step="0.01"
         placeholder="Preço"
         defaultValue={product.price}
-        required
-        className="border-2 border-gray-300 dark:border-neutral-500"
-      />
+        required className="border-2 border-gray-300 dark:border-neutral-500" />
 
       <div className="flex flex-col gap-1">
-        <Input
-          name="category"
-          placeholder="Categoria"
-          defaultValue={product.category}
-          required
-          className="border-2 border-gray-300 dark:border-neutral-500"
-        />
+        <Input name="category" placeholder="Categoria" defaultValue={product.category} required className="border-2 border-gray-300 dark:border-neutral-500" />
         {errors.category && <p className="text-sm text-red-500">{errors.category}</p>}
       </div>
 
+      {/* Campos opcionais */}
+      <Input name="brand" placeholder="Marca (opcional)" defaultValue={product.brand || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
+      <Input name="color" placeholder="Cor (opcional)" defaultValue={product.color || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
+      <Input name="model" placeholder="Modelo (opcional)" defaultValue={product.model || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
+      <Input name="warranty" placeholder="Garantia (opcional)" defaultValue={product.warranty || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
+      <Input name="size" placeholder="Tamanho (opcional)" defaultValue={product.size || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
+
       <div className="flex items-center gap-2">
         <Label htmlFor="active">Ativo</Label>
-        <Switch
-          id="active"
-          checked={active}
-          onCheckedChange={setActive}
-          className="cursor-pointer border-2 border-gray-300 dark:border-neutral-500"
-        />
+        <Switch id="active" checked={active} onCheckedChange={setActive} className="cursor-pointer border-2 border-gray-300 dark:border-neutral-500" />
       </div>
 
+      {/* Upload de imagens */}
       <div className="flex flex-col gap-2">
         <Label>Imagens</Label>
-        <Input
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleImageChange}
-          className="h-auto text-black/60 dark:text-white/50 cursor-pointer max-w-[310px] border-2 border-gray-300 dark:border-neutral-500"
-        />
-
+        <Input type="file" accept="image/*" multiple onChange={handleImageChange} className="h-auto text-black/60 dark:text-white/50 cursor-pointer max-w-[310px] border-2 border-gray-300 dark:border-neutral-500" />
         {previewUrls.length > 0 && (
           <div className="flex flex-wrap gap-4 mt-2">
             {previewUrls.map((url, index) => (
               <div key={index} className="relative w-[120px] h-[120px]">
-                <Image
-                  src={url}
-                  alt={`Pré-visualização ${index}`}
-                  fill
-                  className="object-contain rounded p-1 border-2 border-gray-300 dark:border-neutral-500"
-                />
+                <Image src={url} alt={`Pré-visualização ${index}`} fill className="object-contain rounded p-1 border-2 border-gray-300 dark:border-neutral-500" />
                 <button
                   type="button"
                   onClick={() => handleRemoveImage(index)}
-                  className="absolute top-0 right-0 bg-red-600 text-white 
-                  rounded-full w-6 h-6 text-sm flex items-center justify-center cursor-pointer"
+                  className="absolute top-0 right-0 bg-red-600 text-white rounded-full w-6 h-6 text-sm flex items-center justify-center cursor-pointer"
                   title="Remover imagem"
                 >
                   ×
@@ -251,12 +243,7 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
       </div>
 
       <div className="flex justify-between">
-        <Button
-          type="button"
-          className="cursor-pointer"
-          variant="outline"
-          onClick={onClose}
-        >
+        <Button type="button" className="cursor-pointer" variant="outline" onClick={onClose}>
           Cancelar
         </Button>
         <Button type="submit" className="cursor-pointer">

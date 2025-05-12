@@ -33,6 +33,8 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const { isOpen, open, close } = useDisclosure();
 
+  console.log(products);
+
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -148,9 +150,8 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
           )}
         </div>
       )}
-
       <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-        <DialogContent>
+        <DialogContent className="border-2 border-gray-300 dark:border-neutral-500">
           <DialogHeader>
             <DialogTitle>{currentProduct ? "Editar Produto" : "Criar Produto"}</DialogTitle>
           </DialogHeader>
@@ -159,7 +160,7 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
             isEditMode={!!currentProduct}
             onSubmit={() => {
               close();
-              onReload(); // recarrega após criar/editar
+              onReload();
             }}
             onClose={close}
           />

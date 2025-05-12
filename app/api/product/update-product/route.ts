@@ -14,24 +14,27 @@ export async function POST(req: NextRequest) {
       image_url,
       old_price,
       new_price,
+      brand,
+      color,
+      model,
+      warranty,
+      size,
     } = body;
 
     if (!stripe_product_id) {
       return NextResponse.json({ error: "ID do produto do Stripe ausente." }, { status: 400 });
     }
 
-    // Atualiza o produto no Stripe
     const updatedProduct = await stripe.products.update(stripe_product_id, {
       name,
       description,
       active,
       images: image_url,
-      metadata: { category },
+      metadata: { category, brand, color, model, warranty, size },
     });
 
     let newPriceId = null;
 
-    // Cria novo preço se necessário
     if (new_price !== old_price) {
       const newStripePrice = await stripe.prices.create({
         product: stripe_product_id,
@@ -46,16 +49,20 @@ export async function POST(req: NextRequest) {
       newPriceId = newStripePrice.id;
     }
 
-    // Atualiza no Supabase
     const { error } = await supabase
       .from("products")
       .update({
         name,
         description,
         price: new_price,
-        category,
         active,
         image_url,
+        category,
+        brand,
+        color,
+        model,
+        warranty,
+        size
       })
       .eq("stripe_product_id", stripe_product_id);
 
