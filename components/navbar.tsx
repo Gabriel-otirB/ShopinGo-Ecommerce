@@ -26,7 +26,9 @@ import { Button } from './ui/button';
 
 const Navbar = () => {
   const { items } = useCartStore();
-  const carCount = items.reduce((acc, item) => acc + item.quantity, 0);
+  const carCount = Array.isArray(items)
+  ? items.reduce((acc, item) => acc + (item.quantity || 0), 0)
+  : 0;
   const pathname = usePathname();
   const [openNavbar, setOpenNavbar] = useState(false);
   const [openPreview, setOpenPreview] = useState(false);
