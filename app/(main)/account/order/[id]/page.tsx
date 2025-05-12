@@ -13,7 +13,7 @@ import { formatCurrency } from '@/lib/helper';
 import { Button } from '@/components/ui/button';
 import { ChevronLeftIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase-client";
 import {

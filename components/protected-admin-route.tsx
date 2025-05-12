@@ -14,9 +14,9 @@ const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        router.push("/auth/login");
+        notFound();
       } else if (!user.email_confirmed_at) {
-        router.push("/auth/verify-email");
+        notFound();
       } else if (profile?.role !== "admin") {
         setReady(true); 
       } else {
@@ -27,7 +27,7 @@ const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
 
   if (loading || !ready) return <Loading />;
 
-  if (user && profile?.role !== "admin") {
+  if (!user || profile?.role !== "admin") {
     notFound();
   }
 
