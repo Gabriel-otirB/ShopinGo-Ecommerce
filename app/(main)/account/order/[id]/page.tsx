@@ -175,7 +175,7 @@ const OrderDetail = () => {
       .eq("id", orderId);
 
     if (!error && order) {
-      // Atualiza apenas o estado local do pedido
+      // Update only the local order state
       setOrder({
         ...order,
         status: "canceled",

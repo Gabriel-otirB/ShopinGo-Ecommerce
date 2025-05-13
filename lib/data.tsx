@@ -131,4 +131,9 @@ export const paymentMethods = [
     name: "Cartão de crédito MASTERCARD",
     image: "/payments/mastercard.png",
   },
+  {
+    id: 3,
+    name: "Pix",
+    image: "/payments/pix.png",
+  },
 ]
