@@ -7,7 +7,7 @@ import type Stripe from 'stripe';
 import { useCartStore } from '@/store/cart-store';
 import { redirect, useRouter } from 'next/navigation';
 import { Recommendations } from './recommendations';
-import { Bounce, toast } from "react-toastify";
+import { Bounce, Slide, toast } from "react-toastify";
 import { Flip } from "react-toastify";
 import { formatCurrency } from '@/lib/helper';
 import ExpandableDescription from './expandable';
@@ -90,6 +90,7 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
             transition: Bounce,
             theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
           });
+          console.error(error);
         });
     } else {
       copyToClipboard();
@@ -102,15 +103,16 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
         .then(() => {
           toast.success("Link copiado para a área de transferência");
         })
-        .catch((err) => {
+        .catch((error) => {
           toast.error("Erro ao copiar o link.", {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: true,
-          transition: Bounce,
-          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
-        });
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: true,
+            transition: Bounce,
+            theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+          });
           fallbackCopy();
+          console.error(error);
         });
     } else {
       fallbackCopy();
@@ -125,9 +127,22 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
       dummy.select();
       document.execCommand("copy");
       document.body.removeChild(dummy);
-      toast.success("Link copiado para a área de transferência");
+      toast.success("Link copiado para a área de transferência.", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          transition: Slide,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        });
     } catch (error) {
-      toast.error("Não foi possível copiar o link.");
+      toast.error("Não foi possível copiar o link.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
+      console.error(error);
     }
   };
 

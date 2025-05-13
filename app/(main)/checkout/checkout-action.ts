@@ -56,7 +56,7 @@ export const checkoutAction = async (formData: FormData): Promise<void> => {
     throw insertOrderError;
   }
 
-  const { data: orderItems, error: insertOrderItemError } = await supabase.from("orders_items").insert(
+  const { error: insertOrderItemError } = await supabase.from("orders_items").insert(
     items.map((item) => ({
       order_id: order.id,
       product_id: item.id,

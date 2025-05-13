@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Produto desativado com sucesso" });
   } catch (error) {
+    console.error("Erro ao desativar produto:", error);
     return NextResponse.json({ error: "Erro ao desativar produto" }, { status: 500 });
   }
 }

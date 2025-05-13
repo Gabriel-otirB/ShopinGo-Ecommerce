@@ -2,7 +2,7 @@
 
 import Stripe from "stripe";
 import { Card, CardContent } from "./ui/card";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -18,31 +18,29 @@ export const Carousel = ({ products }: Props) => {
   const [direction, setDirection] = useState<"left" | "right">("right");
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const resetInterval = () => {
+  const handleNext = useCallback(() => {
+    setDirection("right");
+    setCurrent((prev) => (prev + 1) % products.length);
+  }, [products.length]);
+
+  const handlePrev = useCallback(() => {
+    setDirection("left");
+    setCurrent((prev) => (prev - 1 + products.length) % products.length);
+  }, [products.length]);
+
+  const resetInterval = useCallback(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       handleNext();
     }, 6000);
-  };
+  }, [handleNext]);
 
   useEffect(() => {
     resetInterval();
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, []);
-
-  const handleNext = () => {
-    setDirection("right");
-    setCurrent((prev) => (prev + 1) % products.length);
-    resetInterval(); // Reset interval on click
-  };
-
-  const handlePrev = () => {
-    setDirection("left");
-    setCurrent((prev) => (prev - 1 + products.length) % products.length);
-    resetInterval(); // Reset interval on click
-  };
+  }, [resetInterval]);
 
   const currentProduct = products[current];
   const price = currentProduct.default_price as Stripe.Price;
@@ -55,7 +53,6 @@ export const Carousel = ({ products }: Props) => {
     >
       <div className="relative w-full h-full">
         <Link href={`/products/${currentProduct.id}`}>
-          {/* Fixed Background */}
           <div className="absolute inset-0 z-0">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
@@ -86,10 +83,8 @@ export const Carousel = ({ products }: Props) => {
             </AnimatePresence>
           </div>
 
-          {/* Gradient above image */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/70 z-10" />
 
-          {/* Conteúdo animado */}
           <motion.div
             key={currentProduct.id}
             initial={{
@@ -133,23 +128,27 @@ export const Carousel = ({ products }: Props) => {
           </motion.div>
         </Link>
 
-        {/* Navigation Buttons */}
         <div className="absolute z-30 top-1/2 left-0 right-0 flex justify-between items-center px-4 transform -translate-y-1/2">
           <button
-            onClick={handlePrev}
+            onClick={() => {
+              handlePrev();
+              resetInterval();
+            }}
             className="bg-black/40 hover:bg-black/60 transition-all duration-300 text-white p-2 rounded-full cursor-pointer"
           >
             <ArrowLeft />
           </button>
           <button
-            onClick={handleNext}
+            onClick={() => {
+              handleNext();
+              resetInterval();
+            }}
             className="bg-black/40 hover:bg-black/60 transition-all duration-300 text-white p-2 rounded-full cursor-pointer"
           >
             <ArrowRight />
           </button>
         </div>
 
-        {/* Indicators */}
         <div className="absolute bottom-4 z-30 left-1/2 transform -translate-x-1/2 flex gap-2">
           {products.map((_, idx) => (
             <button
@@ -157,7 +156,7 @@ export const Carousel = ({ products }: Props) => {
               onClick={() => {
                 setDirection(idx > current ? "right" : "left");
                 setCurrent(idx);
-                resetInterval(); // Reset interval on click
+                resetInterval();
               }}
               className={cn(
                 "w-3 h-3 rounded-full cursor-pointer",

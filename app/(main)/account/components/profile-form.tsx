@@ -103,6 +103,8 @@ const UserProfileForm = () => {
         transition: Bounce,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
+
+      console.log(error);
     }
 
     try {
@@ -124,6 +126,8 @@ const UserProfileForm = () => {
         transition: Bounce,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
+
+      console.log(error);
     }
 
   };

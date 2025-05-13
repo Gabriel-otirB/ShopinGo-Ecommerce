@@ -72,8 +72,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ updatedProduct, newPriceId });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Erro no update-product:", error);
-    return NextResponse.json({ error: error.message || "Erro desconhecido." }, { status: 500 });
+    return NextResponse.json({ error: "Erro desconhecido." }, { status: 500 });
   }
 }

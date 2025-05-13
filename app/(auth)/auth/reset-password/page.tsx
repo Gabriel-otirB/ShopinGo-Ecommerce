@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Eye, EyeOff } from 'lucide-react'
 import { toast } from 'react-toastify'
-import { useAuth } from '@/providers/auth-context'
 import ProtectedRoute from '@/components/protected-route'
 
 export default function ResetPasswordPage() {
@@ -19,8 +18,6 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-
-  const { signOut } = useAuth()
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()

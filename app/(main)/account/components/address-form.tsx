@@ -54,6 +54,8 @@ const AddressForm = () => {
         transition: Bounce,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
+
+      console.log(error);
     }
   };
 

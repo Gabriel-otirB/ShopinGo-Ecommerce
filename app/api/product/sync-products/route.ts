@@ -6,7 +6,7 @@ export async function POST() {
     const result = await syncStripeProducts();
     return NextResponse.json({ success: true, result });
   } catch (error) {
-    console.error(error);
+    console.error("Erro ao sincronizar produtos", error);
     return NextResponse.json({ success: false, error: "Erro ao sincronizar produtos" }, { status: 500 });
   }
 }

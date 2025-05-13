@@ -25,7 +25,7 @@ export default function SuccessPage() {
           setPaymentStatus(data.status);
         });
     }
-  }, [session_id]);
+  }, [session_id, clearCart]);
 
   if (!paymentStatus) return <Loading />;
 

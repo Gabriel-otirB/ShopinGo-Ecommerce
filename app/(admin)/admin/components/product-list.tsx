@@ -88,6 +88,8 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
         transition: Bounce,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
+
+      console.error(error);
     }
   };
 

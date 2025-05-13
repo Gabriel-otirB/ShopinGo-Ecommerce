@@ -1,14 +1,15 @@
+import Stripe from 'stripe';
 import { stripe } from './stripe';
 import { supabaseAdmin as supabase } from './supabase-admin';
 
 export const syncStripeProducts = async () => {
   try {
-    let allProducts: any[] = [];
+    let allProducts: Stripe.Product[] = [];
     let startingAfter: string | undefined = undefined;
     let hasMore = true;
 
     while (hasMore) {
-      const response = await stripe.products.list({
+      const response: Stripe.ApiList<Stripe.Product> = await stripe.products.list({
         active: true,
         limit: 100,
         ...(startingAfter && { starting_after: startingAfter }),
@@ -63,8 +64,8 @@ export const syncStripeProducts = async () => {
     }
 
     return { success: true, added: newProducts.length };
-  } catch (err: any) {
-    console.error("Erro ao sincronizar produtos com Stripe:", err);
-    return { success: false, error: err.message };
+  } catch (error) {
+    console.error("Erro ao sincronizar produtos com Stripe:", error);
+    return { success: false, error: error };
   }
 };

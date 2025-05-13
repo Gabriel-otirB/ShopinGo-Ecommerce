@@ -31,6 +31,7 @@ import Image from "next/image";
 import Loading from '@/components/loading';
 import { Bounce, toast } from 'react-toastify';
 
+// Funções novas para estilização e rotulagem de status
 const getBadgeColor = (status: string) => {
   switch (status) {
     case 'undefined': return 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-50';
@@ -174,7 +175,7 @@ const OrderDetail = () => {
       .eq("id", orderId);
 
     if (!error && order) {
-      // Updated only the local state
+      // Atualiza apenas o estado local do pedido
       setOrder({
         ...order,
         status: "canceled",
