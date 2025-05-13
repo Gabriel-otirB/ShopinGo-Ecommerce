@@ -75,6 +75,7 @@ const getBadgeColor = (status: string) => {
 const AccountPage = () => {
   const { signOut, user } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
+  const [showAllOrders, setShowAllOrders] = useState(false);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -119,6 +120,8 @@ const AccountPage = () => {
     fetchOrders();
   }, [user]);
 
+  const displayedOrders = showAllOrders ? orders : orders.slice(0, 2);
+
   return (
     <div className="container mx-auto px-4 p-2 md:pb-6 -mt-4">
       <h1 className="text-2xl font-bold mb-6 text-center">Minha Conta</h1>
@@ -141,44 +144,58 @@ const AccountPage = () => {
                 {orders.length === 0 ? (
                   <p className="text-sm text-muted-foreground text-center">Nenhum pedido encontrado.</p>
                 ) : (
-                  orders.map((order) => (
-                    <Link href={`/account/order/${order.id}`} key={order.id}>
-                      <div className="relative border-2 rounded p-4 hover:bg-neutral-100 hover:dark:bg-neutral-900 cursor-pointer duration-300 space-y-1">
-                        <p className="font-medium">
-                          Pedido #{String(order.id).padStart(8, "0")}
-                        </p>
-
-                        <p className={`font-medium`}>
-                          Status: <span className={getStatusColor(order.status)}>{getStatusLabel(order.status)}</span>
-                        </p>
-
-                        <p>
-                          <span className="font-medium">Data:</span>{" "}
-                          {new Date(order.created_at).toLocaleDateString()}
-                        </p>
-
-                        {(order.status === 'shipped' || order.status === 'delivered') && (
-                          <p>
-                            <span className="font-medium">
-                              {order.status === 'shipped' ? 'Enviado em:' : 'Entregue em:'}
-                            </span>{" "}
-                            {new Date(order.updated_at).toLocaleDateString()}
+                  <>
+                    {displayedOrders.map((order) => (
+                      <Link href={`/account/order/${order.id}`} key={order.id}>
+                        <div className="relative border-2 rounded p-4 hover:bg-neutral-100 hover:dark:bg-neutral-900 cursor-pointer duration-300 space-y-1">
+                          <p className="font-medium">
+                            Pedido #{String(order.id).padStart(8, "0")}
                           </p>
-                        )}
 
-                        <p>
-                          <span className="font-medium">Total:</span>{" "}
-                          {formatCurrency(order.total_price / 100)}
-                        </p>
+                          <p className="font-medium">
+                            Status: <span className={getStatusColor(order.status)}>{getStatusLabel(order.status)}</span>
+                          </p>
 
-                        <div className="absolute top-2 right-2">
-                          <Badge className={`${getBadgeColor(order.status)} text-sm px-4 py-0.5`}>
-                            {getStatusLabel(order.status)}
-                          </Badge>
+                          <p>
+                            <span className="font-medium">Data:</span>{" "}
+                            {new Date(order.created_at).toLocaleDateString()}
+                          </p>
+
+                          {(order.status === 'shipped' || order.status === 'delivered') && (
+                            <p>
+                              <span className="font-medium">
+                                {order.status === 'shipped' ? 'Enviado em:' : 'Entregue em:'}
+                              </span>{" "}
+                              {new Date(order.updated_at).toLocaleDateString()}
+                            </p>
+                          )}
+
+                          <p>
+                            <span className="font-medium">Total:</span>{" "}
+                            {formatCurrency(order.total_price / 100)}
+                          </p>
+
+                          <div className="absolute top-2 right-2">
+                            <Badge className={`${getBadgeColor(order.status)} text-sm px-4 py-0.5`}>
+                              {getStatusLabel(order.status)}
+                            </Badge>
+                          </div>
                         </div>
+                      </Link>
+                    ))}
+
+                    {orders.length > 2 && (
+                      <div className="flex justify-center mt-4">
+                        <Button
+                          variant="outline"
+                          onClick={() => setShowAllOrders(prev => !prev)}
+                          className="text-sm cursor-pointer"
+                        >
+                          {showAllOrders ? "Ver menos" : "Ver mais"}
+                        </Button>
                       </div>
-                    </Link>
-                  ))
+                    )}
+                  </>
                 )}
               </div>
             </CardContent>

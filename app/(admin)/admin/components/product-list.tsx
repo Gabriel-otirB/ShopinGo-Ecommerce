@@ -11,6 +11,7 @@ import { useDisclosure } from "@/hooks/use-disclosure";
 import ProductForm from "./product-form";
 import ProductDeleteAlert from "./product-delete-alert";
 import { Bounce, Flip, toast } from 'react-toastify';
+import Link from 'next/link';
 
 interface Product {
   id: string;
@@ -102,17 +103,21 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
             <div className="flex items-center gap-4">
               {product.image_url.length > 0 && (
                 <div className="relative w-12 h-12">
-                  <Image
-                    src={product.image_url[0]}
-                    alt={product.name}
-                    fill
-                    className="object-contain rounded"
-                    unoptimized
-                  />
+                  <Link href={`/products/${product.stripe_product_id}`}>
+                    <Image
+                      src={product.image_url[0]}
+                      alt={product.name}
+                      fill
+                      className="object-contain rounded"
+                      unoptimized
+                    />
+                  </Link>
                 </div>
               )}
               <div>
-                <div className="font-medium line-clamp-1 max-w-[80px] sm:max-w-[320px] mr-1 sm:mr-0">{product.name}</div>
+                <Link href={`/products/${product.stripe_product_id}`}>
+                  <div className="font-medium line-clamp-1 max-w-[80px] sm:max-w-[320px] mr-1 sm:mr-0">{product.name}</div>
+                </Link>
                 <div className="text-sm text-muted-foreground">
                   {Intl.NumberFormat("pt-BR", {
                     style: "currency",
