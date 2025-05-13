@@ -32,6 +32,11 @@ interface ProductFormProps {
     description: string;
     price: number;
     category: string;
+    brand?: string;
+    color?: string;
+    model?: string;
+    warranty?: string;
+    size?: string;
     active: boolean;
     image_url: string[];
   }) => void;
@@ -116,7 +121,7 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
     }
 
     const isUpdate = !!product.stripe_product_id;
-    const apiEndpoint = isUpdate ? "/api/product/update-product" : "/api/create-product";
+    const apiEndpoint = isUpdate ? "/api/product/update-product" : "/api/product/create-product";
 
     const body = isUpdate
       ? {
@@ -125,9 +130,9 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
         description,
         old_price: product.price,
         new_price: price,
-        category,
         active,
         image_url: uploadedImageUrls,
+        category,
         brand,
         color,
         model,
@@ -138,9 +143,9 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
         name,
         description,
         price,
-        category,
         active,
         image_url: uploadedImageUrls,
+        category,
         brand,
         color,
         model,
@@ -174,7 +179,7 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
       theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
     });
 
-    onSubmit({ name, description, price, category, active, image_url: uploadedImageUrls });
+    onSubmit({ name, description, price, category, active, brand, color, model, warranty, size, image_url: uploadedImageUrls });
   };
 
   return (

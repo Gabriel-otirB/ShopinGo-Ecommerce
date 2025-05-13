@@ -45,7 +45,7 @@ export const useProfile = () => {
   const updateProfile = async (updates: Partial<Profile>) => {
     if (!user) return;
 
-    // Validações
+    // Validations
     if (updates.name && updates.name.length < 2) {
       setError('Nome deve ter no mínimo 2 caracteres.');
       return;

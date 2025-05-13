@@ -21,7 +21,7 @@ export const OrderProvider = ({ children, orderId }: Props) => {
     const checkOwnership = async () => {
       if (!user) return;
 
-      // Busca o perfil do usuário autenticado
+      // Search for the authenticated user's profile
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("id")
@@ -33,7 +33,7 @@ export const OrderProvider = ({ children, orderId }: Props) => {
         return;
       }
 
-      // Busca o pedido e compara o profile_id
+      // Search for the order and compare the profile_id
       const { data: order, error: orderError } = await supabase
         .from("orders")
         .select("profile_id")

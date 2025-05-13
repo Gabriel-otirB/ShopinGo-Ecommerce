@@ -5,7 +5,7 @@ import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
 export async function POST(req: NextRequest) {
   const { productId } = await req.json();
 
-  // Obtenha o produto do banco de dados para pegar o stripe_product_id
+  // Get the product from the database to get the stripe_product_id
   const { data: product, error } = await supabase
     .from("products")
     .select("stripe_product_id")
@@ -17,12 +17,12 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Desativa o produto no Stripe
+    // Disable the product on Stripe
     await stripe.products.update(product.stripe_product_id, {
       active: false,
     });
 
-    // Atualiza o produto no Supabase para torná-lo inativo
+    // Update the product in the database to make it inactive
     const { error: updateError } = await supabase
       .from("products")
       .update({ active: false })

@@ -25,7 +25,7 @@ export const useCartStore = create<CartStore>()(
       userId: null,
       items: [],
       setUserId: (id) => {
-        // Atualiza a key do localStorage ao trocar de user
+        // Update localStorage key when changing user
         const previousKey = `cart-${get().userId || "guest"}`;
         const newKey = `cart-${id || "guest"}`;
 
@@ -72,8 +72,8 @@ export const useCartStore = create<CartStore>()(
       },
     }),
     {
-      name: "cart-guest", // Fallback para guest
-      skipHydration: true, // Evita conflitos durante o carregamento
+      name: "cart-guest", // Fallback to guest
+      skipHydration: true, // Avoid conflicts during loading
     }
   )
 );

@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-// app/not-found.tsx
 export default function NotFound() {
   return (
     <div className="flex flex-col items-center justify-center h-[calc(100vh-600px)]">

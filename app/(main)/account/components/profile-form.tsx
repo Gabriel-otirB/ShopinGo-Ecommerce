@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
 import { useAuth } from "@/providers/auth-context";
+import { Bounce, Flip, toast } from 'react-toastify';
 
 const UserProfileForm = () => {
   const { profile, updateProfile, updatePassword, loading, error } = useProfile();
@@ -82,14 +83,49 @@ const UserProfileForm = () => {
 
     if (!validateFields()) return;
 
-    await updateProfile({
-      name: formData.name,
-      phone: formData.phone,
-    });
-
-    if (isEmailProvider && formData.newPassword) {
-      await updatePassword(formData.currentPassword, formData.newPassword);
+    try {
+      await updateProfile({
+        name: formData.name,
+        phone: formData.phone,
+      });
+      toast.success(`Perfil atualizado com sucesso!`, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        transition: Flip,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
+    } catch (error) {
+      toast.error("Erro ao atualizar perfil.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
     }
+
+    try {
+      if (isEmailProvider && formData.newPassword) {
+        await updatePassword(formData.currentPassword, formData.newPassword);
+        toast.success(`Senha atualizada com sucesso!`, {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          transition: Flip,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        });
+      }
+    } catch (error) {
+      toast.error("Erro ao atualizar senha.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
+    }
+
   };
 
   const isEmailProvider =

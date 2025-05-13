@@ -42,10 +42,10 @@ export default function ShippingCalculator({
   const [selectedFreight, setSelectedFreight] = useState<FreightOption | null>(null);
   const [isAddressValid, setIsAddressValid] = useState(false);
 
-  const [isDirty, setIsDirty] = useState(false); // Flag para detectar alterações no formulário
-  const [hasFreightBeenCalculated, setHasFreightBeenCalculated] = useState(false); // Flag para verificar se o frete foi calculado
+  const [isDirty, setIsDirty] = useState(false); // Flag to detect if the form has been changed
+  const [hasFreightBeenCalculated, setHasFreightBeenCalculated] = useState(false); // Flag to detect if the freight has been calculated
 
-  // Atualiza formData com dados do Supabase se houver
+  // Update form data with supabase data if exists
   useEffect(() => {
     if (address) {
       setFormData(prevFormData => ({
@@ -60,12 +60,12 @@ export default function ShippingCalculator({
     }
   }, [address]);
 
-  // Envia formData atualizado para o componente pai
+  // Sends form data to parent
   useEffect(() => {
     onFormDataChange?.(formData);
   }, [formData]);
 
-  // Valida endereço ao mudar formData
+  // Validate address on form data change
   useEffect(() => {
     validateAddress(false);
   }, [formData]);
@@ -73,8 +73,8 @@ export default function ShippingCalculator({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    setIsDirty(true); // Marca o formulário como alterado
-    setHasFreightBeenCalculated(false); // Quando o formulário mudar, forçamos o recálculo do frete
+    setIsDirty(true); // Set the form as changed
+    setHasFreightBeenCalculated(false); // When the form changes, force the freight calculation
   };
 
   const validateAddress = (setErrorState = true) => {
@@ -137,7 +137,7 @@ export default function ShippingCalculator({
           ];
 
       setFreightOptions(simulatedFreights);
-      setHasFreightBeenCalculated(true); // Marca que o frete foi calculado
+      setHasFreightBeenCalculated(true); // Checks if the freight has been calculated
     } catch (err: any) {
       setError(err.message || 'Erro ao buscar o CEP');
     } finally {
@@ -156,7 +156,7 @@ export default function ShippingCalculator({
   };
 
   useEffect(() => {
-    // Se o formulário foi alterado e o frete já foi calculado, força o recálculo
+    // If the form has been changed and the freight has already been calculated, force a recalculation
     if (isDirty && hasFreightBeenCalculated) {
       handleCalculate();
     }

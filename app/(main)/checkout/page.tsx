@@ -60,7 +60,7 @@ export default function CheckoutPage() {
     formData.append("total_price", String(grandTotal));
     formData.append("user_id", user.id);
 
-    // Inclui os campos do endereço individualmente
+    // Include address data individually
     for (const [key, value] of Object.entries(addressData ?? {})) {
       formData.append(key, value as string);
     }

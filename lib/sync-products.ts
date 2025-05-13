@@ -39,7 +39,7 @@ export const syncStripeProducts = async () => {
         try {
           const price = await stripe.prices.retrieve(product.default_price as string);
           if (price.unit_amount !== null) {
-            priceValue = price.unit_amount / 100; // Stripe retorna em centavos
+            priceValue = price.unit_amount / 100; // Stripe returns price in cents
           }
         } catch (err) {
           console.warn(`Erro ao buscar preço do produto ${product.id}:`, err);

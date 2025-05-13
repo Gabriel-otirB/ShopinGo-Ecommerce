@@ -8,7 +8,7 @@ import LoadingProvider from '../providers/loading-provider';
 import "react-toastify/dist/ReactToastify.css";
 import ToastProvider from '@/providers/toast-provider';
 import { AuthProvider } from '@/providers/auth-context';
-import CartSync from "@/components/cart-sync"; // <- componente cliente
+import CartSync from "@/components/cart-sync";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

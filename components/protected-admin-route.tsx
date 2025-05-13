@@ -1,4 +1,3 @@
-// components/protected-admin-route.tsx
 "use client";
 
 import { useAuth } from "../providers/auth-context";

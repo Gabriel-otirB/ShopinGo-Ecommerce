@@ -28,12 +28,12 @@ import { supabase } from '@/lib/supabase-client';
 const Login = () => {
   const [activeTab, setActiveTab] = useState("login");
 
-  // Erros do Login
+  // Login Errors
   const [loginEmailError, setLoginEmailError] = useState("");
   const [loginPasswordError, setLoginPasswordError] = useState("");
   const [showResetPassword, setShowResetPassword] = useState(false);
 
-  // Erros do Signup
+  // Signup Errors
   const [signupNameError, setSignupNameError] = useState("");
   const [signupEmailError, setSignupEmailError] = useState("");
   const [signupPasswordError, setSignupPasswordError] = useState("");

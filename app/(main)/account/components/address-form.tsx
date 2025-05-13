@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAddress } from '@/hooks/use-address';
 import { useEffect, useState } from 'react';
+import { Bounce, Flip, toast } from 'react-toastify';
 
 const AddressForm = () => {
   const { address, saveAddress, loading, error } = useAddress();
@@ -36,7 +37,24 @@ const AddressForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await saveAddress(formData);
+    try {
+      await saveAddress(formData);
+      toast.success(`Endereço salvo com sucesso!`, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        transition: Flip,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
+    } catch (error) {
+      toast.error("Erro ao salvar endereço.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
+    }
   };
 
   return (
