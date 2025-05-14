@@ -1,9 +1,14 @@
-import ProductDetail from './components/product-details'; 
+import ProductDetail from './components/product-details';
 import ScrollTop from '@/components/scroll-top';
 import { stripe } from '@/lib/stripe';
 
-const ProductPage = async ({ params }: { params: { id: string } }) => {
-  const product = await stripe.products.retrieve(params.id, {
+const ProductPage = async (
+  { params }: {
+    params: Promise<{ id: string }>;
+  }) => {
+
+  const { id } = await params;
+  const product = await stripe.products.retrieve(id, {
     expand: ["default_price"],
   });
 
@@ -18,7 +23,7 @@ const ProductPage = async ({ params }: { params: { id: string } }) => {
   });
 
   const recommendedProducts = allProducts.data.filter(
-    (prod) => prod.metadata?.category === category && prod.id !== params.id
+    (prod) => prod.metadata?.category === category && prod.id !== id
   ).slice(0, 8);
 
   const plainRecommendedProducts = JSON.parse(JSON.stringify(recommendedProducts));

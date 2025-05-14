@@ -1,22 +1,19 @@
 import ScrollTop from '@/components/scroll-top';
-import { ProductList } from '../../components/product-list'; 
+import { ProductList } from '../../components/product-list';
 import { stripe } from '@/lib/stripe';
 import { Stripe } from 'stripe'; // Import the Stripe namespace
-
-interface CategoryPageProps {
-  params: {
-    slug: string;
-  };
-}
 
 // ISR revalidation
 // export const revalidate = 3600;
 
-export default async function CategoryPage({ params }: CategoryPageProps) {
-  const { slug } = params;
+export default async function CategoryPage({ params }: {
+  params: Promise<{ slug: string }>;
+}) {
+
+  const { slug } = await params;
 
   // Initialize an array to store the filtered products
-  let allFilteredProducts: Stripe.Product[] = [];
+  let allFilteredProducts: (Stripe.Product & { default_price?: Stripe.Price })[] = [];
 
   let hasMore = true;
   let startingAfter: string | undefined = undefined;
@@ -31,12 +28,18 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     });
 
     // Filter the products on the current page by category
-    const filteredPageProducts = response.data.filter((product: Stripe.Product) => {
-      const productCategory = product.metadata?.category?.toLowerCase();
-      return productCategory === slug.toLowerCase(); // Filter by the slug's category
-    });
+    const filteredPageProducts = response.data
+      .filter((product: Stripe.Product) => {
+        const productCategory = product.metadata?.category?.toLowerCase();
+        return productCategory === slug.toLowerCase();
+      })
+      .map((product) => ({
+        ...product,
+        default_price: product.default_price && typeof product.default_price !== 'string'
+          ? product.default_price
+          : undefined,
+      }));
 
-    // Add the filtered products to the array
     allFilteredProducts = [...allFilteredProducts, ...filteredPageProducts];
 
     // Check if there are more products to retrieve

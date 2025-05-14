@@ -14,6 +14,7 @@ import { supabase } from "@/lib/supabase-client";
 import ProductList from './components/product-list';
 import UserList from './components/user-list';
 import { Bounce, Flip, toast } from 'react-toastify';
+import { Product } from '@/types/product';
 
 
 interface Profile {
@@ -21,16 +22,6 @@ interface Profile {
   email: string;
   role: "admin" | "customer";
   user_id: string;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  active: boolean;
-  image_url: string[];
-  stripe_product_id: string;
 }
 
 const Admin = () => {

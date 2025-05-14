@@ -83,6 +83,12 @@ export const useProfile = () => {
     setLoading(true);
 
     // Validate current password
+    if (!user || !user.email) {
+      setError('Email não disponível para redefinição de senha.');
+      setLoading(false);
+      return;
+    }
+
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email: user.email,
       password: currentPassword,

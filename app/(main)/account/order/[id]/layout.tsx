@@ -1,18 +1,23 @@
 import { OrderProvider } from '@/components/protected-order-route';
 import { notFound } from "next/navigation";
+import { use } from 'react'
 
-interface Props {
-  params: { id: string };
-}
+type Params = Promise<{ id: string }>
 
-export default function OrderPage({ params, children }: Props & { children: React.ReactNode }) {
-  const orderId = params.id;
+export default function Layout(props: {
+  children: React.ReactNode
+  params: Params
+}) {
+  const params = use(props.params)
+  const id = params.id
 
-  if (!orderId) return notFound();
+  if (!id) {
+    notFound()
+  }
 
   return (
-    <OrderProvider orderId={orderId}>
-      {children}
+    <OrderProvider orderId={id}>
+      {props.children}
     </OrderProvider>
   );
 }

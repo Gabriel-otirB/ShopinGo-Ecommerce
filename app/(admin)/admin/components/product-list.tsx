@@ -12,16 +12,7 @@ import ProductForm from "./product-form";
 import ProductDeleteAlert from "./product-delete-alert";
 import { Bounce, Flip, toast } from 'react-toastify';
 import Link from 'next/link';
-
-interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  active: boolean;
-  image_url: string[];
-  stripe_product_id: string;
-}
+import { Product } from '@/types/product';
 
 interface ProductListProps {
   products: Product[];
@@ -54,7 +45,7 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
     open();
   };
 
-  const handleDeleteProduct = async (productId: string) => {
+  const handleDeleteProduct = async (productId: string | undefined) => {
     try {
       const response = await fetch("/api/product/remove-product", {
         method: "POST",
@@ -161,7 +152,7 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
             <DialogTitle>{currentProduct ? "Editar Produto" : "Criar Produto"}</DialogTitle>
           </DialogHeader>
           <ProductForm
-            product={currentProduct || { name: "", description: "", price: 0, image_url: [] }}
+            product={currentProduct}
             isEditMode={!!currentProduct}
             onSubmit={() => {
               close();

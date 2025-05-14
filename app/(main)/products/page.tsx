@@ -1,6 +1,6 @@
 import { stripe } from "@/lib/stripe";
-import { ProductList } from './components/product-list'; 
-import ScrollTop from '@/components/scroll-top'; 
+import { ProductList } from './components/product-list';
+import ScrollTop from '@/components/scroll-top';
 
 export default async function CategoryPage() {
   const products = await stripe.products
@@ -10,10 +10,18 @@ export default async function CategoryPage() {
     })
     .autoPagingToArray({ limit: 1000 });
 
+  const parsedProducts = products.map((product) => ({
+    ...product,
+    default_price:
+      product.default_price && typeof product.default_price !== 'string'
+        ? product.default_price
+        : undefined,
+  }));
+
   return (
     <div>
       <ScrollTop />
-      <ProductList products={products} />
+      <ProductList products={parsedProducts} />
     </div>
   );
 }

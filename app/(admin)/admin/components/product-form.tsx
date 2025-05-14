@@ -9,45 +9,19 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { uploadImageToStorage } from "@/lib/upload-image";
 import { Bounce, Flip, toast } from "react-toastify";
+import { Product } from '@/types/product';
 
 interface ProductFormProps {
-  product: {
-    id?: string;
-    name: string;
-    description: string;
-    price: number;
-    category: string;
-    active: boolean;
-    image_url: string[];
-    stripe_product_id?: string;
-    old_price?: number;
-    brand?: string;
-    color?: string;
-    model?: string;
-    warranty?: string;
-    size?: string;
-  };
-  onSubmit: (data: {
-    name: string;
-    description: string;
-    price: number;
-    category: string;
-    brand?: string;
-    color?: string;
-    model?: string;
-    warranty?: string;
-    size?: string;
-    active: boolean;
-    image_url: string[];
-  }) => void;
+  product: Product | null;
+  onSubmit: (data: Product) => void;
   onClose: () => void;
   isEditMode: boolean;
 }
 
 const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProps) => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<string[]>(product.image_url || []);
-  const [active, setActive] = useState<boolean>(product.active ?? true);
+  const [previewUrls, setPreviewUrls] = useState<string[]>(product?.image_url || []);
+  const [active, setActive] = useState<boolean>(product?.active ?? true);
   const [errors, setErrors] = useState<{ name?: string; description?: string; category?: string }>({});
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,18 +42,22 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget;
+    const form = e.currentTarget as HTMLFormElement;
 
-    const name = form.name.value.trim();
-    const description = form.description.value.trim();
-    const price = parseFloat(form.price.value);
-    const category = form.category.value.trim();
+    const getInputValue = (name: string) =>
+      (form.elements.namedItem(name) as HTMLInputElement | null)?.value.trim() || "";
 
-    const brand = form.brand.value.trim();
-    const color = form.color.value.trim();
-    const model = form.model.value.trim();
-    const warranty = form.warranty.value.trim();
-    const size = form.size.value.trim();
+    const name = getInputValue("name");
+    const description = getInputValue("description");
+    const priceValue = getInputValue("price");
+    const category = getInputValue("category");
+    const brand = getInputValue("brand");
+    const color = getInputValue("color");
+    const model = getInputValue("model");
+    const warranty = getInputValue("warranty");
+    const size = getInputValue("size");
+
+    const price = parseFloat(priceValue);
 
     const newErrors: typeof errors = {};
     if (name.length > 250) newErrors.name = "O nome deve ter no máximo 250 caracteres.";
@@ -117,10 +95,10 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
         uploadedImageUrls.push(uploadedUrl);
       }
     } else {
-      uploadedImageUrls = product.image_url || [];
+      uploadedImageUrls = product?.image_url || [];
     }
 
-    const isUpdate = !!product.stripe_product_id;
+    const isUpdate = !!product?.stripe_product_id;
     const apiEndpoint = isUpdate ? "/api/product/update-product" : "/api/product/create-product";
 
     const body = isUpdate
@@ -185,7 +163,7 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <div className="flex flex-col gap-1">
-        <Input name="name" placeholder="Nome do Produto" defaultValue={product.name} required className="border-2 border-gray-300 dark:border-neutral-500" />
+        <Input name="name" placeholder="Nome do Produto" defaultValue={product?.name} required className="border-2 border-gray-300 dark:border-neutral-500" />
         {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
       </div>
 
@@ -193,7 +171,7 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
         <Textarea
           name="description"
           placeholder="Descrição"
-          defaultValue={product.description}
+          defaultValue={product?.description}
           required
           className="border-2 border-gray-300 dark:border-neutral-500" />
         {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
@@ -204,20 +182,20 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
         type="number"
         step="0.01"
         placeholder="Preço"
-        defaultValue={product.price}
+        defaultValue={product?.price}
         required className="border-2 border-gray-300 dark:border-neutral-500" />
 
       <div className="flex flex-col gap-1">
-        <Input name="category" placeholder="Categoria" defaultValue={product.category} required className="border-2 border-gray-300 dark:border-neutral-500" />
+        <Input name="category" placeholder="Categoria" defaultValue={product?.category} required className="border-2 border-gray-300 dark:border-neutral-500" />
         {errors.category && <p className="text-sm text-red-500">{errors.category}</p>}
       </div>
 
       {/* Campos opcionais */}
-      <Input name="brand" placeholder="Marca (opcional)" defaultValue={product.brand || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
-      <Input name="color" placeholder="Cor (opcional)" defaultValue={product.color || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
-      <Input name="model" placeholder="Modelo (opcional)" defaultValue={product.model || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
-      <Input name="warranty" placeholder="Garantia (opcional)" defaultValue={product.warranty || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
-      <Input name="size" placeholder="Tamanho (opcional)" defaultValue={product.size || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
+      <Input name="brand" placeholder="Marca (opcional)" defaultValue={product?.brand || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
+      <Input name="color" placeholder="Cor (opcional)" defaultValue={product?.color || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
+      <Input name="model" placeholder="Modelo (opcional)" defaultValue={product?.model || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
+      <Input name="warranty" placeholder="Garantia (opcional)" defaultValue={product?.warranty || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
+      <Input name="size" placeholder="Tamanho (opcional)" defaultValue={product?.size || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
 
       <div className="flex items-center gap-2">
         <Label htmlFor="active">Ativo</Label>

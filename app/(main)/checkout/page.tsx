@@ -25,12 +25,19 @@ import ShippingCalculator from './components/shipping-calculator';
 import { useAddress } from '@/hooks/use-address';
 import { useAuth } from '@/providers/auth-context';
 import { Bounce, toast } from 'react-toastify';
+import { Address } from '@/types/address';
+
+type FreightOption = {
+  name: string;
+  price: number;
+  estimatedDays: number;
+};
 
 export default function CheckoutPage() {
   const { items, addItem, removeItem, clearItem } = useCartStore();
-  const [selectedFreight, setSelectedFreight] = useState(null);
+  const [selectedFreight, setSelectedFreight] = useState<FreightOption | null>(null);
   const [addressValid, setAddressValid] = useState(false);
-  const [addressData, setAddressData] = useState(null);
+  const [addressData, setAddressData] = useState<Address | null>(null);
   const { user } = useAuth();
   const { saveAddress } = useAddress();
 

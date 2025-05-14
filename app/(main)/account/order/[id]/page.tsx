@@ -13,7 +13,6 @@ import { formatCurrency } from '@/lib/helper';
 import { Button } from '@/components/ui/button';
 import { ChevronLeftIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase-client";
 import {
@@ -30,15 +29,16 @@ import {
 import Image from "next/image";
 import Loading from '@/components/loading';
 import { Bounce, toast } from 'react-toastify';
+import { useParams } from 'next/navigation';
 
 // Funções novas para estilização e rotulagem de status
 const getBadgeColor = (status: string) => {
   switch (status) {
-    case 'undefined': return 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-50';
-    case 'paid': return 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-50';
-    case 'shipped': return 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-50';
-    case 'delivered': return 'bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-50';
-    case 'canceled': return 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-50';
+    case 'undefined': return 'bg-yellow-100 dark\:bg-yellow-900 text-yellow-800 dark\:text-yellow-50';
+    case 'paid': return 'bg-green-100 dark\:bg-green-900 text-green-800 dark\:text-green-50';
+    case 'shipped': return 'bg-blue-100 dark\:bg-blue-900 text-blue-800 dark\:text-blue-50';
+    case 'delivered': return 'bg-emerald-100 dark\:bg-emerald-900 text-emerald-800 dark\:text-emerald-50';
+    case 'canceled': return 'bg-red-100 dark\:bg-red-900 text-red-800 dark\:text-red-50';
     default: return '';
   }
 };
@@ -84,17 +84,17 @@ const OrderDetail = () => {
   const [order, setOrder] = useState<Order | null>(null);
   const [items, setItems] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const params = useParams();
-  const orderId = params.id;
+
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchOrder = async () => {
-      if (!orderId) return;
+      if (!id) return;
 
       const { data: orderData, error: orderError } = await supabase
         .from("orders")
         .select("*")
-        .eq("id", orderId)
+        .eq("id", id)
         .single();
 
       if (orderError || !orderData) {
@@ -111,7 +111,7 @@ const OrderDetail = () => {
       const { data: itemsData, error: itemsError } = await supabase
         .from("orders_items")
         .select("*")
-        .eq("order_id", orderId);
+        .eq("order_id", id);
 
       if (itemsError || !itemsData) {
         toast.error("Erro ao buscar itens.", {
@@ -161,10 +161,10 @@ const OrderDetail = () => {
     };
 
     fetchOrder();
-  }, [orderId]);
+  }, [id]);
 
   const handleCancelOrder = async () => {
-    if (!orderId) return;
+    if (!id) return;
 
     const { error } = await supabase
       .from("orders")
@@ -172,7 +172,7 @@ const OrderDetail = () => {
         status: "canceled",
         updated_at: new Date().toISOString()
       })
-      .eq("id", orderId);
+      .eq("id", id);
 
     if (!error && order) {
       // Update only the local order state
@@ -234,12 +234,8 @@ const OrderDetail = () => {
             <div>
               <h2 className="font-semibold text-base mb-2">Produtos</h2>
               <div className="space-y-2">
-
                 {items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex flex-col gap-1 text-sm w-full"
-                  >
+                  <div key={item.id} className="flex flex-col gap-1 text-sm w-full">
                     <div className="flex items-start gap-3 w-full">
                       {item.product_image_url && (
                         <Link href={`/products/${item.product_id}`}>
@@ -254,10 +250,7 @@ const OrderDetail = () => {
                       )}
                       <div className="flex flex-col w-full overflow-hidden">
                         <div className="flex items-center gap-2 w-full">
-                          <span
-                            className="truncate font-medium text-sm flex-1 overflow-hidden"
-                            title={item.product_name}
-                          >
+                          <span className="truncate font-medium text-sm flex-1 overflow-hidden" title={item.product_name}>
                             <Link href={`/products/${item.product_id}`}>
                               {item.product_name}
                             </Link>
@@ -273,7 +266,6 @@ const OrderDetail = () => {
                     </div>
                   </div>
                 ))}
-
               </div>
               <Separator className="my-3" />
               <div className="flex justify-between text-sm">
@@ -345,7 +337,7 @@ const OrderDetail = () => {
           </a>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 

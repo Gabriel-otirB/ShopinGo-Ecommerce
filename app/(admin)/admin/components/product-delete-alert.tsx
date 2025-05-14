@@ -14,8 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 
 interface ProductDeleteAlertProps {
-  onConfirm: (productId: string) => void;
-  productId: string;
+  onConfirm: (productId: string | undefined) => void;
+  productId: string | undefined;
 }
 
 const ProductDeleteAlert = ({ onConfirm, productId }: ProductDeleteAlertProps) => {

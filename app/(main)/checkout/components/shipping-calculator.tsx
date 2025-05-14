@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/helper';
 import { useAddress } from '@/hooks/use-address';
+import { Address } from '@/types/address';
 
 type FreightOption = {
   name: string;
@@ -12,10 +13,21 @@ type FreightOption = {
   estimatedDays: number;
 };
 
+type FormData = {
+  cep: string;
+  street: string;
+  number: string;
+  neighborhood: string;
+  city: string;
+  uf: string;
+  complement: string;
+  [key: string]: string; // Assinatura de índice para permitir acesso dinâmico
+};
+
 type Props = {
   onSelectFreight: (freight: FreightOption | null) => void;
   onAddressValidityChange?: (isValid: boolean) => void;
-  onFormDataChange?: (formData: Record<string, string>) => void;
+  onFormDataChange: (data: Address) => void;
 };
 
 export default function ShippingCalculator({
@@ -25,7 +37,7 @@ export default function ShippingCalculator({
 }: Props) {
   const { address, loading: loadingAddress, error: addressError } = useAddress();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     cep: '',
     street: '',
     number: '',
