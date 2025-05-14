@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛒 Shopingo
+![Next.js](https://img.shields.io/badge/Next.js-15.3.2-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript)
+![Supabase](https://img.shields.io/badge/Supabase-Backend-3FCF8E?logo=supabase)
+![Stripe](https://img.shields.io/badge/Stripe-Payments-635BFF?logo=stripe)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?logo=tailwind-css)
+![Status](https://img.shields.io/badge/Status-Em%20desenvolvimento-yellow)
 
-## Getting Started
+**Shopingo** é uma plataforma web full stack de **e-commerce**, desenvolvida com foco na venda de produtos diversos. O sistema oferece controle de usuários, integração com **Supabase** e pagamentos via **Stripe**, além de um painel administrativo completo para gerenciamento de produtos e usuários.
 
-First, run the development server:
+https://github.com/user-attachments/assets/ad4a3b5a-3f1c-4fcb-8a9a-68c435d2eb2f
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Teste você mesmo!
+- Acessar Loja: [Shopingo](https://shopingo.vercel.app/)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Funcionalidades Principais
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Cadastro e gerenciamento de produtos com **upload de imagens**
+- Autenticação de usuários via **Supabase Auth** (incluindo login com Google)
+- Carrinho de compras integrado e finalização via **Stripe Checkout**
+- Painel de administração para controle de produtos e usuários
+- Listagem e visualização de pedidos e histórico de compras
+- Sistema de controle de permissões de usuários (cliente/admin)
+- Upload de imagens armazenado em **Supabase Storage**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🔜 Em breve:
+- Avaliação e sistema de comentários nos produtos
+- Migrations com Prisma ORM
 
-## Learn More
+## 🛠️ Tecnologias Utilizadas
 
-To learn more about Next.js, take a look at the following resources:
+- **Next.js** – Framework React para aplicações web
+- **TypeScript**
+- **Tailwind CSS** – Estilização moderna e responsiva
+- **Supabase** – Autenticação, banco de dados e storage
+- **Stripe** – Processamento de pagamentos online
+- **Shadcn UI** – Componentes de interface acessíveis e elegantes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔐 Autenticação e Segurança
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+A aplicação utiliza **Supabase Auth** para autenticação de usuários, com suporte a autenticação social via Google e gerenciamento de sessões seguras.
 
-## Deploy on Vercel
+## 💳 Pagamentos
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Os pagamentos são processados via **Stripe**, com integração completa para checkout, controle de preços e sincronização com o banco de dados de produtos.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📦 Banco de Dados
+
+O sistema utiliza **PostgreSQL** no **Supabase**, com as seguintes tabelas principais:
+
+- **products**
+- **orders**
+- **orders_items**
+- **profiles**
+- **addresses**
+
+E um bucket de storage público chamado:
+- **product-images**
+
+![image](https://github.com/user-attachments/assets/72798a07-3a6b-4033-ad6f-db84c03c9c67)
+
+## 📱 Layout e Interface
+
+A interface foi desenvolvida com **Tailwind CSS** e **Shadcn UI**, proporcionando um visual moderno, limpo e responsivo, ideal para qualquer dispositivo.
+
+
