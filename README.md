@@ -11,7 +11,7 @@
 https://github.com/user-attachments/assets/ad4a3b5a-3f1c-4fcb-8a9a-68c435d2eb2f
 
 ## 🚀 Teste você mesmo!
-- Acessar Loja: [Shopingo](https://shopingo.vercel.app/)
+- Acessar Loja: [Shopingo](https://shopin-go-ecommerce.vercel.app/)
 
 ## ✨ Funcionalidades Principais
 
