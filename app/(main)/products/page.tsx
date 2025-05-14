@@ -1,6 +1,12 @@
 import { stripe } from "@/lib/stripe";
 import { ProductList } from './components/product-list';
 import ScrollTop from '@/components/scroll-top';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "ShopinGo | Produtos",
+  description: "Produtos",
+};
 
 export default async function CategoryPage() {
   const products = await stripe.products

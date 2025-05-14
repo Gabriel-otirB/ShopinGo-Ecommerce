@@ -46,7 +46,7 @@ const getStatusLabel = (status: string) => {
     case 'shipped': return 'Enviado';
     case 'delivered': return 'Entregue';
     case 'canceled': return 'Cancelado';
-    default: return status;
+    default: return 'Processando';
   }
 };
 
@@ -57,7 +57,7 @@ const getStatusColor = (status: string) => {
     case 'shipped': return 'text-blue-600 dark:text-blue-400';
     case 'delivered': return 'text-emerald-600 dark:text-emerald-400';
     case 'canceled': return 'text-red-600 dark:text-red-400';
-    default: return '';
+    default: return 'text-yellow-600 dark:text-yellow-400';
   }
 };
 
@@ -68,7 +68,7 @@ const getBadgeColor = (status: string) => {
     case 'shipped': return 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-50';
     case 'delivered': return 'bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-50';
     case 'canceled': return 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-50';
-    default: return '';
+    default: return 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-50';
   }
 };
 
