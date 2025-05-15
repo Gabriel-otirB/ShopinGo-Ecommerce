@@ -31,7 +31,7 @@ import Loading from '@/components/loading';
 import { Bounce, toast } from 'react-toastify';
 import { useParams } from 'next/navigation';
 
-// Funções novas para estilização e rotulagem de status
+// Functions for new styling and status labeling
 const getBadgeColor = (status: string) => {
   switch (status) {
     case 'undefined': return 'bg-yellow-100 dark\:bg-yellow-900 text-yellow-800 dark\:text-yellow-50';

@@ -53,7 +53,7 @@ const Login = () => {
     e.preventDefault();
     const form = e.currentTarget;
 
-    // Cast para garantir que o form é do tipo HTMLFormElement
+    // Cast to guarantee that the form is of type HTMLFormElement
     const name = (form.elements.namedItem("name") as HTMLInputElement).value;
     const email = (form.elements.namedItem("email") as HTMLInputElement).value;
     const password = (form.elements.namedItem("password") as HTMLInputElement).value;

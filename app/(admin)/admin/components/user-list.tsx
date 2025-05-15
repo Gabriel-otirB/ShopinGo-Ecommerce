@@ -37,7 +37,7 @@ const UserList = ({ profiles: initialProfiles, search }: { profiles: Profile[], 
   };
 
   const handleRoleToggle = async (profile: Profile) => {
-    // Verificar se o 'newRole' é do tipo permitido
+    // Verify if the 'newRole' is a valid type
     const newRole: "admin" | "customer" = profile.role === "admin" ? "customer" : "admin";
 
     const { error } = await supabase

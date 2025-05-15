@@ -21,7 +21,7 @@ type FormData = {
   city: string;
   uf: string;
   complement: string;
-  [key: string]: string; // Assinatura de índice para permitir acesso dinâmico
+  [key: string]: string; // Indice signature to allow dynamic access
 };
 
 type Props = {
