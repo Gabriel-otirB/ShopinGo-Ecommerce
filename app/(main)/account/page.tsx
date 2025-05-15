@@ -149,7 +149,7 @@ const AccountPage = () => {
                       <Link href={`/account/order/${order.id}`} key={order.id}>
                         <div className="relative border-2 rounded p-4 hover:bg-neutral-100 hover:dark:bg-neutral-900 cursor-pointer duration-300 space-y-1">
                           <p className="font-medium">
-                            Pedido #{String(order.id).padStart(8, "0")}
+                            Pedido #{String(order.id).padStart(6, "0")}
                           </p>
 
                           <p className="font-medium">

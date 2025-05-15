@@ -213,7 +213,7 @@ const OrderDetail = () => {
         <Card className="border-2 border-gray-300 dark:border-neutral-500">
           <CardHeader>
             <CardTitle className="text-base flex justify-between items-center">
-              <span>Pedido #{String(order.id).padStart(8, "0")}</span>
+              <span>Pedido #{String(order.id).padStart(6, "0")}</span>
               <Badge className={`${getBadgeColor(order.status)} text-sm px-4 py-0.5`}>
                 {getStatusLabel(order.status)}
               </Badge>
