@@ -42,8 +42,8 @@ export const syncStripeProducts = async () => {
           if (price.unit_amount !== null) {
             priceValue = price.unit_amount / 100; // Stripe returns price in cents
           }
-        } catch (err) {
-          console.warn(`Erro ao buscar preço do produto ${product.id}:`, err);
+        } catch {
+          console.error("Erro ao buscar preço dos produtos.");
         }
       }
 
@@ -58,14 +58,14 @@ export const syncStripeProducts = async () => {
       }]);
 
       if (insertError) {
-        console.error("Erro ao inserir produto:", insertError.message);
+        console.error("Erro ao inserir produto.");
         return { success: false, error: insertError.message };
       }
     }
 
     return { success: true, added: newProducts.length };
-  } catch (error) {
-    console.error("Erro ao sincronizar produtos com Stripe:", error);
-    return { success: false, error: error };
+  } catch {
+    console.error("Erro ao sincronizar produtos com Stripe.");
+    return { success: false, error: "Erro ao sincronizar produtos com Stripe." };
   }
 };

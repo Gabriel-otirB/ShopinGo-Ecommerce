@@ -40,39 +40,48 @@ export default function CheckoutPage() {
   const [addressData, setAddressData] = useState<Address | null>(null);
   const { user } = useAuth();
   const { saveAddress } = useAddress();
+  const [loading, setLoading] = useState(false);
 
   const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const freightValue = selectedFreight?.price ?? 0;
   const grandTotal = total + freightValue;
 
   const handleCheckout = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    try {
+      event.preventDefault();
+      setLoading(true);
 
-    if (!user) {
-      toast.error("Você precisa estar autenticado para finalizar a compra.", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: true,
-        transition: Bounce,
-        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
-      });
-      return;
+      if (!user) {
+        toast.error("Você precisa estar autenticado para finalizar a compra.", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+          transition: Bounce,
+          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+        });
+        return;
+      }
+
+      await saveAddress(addressData!);
+
+      const formData = new FormData();
+      formData.append("items", JSON.stringify(items));
+      formData.append("freight", JSON.stringify(selectedFreight));
+      formData.append("total_price", String(grandTotal));
+      formData.append("user_id", user.id);
+
+      // Include address data individually
+      for (const [key, value] of Object.entries(addressData ?? {})) {
+        formData.append(key, value as string);
+      }
+
+      await checkoutAction(formData);
+    } catch {
+      console.error("Houve um erro ao finalizar a compra.");
     }
-
-    await saveAddress(addressData!);
-
-    const formData = new FormData();
-    formData.append("items", JSON.stringify(items));
-    formData.append("freight", JSON.stringify(selectedFreight));
-    formData.append("total_price", String(grandTotal));
-    formData.append("user_id", user.id);
-
-    // Include address data individually
-    for (const [key, value] of Object.entries(addressData ?? {})) {
-      formData.append(key, value as string);
+    finally {
+      setLoading(false);
     }
-
-    await checkoutAction(formData);
   };
 
   return (
@@ -187,9 +196,9 @@ export default function CheckoutPage() {
                   type="submit"
                   variant="default"
                   className="w-full px-6 py-3 bg-black hover:bg-black/90 text-white dark:text-black dark:bg-white dark:hover:bg-white/90 cursor-pointer"
-                  disabled={!selectedFreight || !addressValid}
+                  disabled={!selectedFreight || !addressValid || loading}
                 >
-                  Finalizar Compra
+                  {loading ? 'Processando...' : 'Finalizar Compra'}
                 </Button>
               </form>
             </>

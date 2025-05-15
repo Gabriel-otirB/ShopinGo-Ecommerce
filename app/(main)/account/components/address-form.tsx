@@ -46,7 +46,7 @@ const AddressForm = () => {
         transition: Flip,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
-    } catch (error) {
+    } catch {
       toast.error("Erro ao salvar endereço.", {
         position: "top-center",
         autoClose: 3000,
@@ -54,8 +54,6 @@ const AddressForm = () => {
         transition: Bounce,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
-
-      console.log(error);
     }
   };
 

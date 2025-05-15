@@ -152,9 +152,8 @@ export default function ShippingCalculator({
 
       setFreightOptions(simulatedFreights);
       setHasFreightBeenCalculated(true); // Checks if the freight has been calculated
-    } catch (error) {
+    } catch {
       setError('Erro ao buscar o CEP');
-      console.error(error);
     } finally {
       setLoading(false);
     }

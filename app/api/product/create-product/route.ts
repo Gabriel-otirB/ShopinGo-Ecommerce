@@ -50,8 +50,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ product, price: createdPrice });
-  } catch (error) {
-    console.error("Erro ao criar produto:", error);
+  } catch {
+    console.error("Erro ao criar produto.");
     return NextResponse.json({ error: "Erro desconhecido." }, { status: 500 });
   }
 }

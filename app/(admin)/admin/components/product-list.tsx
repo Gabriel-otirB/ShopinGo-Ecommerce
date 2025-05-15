@@ -67,7 +67,7 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
       onReload();
-    } catch (error) {
+    } catch {
       toast.error("Erro ao desativar o produto.", {
         position: "top-center",
         autoClose: 2000,
@@ -79,8 +79,6 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
         transition: Bounce,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
-
-      console.error(error);
     }
   };
 

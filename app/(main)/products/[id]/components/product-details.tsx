@@ -81,7 +81,7 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
           text: `Confira este produto: ${product.name}`,
           url: window.location.href,
         })
-        .catch((error) => {
+        .catch(() => {
           copyToClipboard();
           toast.error("Erro ao compartilhar.", {
             position: "top-center",
@@ -90,7 +90,6 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
             transition: Bounce,
             theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
           });
-          console.error(error);
         });
     } else {
       copyToClipboard();
@@ -103,7 +102,7 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
         .then(() => {
           toast.success("Link copiado para a área de transferência");
         })
-        .catch((error) => {
+        .catch(() => {
           toast.error("Erro ao copiar o link.", {
             position: "top-center",
             autoClose: 2000,
@@ -112,7 +111,6 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
             theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
           });
           fallbackCopy();
-          console.error(error);
         });
     } else {
       fallbackCopy();
@@ -134,7 +132,7 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
           transition: Slide,
           theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
         });
-    } catch (error) {
+    } catch {
       toast.error("Não foi possível copiar o link.", {
         position: "top-center",
         autoClose: 2000,
@@ -142,7 +140,6 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
         transition: Bounce,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
-      console.error(error);
     }
   };
 

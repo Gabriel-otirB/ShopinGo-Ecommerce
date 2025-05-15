@@ -67,13 +67,13 @@ export async function POST(req: NextRequest) {
       .eq("stripe_product_id", stripe_product_id);
 
     if (error) {
-      console.error("Erro ao atualizar no Supabase:", error.message);
+      console.error("Erro ao atualizar no Supabase.");
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ updatedProduct, newPriceId });
-  } catch (error) {
-    console.error("Erro no update-product:", error);
+  } catch {
+    console.error("Erro no update-product.");
     return NextResponse.json({ error: "Erro desconhecido." }, { status: 500 });
   }
 }

@@ -87,7 +87,7 @@ const Login = () => {
       });
 
       router.push("/auth/verify-email");
-    } catch (error) {
+    } catch {
       toast.error("Erro ao criar conta.", {
         position: "top-center",
         autoClose: 2000,
@@ -99,8 +99,6 @@ const Login = () => {
         transition: Bounce,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
-
-      console.error(error);
     }
   };
 
@@ -122,7 +120,7 @@ const Login = () => {
     try {
       await signIn(email, password);
       router.push(redirectTo);
-    } catch (error) {
+    } catch {
       const message = "Erro ao fazer login";
       if (message.toLowerCase().includes("invalid") || message.toLowerCase().includes("credenciais")) {
         setLoginPasswordError("Email ou senha incorretos");
@@ -142,8 +140,6 @@ const Login = () => {
         transition: Bounce,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
-
-      console.error(error);
     }
   };
 

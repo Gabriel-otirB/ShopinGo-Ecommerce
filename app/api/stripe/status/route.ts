@@ -32,8 +32,8 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({ status });
-  } catch (error) {
-    console.error("Erro ao buscar sessão do stripe:", error);
+  } catch {
+    console.error("Erro ao buscar sessão do stripe.");
     return NextResponse.json({ error: 'Erro ao buscar sessão' }, { status: 500 });
   }
 }

@@ -95,7 +95,7 @@ const UserProfileForm = () => {
         transition: Flip,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
-    } catch (error) {
+    } catch {
       toast.error("Erro ao atualizar perfil.", {
         position: "top-center",
         autoClose: 3000,
@@ -103,8 +103,6 @@ const UserProfileForm = () => {
         transition: Bounce,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
-
-      console.log(error);
     }
 
     try {
@@ -118,7 +116,7 @@ const UserProfileForm = () => {
           theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
         });
       }
-    } catch (error) {
+    } catch {
       toast.error("Erro ao atualizar senha.", {
         position: "top-center",
         autoClose: 3000,
@@ -126,8 +124,6 @@ const UserProfileForm = () => {
         transition: Bounce,
         theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
       });
-
-      console.log(error);
     }
 
   };
