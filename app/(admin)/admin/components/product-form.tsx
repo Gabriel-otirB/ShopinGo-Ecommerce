@@ -10,6 +10,7 @@ import Image from "next/image";
 import { uploadImageToStorage } from "@/lib/upload-image";
 import { Bounce, Flip, toast } from "react-toastify";
 import { Product } from '@/types/product';
+import { supabase } from '@/lib/supabase-client';
 
 interface ProductFormProps {
   product: Product | null;
@@ -43,6 +44,12 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget as HTMLFormElement;
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const token = session?.access_token;
 
     const getInputValue = (name: string) =>
       (form.elements.namedItem(name) as HTMLInputElement | null)?.value.trim() || "";
@@ -132,8 +139,8 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
       };
 
     const response = await fetch(apiEndpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: isUpdate ? "PUT" : "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify(body),
     });
 

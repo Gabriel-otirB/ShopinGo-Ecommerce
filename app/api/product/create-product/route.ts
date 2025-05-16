@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
+import validateUserAdmin from '@/lib/validate-user-admin';
 
 export async function POST(req: NextRequest) {
+  const user = await validateUserAdmin(req);
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const body = await req.json();
     const { name, description, price, category, active, image_url, brand, color, model, warranty, size } = body;

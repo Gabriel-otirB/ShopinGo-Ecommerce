@@ -97,8 +97,8 @@ export const checkoutAction = async (formData: FormData): Promise<void> => {
     metadata: {
       pedido_id: order.id.toString(),
     },
-    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/cancel?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/result?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/result?session_id={CHECKOUT_SESSION_ID}`,
   });
 
   redirect(session.url!);

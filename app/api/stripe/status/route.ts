@@ -1,11 +1,25 @@
 import { stripe } from '@/lib/stripe';
-import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
 export async function GET(req: NextRequest) {
-  const sessionId = req.nextUrl.searchParams.get('session_id');
+  const authHeader = req.headers.get('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  const token = authHeader.replace('Bearer ', '');
 
+  const {
+    data: { user },
+    error: userError,
+  } = await supabaseAdmin.auth.getUser(token);
+
+  if (userError || !user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const sessionId = req.nextUrl.searchParams.get('session_id');
   if (!sessionId) {
     return NextResponse.json({ error: 'Missing session_id' }, { status: 400 });
   }
@@ -21,7 +35,7 @@ export async function GET(req: NextRequest) {
     const metadata = session.metadata;
 
     if (metadata?.pedido_id) {
-      await supabase
+      await supabaseAdmin
         .from('orders')
         .update({
           status,
@@ -32,8 +46,8 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({ status });
-  } catch {
-    console.error("Erro ao buscar sessão do stripe.");
+  } catch (err) {
+    console.error('Erro ao buscar sessão do stripe:', err);
     return NextResponse.json({ error: 'Erro ao buscar sessão' }, { status: 500 });
   }
 }

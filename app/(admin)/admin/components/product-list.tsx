@@ -13,6 +13,7 @@ import ProductDeleteAlert from "./product-delete-alert";
 import { Bounce, Flip, toast } from 'react-toastify';
 import Link from 'next/link';
 import { Product } from '@/types/product';
+import { supabase } from '@/lib/supabase-client';
 
 interface ProductListProps {
   products: Product[];
@@ -24,6 +25,7 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
   const [visibleProductsCount, setVisibleProductsCount] = useState(10);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const { isOpen, open, close } = useDisclosure();
+
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase())
@@ -46,16 +48,33 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
   };
 
   const handleDeleteProduct = async (productId: string | undefined) => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const token = session?.access_token;
+
+    if (!token) {
+      toast.error("Voce precisa estar autenticado.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        transition: Bounce,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      })
+      return;
+    }
+
     try {
       const response = await fetch("/api/product/remove-product", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ productId }),
       });
 
       if (!response.ok) throw new Error("Erro ao remover o produto");
 
-      toast.success("Produto desativado com sucesso!", {
+      toast.success("Produto removido com sucesso!", {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: true,
@@ -68,7 +87,7 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
       });
       onReload();
     } catch {
-      toast.error("Erro ao desativar o produto.", {
+      toast.error("Erro ao remover o produto.", {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: true,

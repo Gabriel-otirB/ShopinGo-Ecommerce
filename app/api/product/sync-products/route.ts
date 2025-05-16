@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { syncStripeProducts } from '@/lib/sync-products';
 
-export async function POST() {
+export async function GET() {
   try {
     const result = await syncStripeProducts();
     return NextResponse.json({ success: true, result });

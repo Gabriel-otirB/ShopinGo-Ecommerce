@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { supabaseAdmin as supabase } from '@/lib/supabase-admin';
+import validateUserAdmin from '@/lib/validate-user-admin';
 
-export async function POST(req: NextRequest) {
+export async function PUT(req: NextRequest) {
+  const user = await validateUserAdmin(req);
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { productId } = await req.json();
 
   // Get the product from the database to get the stripe_product_id
