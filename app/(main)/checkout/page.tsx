@@ -19,7 +19,6 @@ import {
   AlertDialogAction
 } from '@/components/ui/alert-dialog';
 import Link from 'next/link';
-import ScrollTop from '@/components/scroll-top';
 import { ShoppingCart } from 'lucide-react';
 import ShippingCalculator from './components/shipping-calculator';
 import { useAddress } from '@/hooks/use-address';
@@ -86,7 +85,6 @@ export default function CheckoutPage() {
 
   return (
     <>
-      <ScrollTop />
       <div className="flex flex-col">
         <div className="flex-grow container mx-auto px-4 pb-4">
           {items.length === 0 ? (

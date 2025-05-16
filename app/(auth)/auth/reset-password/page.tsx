@@ -58,7 +58,7 @@ export default function ResetPasswordPage() {
           </h1>
 
           <form onSubmit={handleResetPassword} className="space-y-5">
-            {/* Campo: Nova senha */}
+            {/* New Password */}
             <div className="space-y-2 relative">
               <Label htmlFor="new-password">Nova senha</Label>
               <Input
@@ -78,7 +78,7 @@ export default function ResetPasswordPage() {
               </button>
             </div>
 
-            {/* Campo: Confirmar senha */}
+            {/* Confirm Password */}
             <div className="space-y-2 relative">
               <Label htmlFor="confirm-password">Confirmar senha</Label>
               <Input

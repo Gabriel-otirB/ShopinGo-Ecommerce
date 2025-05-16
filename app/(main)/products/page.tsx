@@ -1,6 +1,5 @@
 import { stripe } from "@/lib/stripe";
 import { ProductList } from './components/product-list';
-import ScrollTop from '@/components/scroll-top';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -26,7 +25,6 @@ export default async function CategoryPage() {
 
   return (
     <div>
-      <ScrollTop />
       <ProductList products={parsedProducts} />
     </div>
   );

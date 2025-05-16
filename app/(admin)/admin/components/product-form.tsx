@@ -197,7 +197,7 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
         {errors.category && <p className="text-sm text-red-500">{errors.category}</p>}
       </div>
 
-      {/* Campos opcionais */}
+      {/* Optional fields */}
       <Input name="brand" placeholder="Marca (opcional)" defaultValue={product?.brand || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
       <Input name="color" placeholder="Cor (opcional)" defaultValue={product?.color || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
       <Input name="model" placeholder="Modelo (opcional)" defaultValue={product?.model || ""} className="border-2 border-gray-300 dark:border-neutral-500" />
@@ -209,7 +209,7 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
         <Switch id="active" checked={active} onCheckedChange={setActive} className="cursor-pointer border-2 border-gray-300 dark:border-neutral-500" />
       </div>
 
-      {/* Upload de imagens */}
+      {/* Images upload */}
       <div className="flex flex-col gap-2">
         <Label>Imagens</Label>
         <Input type="file" accept="image/*" multiple onChange={handleImageChange} className="h-auto text-black/60 dark:text-white/50 cursor-pointer max-w-[310px] border-2 border-gray-300 dark:border-neutral-500" />

@@ -1,4 +1,5 @@
-import ProtectedAdminRoute from '@/components/protected-admin-route' 
+import ProtectedAdminRoute from '@/components/protected-admin-route'
+import ScrollTop from '@/components/scroll-top';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <ScrollTop />
       <ProtectedAdminRoute>
         {children}
       </ProtectedAdminRoute>

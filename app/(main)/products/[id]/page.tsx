@@ -1,5 +1,4 @@
 import ProductDetail from './components/product-details';
-import ScrollTop from '@/components/scroll-top';
 import { stripe } from '@/lib/stripe';
 
 const ProductPage = async (
@@ -30,7 +29,6 @@ const ProductPage = async (
 
   return (
     <>
-      <ScrollTop />
       <ProductDetail product={plainProduct} recommendedProducts={plainRecommendedProducts} />
     </>
   )
