@@ -178,7 +178,8 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
       const { data: reviewsData, error: reviewsError } = await supabase
         .from('reviews')
         .select('id, rating, comment, profile_id, order_item_id, updated_at')
-        .in('order_item_id', orderItemIds);
+        .in('order_item_id', orderItemIds)
+        .eq('rated', true);
 
       if (reviewsError) {
         console.error(reviewsError);
