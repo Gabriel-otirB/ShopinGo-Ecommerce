@@ -26,7 +26,6 @@ export const ProductReviews = ({ productId }: Props) => {
         .eq('product_id', productId);
 
       if (orderItemsError) {
-        console.error(orderItemsError);
         setLoading(false);
         return;
       }
@@ -47,7 +46,6 @@ export const ProductReviews = ({ productId }: Props) => {
         .eq('rated', true);
 
       if (reviewsError) {
-        console.error(reviewsError);
         setLoading(false);
         return;
       }
@@ -67,7 +65,6 @@ export const ProductReviews = ({ productId }: Props) => {
         .in('id', profileIds);
 
       if (profilesError) {
-        console.error(profilesError);
         setLoading(false);
         return;
       }
@@ -85,22 +82,10 @@ export const ProductReviews = ({ productId }: Props) => {
         updated_at: r.updated_at,
       }));
 
+      const avg = formattedReviews.reduce((sum, r) => sum + r.rating, 0) / formattedReviews.length;
+
       setReviews(formattedReviews);
-
-      const { data: averageData, error: averageError } = await supabase
-        .from('reviews')
-        .select('avg(rating)', { head: false })
-        .in('order_item_id', orderItemIds)
-        .eq('rated', true)
-        .single();
-
-      if (averageError) {
-        console.error(averageError);
-        setAverage(null);
-      } else {
-        setAverage(averageData ? Number(averageData.avg) : null);
-      }
-
+      setAverage(avg);
       setLoading(false);
     };
 

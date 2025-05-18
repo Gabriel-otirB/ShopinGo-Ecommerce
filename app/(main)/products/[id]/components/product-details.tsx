@@ -161,7 +161,6 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
         .eq('product_id', product.id);
 
       if (orderItemsError) {
-        console.error(orderItemsError);
         setLoading(false);
         return;
       }
@@ -182,7 +181,6 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
         .eq('rated', true);
 
       if (reviewsError) {
-        console.error(reviewsError);
         setLoading(false);
         return;
       }
@@ -202,7 +200,6 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
         .in('id', profileIds);
 
       if (profilesError) {
-        console.error(profilesError);
         setLoading(false);
         return;
       }
