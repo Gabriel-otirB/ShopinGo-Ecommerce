@@ -21,7 +21,7 @@ type FormData = {
   city: string;
   uf: string;
   complement: string;
-  [key: string]: string; // Indice signature to allow dynamic access
+  [key: string]: string;
 };
 
 type Props = {
@@ -54,14 +54,11 @@ export default function ShippingCalculator({
   const [selectedFreight, setSelectedFreight] = useState<FreightOption | null>(null);
   const [isAddressValid, setIsAddressValid] = useState(false);
 
-  const [isDirty, setIsDirty] = useState(false); // Flag to detect if the form has been changed
-  const [hasFreightBeenCalculated, setHasFreightBeenCalculated] = useState(false); // Flag to detect if the freight has been calculated
-
-  // Update form data with supabase data if exists
   useEffect(() => {
     if (address) {
       setFormData(prevFormData => ({
-        cep: prevFormData.cep || address.cep,
+        ...prevFormData,
+        cep: prevFormData.cep || address.cep || '',
         street: prevFormData.street || address.street || '',
         number: prevFormData.number || address.number || '',
         neighborhood: prevFormData.neighborhood || address.neighborhood || '',
@@ -72,17 +69,13 @@ export default function ShippingCalculator({
     }
   }, [address]);
 
-  // Sends form data to parent
   useEffect(() => {
     onFormDataChange?.(formData);
   }, [formData, onFormDataChange]);
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    setIsDirty(true); // Set the form as changed
-    setHasFreightBeenCalculated(false); // When the form changes, force the freight calculation
   };
 
   const validateAddress = useCallback((setErrorState = true) => {
@@ -101,21 +94,9 @@ export default function ShippingCalculator({
     setIsAddressValid(isValid);
     onAddressValidityChange?.(isValid);
     return isValid;
-  }, [formData, setErrors, setIsAddressValid, onAddressValidityChange]);
+  }, [formData, onAddressValidityChange]);
 
-  // Validate address on form data change
-  useEffect(() => {
-    validateAddress(false);
-  }, [formData, validateAddress]);
-
-  const handleCalculate = useCallback(async () => {
-    if (!validateAddress()) return;
-
-    setError('');
-    setFreightOptions(null);
-    setSelectedFreight(null);
-    onSelectFreight(null);
-
+  const handleCepSearch = async () => {
     const cleanCep = formData.cep.replace(/\D/g, '');
     if (cleanCep.length !== 8) {
       setError('CEP inválido');
@@ -123,6 +104,7 @@ export default function ShippingCalculator({
     }
 
     setLoading(true);
+    setError('');
     try {
       const res = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
       const data = await res.json();
@@ -131,33 +113,54 @@ export default function ShippingCalculator({
 
       setFormData(prev => ({
         ...prev,
-        street: prev.street || data.logradouro || '',
-        neighborhood: prev.neighborhood || data.bairro || '',
-        city: prev.city || data.localidade || '',
-        uf: prev.uf || data.uf || '',
+        street: data.logradouro || '',
+        neighborhood: data.bairro || '',
+        city: data.localidade || '',
+        uf: data.uf || '',
       }));
-
-      const isSpecialUF = ['SP', 'RJ', 'MG'].includes(data.uf);
-      const simulatedFreights: FreightOption[] = isSpecialUF
-        ? [
-          { name: 'PAC', price: 1490, estimatedDays: 5 },
-          { name: 'SEDEX', price: 2290, estimatedDays: 2 },
-          { name: 'Frete Expresso', price: 3290, estimatedDays: 1 },
-        ]
-        : [
-          { name: 'PAC', price: 1990, estimatedDays: 8 },
-          { name: 'SEDEX', price: 2990, estimatedDays: 4 },
-          { name: 'Frete Expresso', price: 3990, estimatedDays: 2 },
-        ];
-
-      setFreightOptions(simulatedFreights);
-      setHasFreightBeenCalculated(true); // Checks if the freight has been calculated
     } catch {
       setError('Erro ao buscar o CEP');
     } finally {
       setLoading(false);
     }
-  }, [formData, validateAddress, onSelectFreight]);
+  };
+
+  const handleCalculateFreight = async () => {
+    if (!validateAddress()) return;
+
+    const cleanCep = formData.cep.replace(/\D/g, '');
+    if (cleanCep.length !== 8) {
+      setError('CEP inválido');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setFreightOptions(null);
+    setSelectedFreight(null);
+    onSelectFreight(null);
+
+    try {
+      const isSpecialUF = ['SP', 'RJ', 'MG'].includes(formData.uf);
+      const simulatedFreights: FreightOption[] = isSpecialUF
+        ? [
+            { name: 'PAC', price: 1490, estimatedDays: 5 },
+            { name: 'SEDEX', price: 2290, estimatedDays: 2 },
+            { name: 'Frete Expresso', price: 3290, estimatedDays: 1 },
+          ]
+        : [
+            { name: 'PAC', price: 1990, estimatedDays: 8 },
+            { name: 'SEDEX', price: 2990, estimatedDays: 4 },
+            { name: 'Frete Expresso', price: 3990, estimatedDays: 2 },
+          ];
+
+      setFreightOptions(simulatedFreights);
+    } catch {
+      setError('Erro ao calcular o frete');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSelectFreight = (option: FreightOption) => {
     if (validateAddress()) {
@@ -170,11 +173,8 @@ export default function ShippingCalculator({
   };
 
   useEffect(() => {
-    // If the form has been changed and the freight has already been calculated, force a recalculation
-    if (isDirty && hasFreightBeenCalculated) {
-      handleCalculate();
-    }
-  }, [isDirty, handleCalculate, hasFreightBeenCalculated]);
+    validateAddress(false);
+  }, [formData, validateAddress]);
 
   return (
     <div className="max-w-md mx-auto my-6 p-4 border rounded shadow-sm bg-white dark:bg-neutral-900 dark:border-neutral-800">
@@ -190,9 +190,10 @@ export default function ShippingCalculator({
         />
         <Button
           className="cursor-pointer"
-          onClick={handleCalculate}
-          disabled={loading || loadingAddress}>
-          {loading || loadingAddress ? 'Calculando...' : 'Buscar'}
+          onClick={handleCepSearch}
+          disabled={loading || loadingAddress}
+        >
+          {loading || loadingAddress ? 'Buscando...' : 'Buscar'}
         </Button>
       </div>
 
@@ -201,7 +202,14 @@ export default function ShippingCalculator({
 
       <h2 className="text-lg font-semibold my-4">Endereço</h2>
       <div className="grid grid-cols-1 gap-3 mb-4">
-        {[{ name: 'street', placeholder: 'Rua' }, { name: 'number', placeholder: 'Número' }, { name: 'neighborhood', placeholder: 'Bairro' }, { name: 'city', placeholder: 'Cidade' }, { name: 'uf', placeholder: 'UF', maxLength: 2 }, { name: 'complement', placeholder: 'Complemento (opcional)' }].map(({ name, placeholder, maxLength }) => (
+        {[
+          { name: 'street', placeholder: 'Rua' },
+          { name: 'number', placeholder: 'Número' },
+          { name: 'neighborhood', placeholder: 'Bairro' },
+          { name: 'city', placeholder: 'Cidade' },
+          { name: 'uf', placeholder: 'UF', maxLength: 2 },
+          { name: 'complement', placeholder: 'Complemento (opcional)' },
+        ].map(({ name, placeholder, maxLength }) => (
           <div key={name}>
             <Input
               name={name}
@@ -216,7 +224,7 @@ export default function ShippingCalculator({
       </div>
 
       <Button
-        onClick={handleCalculate}
+        onClick={handleCalculateFreight}
         className="cursor-pointer w-full mb-4"
         disabled={loading || loadingAddress || !isAddressValid}
       >
@@ -231,10 +239,11 @@ export default function ShippingCalculator({
               <div
                 key={option.name}
                 onClick={() => handleSelectFreight(option)}
-                className={`flex justify-between items-center p-2 border rounded text-sm cursor-pointer transition ${selectedFreight?.name === option.name
-                  ? 'bg-neutral-100 dark:bg-neutral-800 border-black dark:border-white'
-                  : ''
-                  }`}
+                className={`flex justify-between items-center p-2 border rounded text-sm cursor-pointer transition ${
+                  selectedFreight?.name === option.name
+                    ? 'bg-neutral-100 dark:bg-neutral-800 border-black dark:border-white'
+                    : ''
+                }`}
               >
                 <span>
                   {option.name} (até {option.estimatedDays} dias úteis)

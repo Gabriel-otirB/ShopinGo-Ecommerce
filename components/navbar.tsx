@@ -151,7 +151,7 @@ const Navbar = () => {
 
                     <Link
                       href="/checkout"
-                      className="mt-2 w-full text-center text-sm font-medium bg-black text-white rounded-3xl py-2"
+                      className="mt-2 w-full text-center text-sm font-medium bg-black text-white dark:bg-white dark:text-black rounded-3xl py-2"
                       onClick={() => setOpenPreview(false)}
                     >
                       Ver Meu Carrinho De Compras
