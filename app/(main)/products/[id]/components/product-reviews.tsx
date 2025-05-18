@@ -103,23 +103,32 @@ export const ProductReviews = ({ productId }: Props) => {
 
     for (let i = 0; i < fullStars; i++) {
       stars.push(
-        <Star key={`full-${i}`} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+        <Star
+          key={`full-${i}`}
+          className="w-4 h-4 fill-yellow-500 stroke-yellow-500"
+        />
       );
     }
 
     if (hasHalfStar) {
       stars.push(
-        <StarHalf key="half" className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+        <div key="half" className="relative w-4 h-4">
+          <Star className="absolute inset-0 w-4 h-4 fill-amber-50/20 stroke-gray-400 dark:stroke-neutral-200" />
+          <StarHalf className="absolute inset-0 w-4 h-4 fill-yellow-500 stroke-yellow-500" />
+        </div>
       );
     }
 
     for (let i = 0; i < emptyStars; i++) {
       stars.push(
-        <Star key={`empty-${i}`} className="w-4 h-4 text-gray-300 dark:text-neutral-600" />
+        <Star
+          key={`empty-${i}`}
+          className="w-4 h-4 fill-amber-50/20 stroke-gray-400 dark:stroke-neutral-200"
+        />
       );
     }
 
-    return <div className="flex">{stars}</div>;
+    return <div className="flex gap-0.5">{stars}</div>;
   };
 
   if (loading) {
@@ -164,19 +173,25 @@ export const ProductReviews = ({ productId }: Props) => {
                 <span className="text-xs text-neutral-500">{formatDate(review.updated_at)}</span>
               </div>
             </div>
-            <p className="text-sm text-neutral-800 dark:text-neutral-300">{review.comment}</p>
+            {review.comment ? (
+              <p className="text-sm text-neutral-800 dark:text-neutral-300">{review.comment}</p>
+            ) : (
+              <p className="text-sm text-neutral-800 dark:text-neutral-300">Sem comentários.</p>
+            )}
           </li>
         ))}
       </ul>
 
       {!showAll && reviews.length > 3 && (
-        <button
-          onClick={() => setShowAll(true)}
-          className="mt-4 text-black dark:text-white hover:underline cursor-pointer"
-          aria-label="Ver todas as avaliações"
-        >
-          Ver todas
-        </button>
+        <div className="mt-4 flex justify-center">
+          <button
+            onClick={() => setShowAll(true)}
+            className="text-black dark:text-white underline cursor-pointer font-medium"
+            aria-label="Ver todas as avaliações"
+          >
+            Ver todas
+          </button>
+        </div>
       )}
     </div>
   );

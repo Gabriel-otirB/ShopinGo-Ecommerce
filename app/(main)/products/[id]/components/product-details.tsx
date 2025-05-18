@@ -238,23 +238,32 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
 
     for (let i = 0; i < fullStars; i++) {
       stars.push(
-        <Star key={`full-${i}`} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+        <Star
+          key={`full-${i}`}
+          className="w-4 h-4 fill-yellow-500 stroke-yellow-500"
+        />
       );
     }
 
     if (hasHalfStar) {
       stars.push(
-        <StarHalf key="half" className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+        <div key="half" className="relative w-4 h-4">
+          <Star className="absolute inset-0 w-4 h-4 fill-amber-50/10 stroke-white" />
+          <StarHalf className="absolute inset-0 w-4 h-4 fill-yellow-500 stroke-yellow-500" />
+        </div>
       );
     }
 
     for (let i = 0; i < emptyStars; i++) {
       stars.push(
-        <Star key={`empty-${i}`} className="w-4 h-4 text-gray-300 dark:text-neutral-600" />
+        <Star
+          key={`empty-${i}`}
+          className="w-4 h-4 fill-amber-50/10 stroke-white "
+        />
       );
     }
 
-    return <div className="flex">{stars}</div>;
+    return <div className="flex gap-0.5">{stars}</div>;
   };
 
   if (loading) {
