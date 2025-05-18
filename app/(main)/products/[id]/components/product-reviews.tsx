@@ -176,7 +176,7 @@ export const ProductReviews = ({ productId }: Props) => {
             {review.comment ? (
               <p className="text-sm text-neutral-800 dark:text-neutral-300">{review.comment}</p>
             ) : (
-              <p className="text-sm text-neutral-800 dark:text-neutral-300">Sem comentários.</p>
+              <p className="text-sm text-neutral-800/70 dark:text-neutral-300/70">Sem comentários.</p>
             )}
           </li>
         ))}
