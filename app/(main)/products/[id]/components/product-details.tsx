@@ -91,13 +91,6 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
         })
         .catch(() => {
           copyToClipboard();
-          toast.error("Erro ao compartilhar.", {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: true,
-            transition: Bounce,
-            theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
-          });
         });
     } else {
       copyToClipboard();
@@ -111,13 +104,6 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
           toast.success("Link copiado para a área de transferência");
         })
         .catch(() => {
-          toast.error("Erro ao copiar o link.", {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: true,
-            transition: Bounce,
-            theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
-          });
           fallbackCopy();
         });
     } else {

@@ -141,10 +141,10 @@ export const ProductReviews = ({ productId }: Props) => {
 
   return (
     <div className="border-2 p-4 rounded shadow border-gray-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-900 mt-4">
-      <h2 className="text-xl font-semibold mb-2">Avaliações</h2>
+      <h2 className="text-xl font-semibold mb-2 text-center md:text-start">Avaliações</h2>
 
       {average !== null && (
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex flex-col md:flex-row items-center gap-2 mb-4">
           {renderStars(average)}
           <span className="text-lg font-medium text-neutral-900 dark:text-neutral-50">
             {average.toFixed(1)} de 5
