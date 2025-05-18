@@ -30,7 +30,7 @@ import Image from "next/image";
 import Loading from '@/components/loading';
 import { Bounce, toast } from 'react-toastify';
 import { useParams } from 'next/navigation';
-import PendingReviewCheck from './components/pending-review-check';
+import PendingReviewButton from './components/pending-review-button';
 
 // Functions for new styling and status labeling
 const getBadgeColor = (status: string) => {
@@ -236,40 +236,41 @@ const OrderDetail = () => {
               <h2 className="font-semibold text-base mb-2">Produtos</h2>
               <div className="space-y-2">
                 {items.map((item) => (
-                  <div key={item.id} className="flex flex-col gap-1 text-sm w-full">
+                  <div key={item.id} className="flex flex-col gap-1 text-sm w-full mb-4">
                     <div className="flex items-start gap-3 w-full">
                       {item.product_image_url && (
-                        <Link href={`/products/${item.product_id}`}>
+                        <Link href={`/products/${item.product_id}`} className="block w-20 h-20 relative shrink-0 overflow-hidden rounded">
                           <Image
                             src={item.product_image_url}
                             alt={item.product_name}
-                            width={60}
-                            height={60}
-                            className="rounded-md object-cover"
+                            fill
+                            className="object-cover"
                           />
                         </Link>
                       )}
-                      <div className="flex flex-col w-full overflow-hidden">
-                        <div className="flex items-center gap-2 w-full">
-                          <span className="truncate font-medium text-sm flex-1 overflow-hidden" title={item.product_name}>
-                            <Link href={`/products/${item.product_id}`}>
-                              {item.product_name}
-                            </Link>
-                          </span>
-                          <span className="font-medium text-sm text-nowrap shrink-0 text-right">
-                            {formatCurrency((item.price * item.quantity) / 100)}
-                          </span>
+
+                      <div className="flex-1 flex flex-col gap-1">
+                        <div className="flex justify-between">
+                          <Link href={`/products/${item.product_id}`}>
+                            <strong>{item.product_name}</strong>
+                          </Link>
+                          <span className='pl-4'>{formatCurrency(item.price / 100)}</span>
                         </div>
-                        <span className="text-gray-700 dark:text-gray-300 text-sm">
-                          {item.quantity} {item.quantity > 1 ? "Unidades" : "Unidade"}
-                        </span>
+
+                        <div className='flex justify-between'>
+                          <div className="text-xs text-gray-500">Quantidade: {item.quantity}</div>
+                          {order.status === 'delivered' && (
+                            <div className="flex justify-end">
+                              <PendingReviewButton orderItemId={item.id} />
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 ))}
-              </div>
 
-              <PendingReviewCheck orderId={order.id} />
+              </div>
 
               <Separator className="my-3" />
               <div className="flex justify-between text-sm">
@@ -336,7 +337,7 @@ const OrderDetail = () => {
           )}
           <a target='_blank' href='https://rastreamento.correios.com.br/app/index.php'>
             <Button className="bg-black hover:bg-black/90 text-white dark:bg-white dark:text-black dark:hover:bg-white/90 cursor-pointer">
-              Acompanhar Pedido
+              {order.status === "delivered" ? "Detalhes da Entrega" : "Acompanhar Pedido"}
             </Button>
           </a>
         </div>
