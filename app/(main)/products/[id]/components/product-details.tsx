@@ -155,7 +155,6 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
     const fetchReviews = async () => {
       setLoading(true);
 
-      // Buscar orders_items relacionados ao produto
       const { data: orderItems, error: orderItemsError } = await supabase
         .from('orders_items')
         .select('id')
@@ -176,7 +175,6 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
         return;
       }
 
-      // Buscar as reviews relacionadas aos orders_items
       const { data: reviewsData, error: reviewsError } = await supabase
         .from('reviews')
         .select('id, rating, comment, profile_id, order_item_id, updated_at')
@@ -195,7 +193,6 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
         return;
       }
 
-      // Buscar os perfis relacionados às reviews
       const profileIds = reviewsData.map(r => r.profile_id);
 
       const { data: profilesData, error: profilesError } = await supabase

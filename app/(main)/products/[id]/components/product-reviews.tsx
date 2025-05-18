@@ -20,7 +20,6 @@ export const ProductReviews = ({ productId }: Props) => {
     const fetchReviews = async () => {
       setLoading(true);
 
-      // Buscar orders_items relacionados ao produto
       const { data: orderItems, error: orderItemsError } = await supabase
         .from('orders_items')
         .select('id')
@@ -41,7 +40,6 @@ export const ProductReviews = ({ productId }: Props) => {
         return;
       }
 
-      // Buscar as reviews relacionadas aos orders_items
       const { data: reviewsData, error: reviewsError } = await supabase
         .from('reviews')
         .select('id, rating, comment, profile_id, order_item_id, updated_at')
@@ -60,7 +58,6 @@ export const ProductReviews = ({ productId }: Props) => {
         return;
       }
 
-      // Buscar os perfis relacionados às reviews
       const profileIds = reviewsData.map(r => r.profile_id);
 
       const { data: profilesData, error: profilesError } = await supabase
@@ -133,7 +130,6 @@ export const ProductReviews = ({ productId }: Props) => {
     return <p className="text-neutral-600 dark:text-neutral-300 text-center mt-4">Ainda não há avaliações para este produto.</p>;
   }
 
-  // Define quais reviews mostrar: todos ou só 3
   const reviewsToShow = showAll ? reviews : reviews.slice(0, 3);
 
   return (
