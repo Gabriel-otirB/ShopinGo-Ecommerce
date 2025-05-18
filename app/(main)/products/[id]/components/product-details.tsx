@@ -16,6 +16,7 @@ import { useAuth } from '@/providers/auth-context';
 import { ProductReviews } from './product-reviews';
 import { Review } from '@/types/review';
 import { supabase } from '@/lib/supabase-client';
+import Loading from '@/components/loading';
 
 interface Props {
   product: Stripe.Product;
@@ -260,13 +261,8 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
   };
 
   if (loading) {
-    return <p className="text-neutral-600 dark:text-neutral-300">Carregando avaliações...</p>;
+    return <Loading />;
   }
-
-  if (reviews.length === 0) {
-    return <p className="text-neutral-600 dark:text-neutral-300">Ainda não há avaliações para este produto.</p>;
-  }
-
 
   return (
     <article>

@@ -14,6 +14,7 @@ export const ProductReviews = ({ productId }: Props) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [average, setAverage] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -125,16 +126,17 @@ export const ProductReviews = ({ productId }: Props) => {
   };
 
   if (loading) {
-    return <p className="text-neutral-600 dark:text-neutral-300">Carregando avaliações...</p>;
+    return <p className="text-neutral-600 dark:text-neutral-300 text-center mt-4">Carregando avaliações...</p>;
   }
 
   if (reviews.length === 0) {
-    return <p className="text-neutral-600 dark:text-neutral-300">Ainda não há avaliações para este produto.</p>;
+    return <p className="text-neutral-600 dark:text-neutral-300 text-center mt-4">Ainda não há avaliações para este produto.</p>;
   }
 
-  return (
-    console.log(reviews),
+  // Define quais reviews mostrar: todos ou só 3
+  const reviewsToShow = showAll ? reviews : reviews.slice(0, 3);
 
+  return (
     <div className="border-2 p-4 rounded shadow border-gray-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-900 mt-4">
       <h2 className="text-xl font-semibold mb-2">Avaliações</h2>
 
@@ -153,7 +155,7 @@ export const ProductReviews = ({ productId }: Props) => {
       )}
 
       <ul className="space-y-4">
-        {reviews.map(review => (
+        {reviewsToShow.map(review => (
           <li
             key={review.id}
             className="border rounded p-3 bg-white dark:bg-neutral-800 border-gray-300 dark:border-neutral-600"
@@ -170,6 +172,16 @@ export const ProductReviews = ({ productId }: Props) => {
           </li>
         ))}
       </ul>
+
+      {!showAll && reviews.length > 3 && (
+        <button
+          onClick={() => setShowAll(true)}
+          className="mt-4 text-black dark:text-white hover:underline cursor-pointer"
+          aria-label="Ver todas as avaliações"
+        >
+          Ver todas
+        </button>
+      )}
     </div>
   );
 };
