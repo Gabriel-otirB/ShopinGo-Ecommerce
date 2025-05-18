@@ -61,7 +61,7 @@ export default function CheckoutResultPage() {
           <CheckCircle className="mx-auto text-green-500 mb-4" size={64} />
           <h1 className="text-3xl font-bold mb-4">Pagamento efetuado com sucesso!</h1>
           <p className="mb-6 text-gray-600 dark:text-gray-300">Obrigado por comprar conosco!</p>
-          <Button onClick={() => router.push('/products')}>Continuar comprando</Button>
+          <Button onClick={() => router.push('/products')} className='cursor-pointer'>Continuar comprando</Button>
         </>
       )}
 
@@ -70,7 +70,7 @@ export default function CheckoutResultPage() {
           <XCircle className="mx-auto text-red-500 mb-4" size={64} />
           <h1 className="text-3xl font-bold mb-4">Pagamento falhou!</h1>
           <p className="mb-6 text-gray-600 dark:text-gray-300">Tente novamente ou use outro método de pagamento.</p>
-          <Button onClick={() => router.push('/checkout')}>Tentar novamente</Button>
+          <Button onClick={() => router.push('/checkout')} className='cursor-pointer'>Tentar novamente</Button>
         </>
       )}
 
@@ -78,7 +78,7 @@ export default function CheckoutResultPage() {
         <>
           <XCircle className="mx-auto text-red-500 mb-4" size={64} />
           <h1 className="text-3xl font-bold mb-4">Você precisa estar logado para acessar essa página.</h1>
-          <Button onClick={() => router.push('/login')}>Fazer login</Button>
+          <Button onClick={() => router.push('/login')} className='cursor-pointer'>Fazer login</Button>
         </>
       )}
 
@@ -87,7 +87,7 @@ export default function CheckoutResultPage() {
           <AlertTriangle className="mx-auto text-yellow-500 mb-4" size={64} />
           <h1 className="text-3xl font-bold mb-4">Algo deu errado!</h1>
           <p className="mb-6 text-gray-600 dark:text-gray-300">Não conseguimos processar sua solicitação.</p>
-          <Button onClick={() => router.push('/products')}>Voltar para a loja</Button>
+          <Button onClick={() => router.push('/products')} className='cursor-pointer'>Voltar para a loja</Button>
         </>
       )}
     </motion.div>

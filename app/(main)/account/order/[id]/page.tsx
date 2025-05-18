@@ -30,6 +30,7 @@ import Image from "next/image";
 import Loading from '@/components/loading';
 import { Bounce, toast } from 'react-toastify';
 import { useParams } from 'next/navigation';
+import PendingReviewCheck from './components/pending-review-check';
 
 // Functions for new styling and status labeling
 const getBadgeColor = (status: string) => {
@@ -199,7 +200,7 @@ const OrderDetail = () => {
       <div className="max-w-2xl mx-auto space-y-4">
         <div className="flex items-center">
           <Link href="/account" className="flex items-center">
-            <Button className="bg-black hover:bg-black text-white cursor-pointer" variant="default">
+            <Button className="bg-black hover:bg-black/90 text-white cursor-pointer" variant="default">
               <ChevronLeftIcon className="mr-1" />
               Voltar
             </Button>
@@ -267,6 +268,9 @@ const OrderDetail = () => {
                   </div>
                 ))}
               </div>
+
+              <PendingReviewCheck orderId={order.id} />
+
               <Separator className="my-3" />
               <div className="flex justify-between text-sm">
                 <span className="text-gray-700 dark:text-gray-300">Frete</span>
@@ -331,7 +335,7 @@ const OrderDetail = () => {
             </AlertDialog>
           )}
           <a target='_blank' href='https://rastreamento.correios.com.br/app/index.php'>
-            <Button className="bg-black hover:bg-black text-white dark:bg-white dark:text-black dark:hover:bg-white/90 cursor-pointer">
+            <Button className="bg-black hover:bg-black/90 text-white dark:bg-white dark:text-black dark:hover:bg-white/90 cursor-pointer">
               Acompanhar Pedido
             </Button>
           </a>
