@@ -52,7 +52,7 @@ export const checkoutAction = async (formData: FormData): Promise<void> => {
     .single();
 
   if (insertOrderError) {
-    console.error("Erro ao salvar pedido:", insertOrderError);
+    console.error("Erro ao salvar pedido");
     throw insertOrderError;
   }
 
@@ -66,8 +66,38 @@ export const checkoutAction = async (formData: FormData): Promise<void> => {
   );
 
   if (insertOrderItemError) {
-    console.error("Erro ao salvar items do pedido:", insertOrderItemError);
+    console.error("Erro ao salvar items do pedido");
     throw insertOrderItemError;
+  }
+
+  if (insertOrderItemError) {
+    console.error("Erro ao salvar items do pedido");
+    throw insertOrderItemError;
+  }
+
+  // Search for order_items created to get IDs
+  const { data: orderItems, error: orderItemsError } = await supabase
+    .from("orders_items")
+    .select("id")
+    .eq("order_id", order.id);
+
+  if (orderItemsError) {
+    console.error("Erro ao buscar order_items");
+    throw orderItemsError;
+  }
+
+  // Create reviews associated to the order_items
+  const { error: insertReviewsError } = await supabase.from("reviews").insert(
+    orderItems.map((orderItem) => ({
+      order_item_id: orderItem.id,
+      profile_id: profile.id,
+      rated: false,
+    }))
+  );
+
+  if (insertReviewsError) {
+    console.error("Erro ao criar reviews");
+    throw insertReviewsError;
   }
 
   const line_items = items.map((item: CartItem) => ({

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { MinusIcon, PlusIcon, Share2, ShoppingBag, ShoppingCart } from 'lucide-react';
+import { MinusIcon, PlusIcon, Share2, ShoppingBag, ShoppingCart, Star, StarHalf } from 'lucide-react';
 import type Stripe from 'stripe';
 import { useCartStore } from '@/store/cart-store';
 import { redirect, useRouter } from 'next/navigation';
@@ -11,8 +11,12 @@ import { Bounce, Slide, toast } from "react-toastify";
 import { Flip } from "react-toastify";
 import { formatCurrency } from '@/lib/helper';
 import ExpandableDescription from './expandable';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/providers/auth-context';
+import { ProductReviews } from './product-reviews';
+import { Review } from '@/types/review';
+import { supabase } from '@/lib/supabase-client';
+import Loading from '@/components/loading';
 
 interface Props {
   product: Stripe.Product;
@@ -28,6 +32,10 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
 
   const { user } = useAuth();
   const router = useRouter();
+
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [average, setAverage] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const handleAddItem = () => {
     if (!user) {
@@ -126,12 +134,12 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
       document.execCommand("copy");
       document.body.removeChild(dummy);
       toast.success("Link copiado para a área de transferência.", {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: true,
-          transition: Slide,
-          theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
-        });
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        transition: Slide,
+        theme: localStorage.getItem("theme") === "dark" ? "light" : "dark",
+      });
     } catch {
       toast.error("Não foi possível copiar o link.", {
         position: "top-center",
@@ -143,6 +151,124 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
     }
   };
 
+  useEffect(() => {
+    const fetchReviews = async () => {
+      setLoading(true);
+
+      const { data: orderItems, error: orderItemsError } = await supabase
+        .from('orders_items')
+        .select('id')
+        .eq('product_id', product.id);
+
+      if (orderItemsError) {
+        console.error(orderItemsError);
+        setLoading(false);
+        return;
+      }
+
+      const orderItemIds = orderItems.map(item => item.id);
+
+      if (orderItemIds.length === 0) {
+        setReviews([]);
+        setAverage(null);
+        setLoading(false);
+        return;
+      }
+
+      const { data: reviewsData, error: reviewsError } = await supabase
+        .from('reviews')
+        .select('id, rating, comment, profile_id, order_item_id, updated_at')
+        .in('order_item_id', orderItemIds);
+
+      if (reviewsError) {
+        console.error(reviewsError);
+        setLoading(false);
+        return;
+      }
+
+      if (reviewsData.length === 0) {
+        setReviews([]);
+        setAverage(null);
+        setLoading(false);
+        return;
+      }
+
+      const profileIds = reviewsData.map(r => r.profile_id);
+
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, name')
+        .in('id', profileIds);
+
+      if (profilesError) {
+        console.error(profilesError);
+        setLoading(false);
+        return;
+      }
+
+      const profileMap = profilesData.reduce((acc, p) => {
+        acc[p.id] = p.name;
+        return acc;
+      }, {} as Record<string, string>);
+
+      const formattedReviews = reviewsData.map(r => ({
+        id: r.id,
+        rating: r.rating,
+        comment: r.comment,
+        user_name: profileMap[r.profile_id] || 'Anônimo',
+        updated_at: r.updated_at,
+      }));
+
+      const avg = formattedReviews.reduce((sum, r) => sum + r.rating, 0) / formattedReviews.length;
+
+      setReviews(formattedReviews);
+      setAverage(avg);
+      setLoading(false);
+    };
+
+    fetchReviews();
+  }, [product.id]);
+
+  const renderStars = (rating: number) => {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating - fullStars >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+    const stars = [];
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(
+        <Star
+          key={`full-${i}`}
+          className="w-4 h-4 fill-yellow-500 stroke-yellow-500"
+        />
+      );
+    }
+
+    if (hasHalfStar) {
+      stars.push(
+        <div key="half" className="relative w-4 h-4">
+          <Star className="absolute inset-0 w-4 h-4 fill-amber-50/10 stroke-white" />
+          <StarHalf className="absolute inset-0 w-4 h-4 fill-yellow-500 stroke-yellow-500" />
+        </div>
+      );
+    }
+
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(
+        <Star
+          key={`empty-${i}`}
+          className="w-4 h-4 fill-amber-50/10 stroke-white "
+        />
+      );
+    }
+
+    return <div className="flex gap-0.5">{stars}</div>;
+  };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <article>
@@ -159,6 +285,14 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
                 className="rounded-lg p-10"
                 draggable={false}
               />
+
+              {average !== null && (
+                <div className="absolute left-2 top-2 flex items-center gap-1 bg-black dark:bg-neutral-600 bg-opacity-60 px-2 py-1 rounded-md">
+                  {renderStars(average)}
+                  <span className="text-white text-sm ml-1 font-bold">({reviews.length})</span>
+                </div>
+              )}
+
               <Button
                 variant="outline"
                 className="absolute left-2 bottom-2 cursor-pointer border-2 bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200/75 transition-colors duration-200 border-gray-300 dark:border-neutral-500"
@@ -280,6 +414,10 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
             {product.metadata.warranty && <li><strong>Garantia:</strong> {product.metadata.warranty}</li>}
           </ul>
         </div>
+      </div>
+
+      <div className='px-4'>
+        <ProductReviews productId={product.id} />
       </div>
 
       <Recommendations recommendedProducts={recommendedProducts} />

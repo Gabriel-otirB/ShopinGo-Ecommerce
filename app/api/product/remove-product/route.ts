@@ -11,7 +11,6 @@ export async function PUT(req: NextRequest) {
 
   const { productId } = await req.json();
 
-  // Get the product from the database to get the stripe_product_id
   const { data: product, error } = await supabase
     .from("products")
     .select("stripe_product_id")
@@ -23,12 +22,10 @@ export async function PUT(req: NextRequest) {
   }
 
   try {
-    // Disable the product on Stripe
     await stripe.products.update(product.stripe_product_id, {
       active: false,
     });
 
-    // Update the product in the database to make it inactive
     const { error: updateError } = await supabase
       .from("products")
       .update({ active: false })
