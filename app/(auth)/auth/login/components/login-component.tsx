@@ -195,7 +195,7 @@ const Login = () => {
 
   return (
     <RedirectIfAuthenticated>
-      <div className="flex flex-col items-center justify-center px-4 gap-4">
+      <div className="flex flex-col items-center justify-center md:px-4 gap-4">
         <Card className="w-full max-w-md border-2 border-gray-300 dark:border-neutral-500">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-center text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">

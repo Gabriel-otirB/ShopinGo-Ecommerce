@@ -42,7 +42,7 @@ export default function ProductsLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <ScrollTop />
-      <div className="max-w-screen-xl mx-auto px-4 -mt-4">
+      <div className="max-w-screen-xl mx-auto sm:px-2 md:px-4 -mt-4">
 
 
         {/* If is not a product page render tabs */}

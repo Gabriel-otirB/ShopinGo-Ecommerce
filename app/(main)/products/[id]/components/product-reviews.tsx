@@ -140,7 +140,7 @@ export const ProductReviews = ({ productId }: Props) => {
   const reviewsToShow = showAll ? reviews : reviews.slice(0, 3);
 
   return (
-    <div className="border-2 p-4 rounded shadow border-gray-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-900 mt-4">
+    <div className="border-2 px-2 py-4 md:px-4 rounded shadow border-gray-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-900 mt-4">
       <h2 className="text-xl font-semibold mb-2 text-center md:text-start">Avaliações</h2>
 
       {average !== null && (

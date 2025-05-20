@@ -43,7 +43,7 @@ export default function RootLayout({
           <CartSync /> {/* <- Here is the client component with useEffect  */}
           <Navbar />
           <ToastProvider />
-          <main className="flex-grow container mx-auto px-4 py-8 min-h-[calc(100vh-450px)]">
+          <main className="flex-grow container mx-auto px-2 md:px-4 py-8 min-h-[calc(100vh-450px)]">
             <LoadingProvider>{children}</LoadingProvider>
           </main>
           <Footer />

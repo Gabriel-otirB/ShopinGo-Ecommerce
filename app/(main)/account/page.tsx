@@ -123,7 +123,7 @@ const AccountPage = () => {
   const displayedOrders = showAllOrders ? orders : orders.slice(0, 2);
 
   return (
-    <div className="container mx-auto px-4 p-2 md:pb-6 -mt-4">
+    <div className="container mx-auto md:px-4 md:p-2 md:pb-6 -mt-4">
       <h1 className="text-2xl font-bold mb-6 text-center">Minha Conta</h1>
 
       <Tabs defaultValue="orders" className="w-full max-w-3xl mx-auto">

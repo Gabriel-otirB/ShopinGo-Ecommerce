@@ -28,11 +28,11 @@ export const Recommendations = ({ recommendedProducts }: Props) => {
 
   return (
     <>
-      <h1 className="text-xl font-semibold text-black dark:text-white px-4 pt-4 pb-2">
+      <h1 className="text-xl font-semibold text-black dark:text-white  px-2 md:px-4 pt-4 pb-2">
         Recomendações
       </h1>
 
-      <div className="relative group px-4">
+      <div className="relative group md:px-4">
         <button
           onClick={() => scroll("left")}
           className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 z-10

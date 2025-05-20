@@ -86,7 +86,7 @@ export default function CheckoutPage() {
   return (
     <>
       <div className="flex flex-col">
-        <div className="flex-grow container mx-auto px-4 pb-4">
+        <div className="flex-grow container mx-auto md:px-4 pb-4">
           {items.length === 0 ? (
             <div className="text-center py-10">
               <ShoppingCart className="mx-auto mb-4 text-gray-700 dark:text-gray-200" size={48} />

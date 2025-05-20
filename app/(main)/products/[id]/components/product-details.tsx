@@ -256,7 +256,7 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
 
   return (
     <article>
-      <div className="container mx-auto px-4 pb-2 md:py-4 flex flex-col md:flex-row gap-10 items-start min-h-[calc(100vh-450px)]">
+      <div className="container mx-auto sm:px-2 md:px-4 pb-2 md:py-4 flex flex-col md:flex-row gap-10 items-start min-h-[calc(100vh-450px)]">
         {selectedImage && (
           <div className="w-full md:w-[50%]">
             <div className="relative w-full h-[300px] md:h-[450px] overflow-hidden rounded-lg shadow-md bg-neutral-100 dark:bg-neutral-900 border-2 border-gray-300 dark:border-neutral-500">
@@ -377,7 +377,7 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
         </div>
       </div>
 
-      <div className="px-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="py-4 md:px-4 grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="p-4 rounded shadow bg-neutral-100 dark:bg-neutral-900 border-2 border-gray-300 dark:border-neutral-500">
           <h2 className="text-xl font-semibold mb-2">Detalhes</h2>
           <p className="text-sm">
@@ -385,7 +385,7 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
           </p>
         </div>
 
-        <div className="border-2 p-4 rounded shadow border-gray-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-900">
+        <div className="border-2 px-2 py-4 md:px-4 rounded shadow border-gray-300 dark:border-neutral-500 bg-neutral-100 dark:bg-neutral-900">
           <h2 className="text-xl font-semibold mb-2">Especificações</h2>
           <ul className="text-sm mb-2">
             {product.metadata.category &&
@@ -400,7 +400,7 @@ const ProductDetails = ({ product, recommendedProducts }: Props) => {
         </div>
       </div>
 
-      <div className='px-4'>
+      <div className='md:px-4'>
         <ProductReviews productId={product.id} />
       </div>
 
