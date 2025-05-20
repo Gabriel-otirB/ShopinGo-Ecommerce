@@ -8,7 +8,7 @@
 
 **Shopingo** é uma plataforma web full stack de **e-commerce**, desenvolvida com foco na venda de produtos diversos. O sistema oferece controle de usuários, integração com **Supabase** e pagamentos via **Stripe**, além de um painel administrativo completo para gerenciamento de produtos e usuários.
 
-https://github.com/user-attachments/assets/ad4a3b5a-3f1c-4fcb-8a9a-68c435d2eb2f
+https://github.com/user-attachments/assets/a99c7ba7-4e74-41a4-afc4-a944a300dc1c
 
 ## 🚀 Teste você mesmo!
 - Acessar Loja: [Shopingo](https://shopin-go-ecommerce.vercel.app/)
@@ -19,12 +19,12 @@ https://github.com/user-attachments/assets/ad4a3b5a-3f1c-4fcb-8a9a-68c435d2eb2f
 - Autenticação de usuários via **Supabase Auth** (incluindo login com Google)
 - Carrinho de compras integrado e finalização via **Stripe Checkout**
 - Painel de administração para controle de produtos e usuários
+- Reviews e avaliações de produtos comprados por usuários
 - Listagem e visualização de pedidos e histórico de compras
 - Sistema de controle de permissões de usuários (cliente/admin)
 - Upload de imagens armazenado em **Supabase Storage**
 
 ### 🔜 Em breve:
-- Avaliação e sistema de comentários nos produtos
 - Migrations com Prisma ORM
 
 ## 🛠️ Tecnologias Utilizadas
@@ -57,7 +57,8 @@ O sistema utiliza **PostgreSQL** no **Supabase**, com as seguintes tabelas princ
 E um bucket de storage público chamado:
 - **product-images**
 
-![image](https://github.com/user-attachments/assets/72798a07-3a6b-4033-ad6f-db84c03c9c67)
+![Database](https://github.com/user-attachments/assets/060ca1c5-3a7e-4d34-b8aa-8559ee5319a7)
+
 
 ## 📱 Layout e Interface
 
