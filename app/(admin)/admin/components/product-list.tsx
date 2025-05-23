@@ -66,8 +66,8 @@ const ProductList = ({ products, search, onReload }: ProductListProps) => {
     }
 
     try {
-      const response = await fetch("/api/product/remove-product", {
-        method: "PUT",
+      const response = await fetch("/api/product", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ productId }),
       });

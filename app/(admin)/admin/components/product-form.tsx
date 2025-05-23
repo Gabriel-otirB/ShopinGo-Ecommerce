@@ -106,7 +106,6 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
     }
 
     const isUpdate = !!product?.stripe_product_id;
-    const apiEndpoint = isUpdate ? "/api/product/update-product" : "/api/product/create-product";
 
     const body = isUpdate
       ? {
@@ -138,7 +137,7 @@ const ProductForm = ({ product, onSubmit, onClose, isEditMode }: ProductFormProp
         size,
       };
 
-    const response = await fetch(apiEndpoint, {
+    const response = await fetch("/api/product", {
       method: isUpdate ? "PUT" : "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify(body),

@@ -29,7 +29,7 @@ export default function CheckoutResultPage() {
 
       const token = data.session.access_token;
 
-      const res = await fetch(`/api/stripe/status?session_id=${session_id}`, {
+      const res = await fetch(`/api/stripe?session_id=${session_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
