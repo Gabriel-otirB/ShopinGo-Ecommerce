@@ -76,8 +76,17 @@ const Admin = () => {
   const handleSync = async () => {
     setLoading(true);
     setSyncResult(null);
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    const token = session?.access_token;
+
     try {
-      const res = await fetch("/api/product");
+      const res = await fetch("/api/product", {
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      });
       const data = await res.json();
       if (data.success) {
         setSyncResult(`Produtos adicionados: ${data.result.added}`);

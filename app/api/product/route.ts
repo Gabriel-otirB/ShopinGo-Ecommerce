@@ -5,7 +5,13 @@ import validateUserAdmin from '@/lib/validate-user-admin';
 import { syncStripeProducts } from '@/lib/sync-products';
 
 // GET ALL
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const user = await validateUserAdmin(req);
+
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const result = await syncStripeProducts();
     return NextResponse.json({ success: true, result });
